@@ -1,6 +1,6 @@
-# mg-process-test
+# mg-process-test-dev
 
-[![Documentation Status](https://readthedocs.org/projects/mg-process-test/badge/?version=latest)](http://mg-process-test.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/Multiscale-Genomics/mg-process-test.svg?branch=master)](https://travis-ci.org/Multiscale-Genomics/mg-process-test) [![Code Health](https://landscape.io/github/Multiscale-Genomics/mg-process-test/master/landscape.svg?style=flat)](https://landscape.io/github/Multiscale-Genomics/mg-process-test/master)
+[![Documentation Status](https://readthedocs.org/projects/mg-process-test/badge/?version=latest)](http://mg-process-test.readthedocs.io/en/latest/?badge=latest) [![Build Status](https://travis-ci.org/Multiscale-Genomics/mg-process-test.svg?branch=master)](https://travis-ci.org/Multiscale-Genomics/mg-process-test)
 
 Example pipelines file that is ready to run in the VRE matching the code in the HowTo documentation.
 
@@ -8,7 +8,7 @@ This repo structure workflows and tools can be forked and used as the base templ
 
 # Requirements
 - pyenv and pyenv-virtualenv
-- Python 2.7.12
+- Python <= 3.6.9
 - Python Modules:
   - pylint
   - pytest
@@ -20,18 +20,18 @@ Installation
 Directly from GitHub:
 
 ```
-cd ${HOME}/code
+cd ${HOME}/user
 
-git clone https://github.com/Multiscale-Genomics/mg-process-test.git
+git clone https://github.com/Multiscale-Genomics/mg-process-test-dev.git
 
-cd mg-process-test
+cd mg-process-test-dev
 ```
 
 Create the Python environment
 
 ```
-pyenv-virtualenv 2.7.12 mg-process-test
-pyenv activate mg-process-test
+pyenv-virtualenv 3.6.9 mg-process-test-dev
+pyenv activate mg-process-test-dev
 pip install -e .
 pip install -r requirements.txt
 ```
