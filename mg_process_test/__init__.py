@@ -15,5 +15,5 @@
    limitations under the License.
 """
 __author__ = 'Laura Rodríguez-Navas'
-__version__ = '1.0'
+__version__ = '0.1'
 __license__ = 'MIT License'
