@@ -49,7 +49,7 @@ class process_test(Workflow):  # pylint: disable=invalid-name,too-few-public-met
 
     def run(self, input_files, metadata, output_files):
         """
-        Main run function for processing a test file.
+        Main run function for processing a tests file.
 
         Parameters
         ----------
@@ -68,7 +68,7 @@ class process_test(Workflow):  # pylint: disable=invalid-name,too-few-public-met
            Matching metadata for each of the files
         """
 
-        # Initialise the test tool
+        # Initialise the tests tool
         tt_handle = testTool(self.configuration)
         tt_files, tt_meta = tt_handle.run(input_files, metadata, output_files)
 

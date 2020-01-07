@@ -29,7 +29,7 @@ def test_test_pipeline():
     """
     Test case to ensure that the Genome indexing pipeline code works.
 
-    Running the pipeline with the test data from the command line:
+    Running the pipeline with the tests data from the command line:
 
     .. code-block:: none
 
@@ -44,12 +44,12 @@ def test_test_pipeline():
     metadata = {
         "input": Metadata(
             "text", "txt", input_files["input"], None,
-            {"assembly": "test"}
+            {"assembly": "tests"}
         )
     }
 
     files_out = {
-        "output": resource_path + 'test.txt',
+        "output": resource_path + 'tests.txt',
     }
 
     tt_handle = process_test()

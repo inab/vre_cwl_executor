@@ -46,7 +46,7 @@ def test_testTool():
     metadata = {
         "input": Metadata(
             "text", "txt", input_files["input"], None,
-            {"assembly": "test"}
+            {"assembly": "tests"}
         )
     }
 

@@ -23,7 +23,7 @@ TEST_DIR=$(python -c 'import ConfigParser; config = ConfigParser.RawConfigParser
 cd $DIR
 cd $TEST_DIR/data
 
-# Known test data files to keep
+# Known tests data files to keep
 c=$(git rev-parse --abbrev-ref HEAD)
 a=$(git ls-tree -r $c --name-only | sort)
 

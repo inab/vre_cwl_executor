@@ -10,7 +10,7 @@
 
 # Local installation - EDIT IF REQUIRED
 
-WORKING_DIR=/home/laura/ipc/vre-process-cwl-executor/cwl_wrapper_test/test/run000
+WORKING_DIR=/home/laura/ipc/vre-process-cwl-executor/cwl_wrapper_test/tests/run000
 TOOL_EXECUTABLE=/home/laura/ipc/vre-process-cwl-executor/cwl_wrapper_test/tool/cwl_wrapper.py
 
 # Test input files
