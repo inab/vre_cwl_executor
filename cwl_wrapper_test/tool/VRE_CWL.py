@@ -40,8 +40,8 @@ try:
     from pycompss.api.task import task
     from pycompss.api.api import compss_wait_on
 except ImportError:
-    #    logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
-    #    logger.warn("          Using mock decorators.")
+    # logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
+    # logger.warn("          Using mock decorators.")
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task  # pylint: disable=ungrouped-imports
@@ -52,8 +52,6 @@ from basic_modules.metadata import Metadata
 
 import tempfile
 
-
-# ------------------------------------------------------------------------------
 
 class WF_RUNNER(Tool):
     """
@@ -78,7 +76,7 @@ class WF_RUNNER(Tool):
         # local_config = configparser.ConfigParser()
         # local_config.read(sys.argv[0] + '.ini')
 
-        # Setup parameters for installing CWLTOOL # TODO
+        # TODO setup parameters for installing cwtool with docker
         # self.nxf_image = local_config.get('nextflow', 'docker_image') if local_config.has_option('nextflow',
         #                                                                                          'docker_image') else self.DEFAULT_NXF_IMAGE
         # self.nxf_version = local_config.get('nextflow', 'version') if local_config.has_option('nextflow',
@@ -160,7 +158,7 @@ class WF_RUNNER(Tool):
             try:
                 os.makedirs(repo_destdir)
             except IOError as error:
-                errstr = "ERROR: Unable to create intermediate directories for repo {}. ".format(git_uri, );
+                errstr = "ERROR: Unable to create intermediate directories for repo {}. ".format(git_uri, )
                 raise Exception(errstr)
 
         repo_tag_destdir = os.path.join(repo_destdir, repo_hashed_tag_id)
@@ -228,77 +226,23 @@ class WF_RUNNER(Tool):
 
     @task(returns=bool, input_loc=FILE_IN, goldstandard_dir_loc=FILE_IN, assess_dir_loc=FILE_IN,
           public_ref_dir_loc=FILE_IN, results_loc=FILE_OUT, stats_loc=FILE_OUT, other_loc=FILE_OUT, isModifier=False)
-    def validate_and_assess(self, input_loc, goldstandard_dir_loc, assess_dir_loc, public_ref_dir_loc, results_loc,
-                            stats_loc, other_loc):  # pylint: disable=no-self-use
-        # First, we need to materialize the workflow
-        nextflow_repo_uri = self.configuration.get('nextflow_repo_uri')
-        nextflow_repo_tag = self.configuration.get('nextflow_repo_tag')
+    def execute_cwl_workflow(self, input_loc, goldstandard_dir_loc, assess_dir_loc, public_ref_dir_loc, results_loc,
+                             stats_loc, other_loc):  # pylint: disable=no-self-use
 
-        if (nextflow_repo_uri is None) or (nextflow_repo_tag is None):
-            logger.fatal("FATAL ERROR: both 'nextflow_repo_uri' and 'nextflow_repo_tag' parameters must be defined")
+        # First, we need to materialize the workflow
+        cwl_wf_repo_uri = self.configuration.get('cwl_wf_repo_uri')
+        cwl_wf_repo_tag = self.configuration.get('cwl_wf_repo_tag')
+
+        if (cwl_wf_repo_uri is None) or (cwl_wf_repo_tag is None):
+            logger.fatal("FATAL ERROR: both 'cwl_wf_repo_uri' and 'cwl_wf_repo_tag' parameters must be defined")
             return False
 
         # Checking out the repo to be used
         try:
-            repo_dir = self.doMaterializeRepo(nextflow_repo_uri, nextflow_repo_tag)
+            repo_dir = self.doMaterializeRepo(cwl_wf_repo_uri, cwl_wf_repo_tag)
         except Exception as error:
             logger.fatal("While materializing repo: " + type(error).__name__ + ': ' + str(error))
             return False
-
-        challenges_ids = self.configuration['challenges_ids']
-        participant_id = self.configuration['participant_id']
-
-        inputDir = os.path.dirname(input_loc)
-        inputBasename = os.path.basename(input_loc)
-
-        # Value needed to compose the Nextflow docker call
-        uid = str(os.getuid())
-        gid = str(os.getgid())
-
-        # Should workdir be in a separate place?
-        workdir = os.path.abspath(self.configuration.get('project', '.'))
-
-        # Directories required by Nextflow in a Docker
-        homedir = os.path.expanduser("~")
-        nxf_assets_dir = os.path.join(homedir, ".nextflow", "assets")
-        if not os.path.exists(nxf_assets_dir):
-            try:
-                os.makedirs(nxf_assets_dir)
-            except Exception as error:
-                logger.fatal("ERROR: Unable to create nextflow assets directory. Error: " + str(error))
-                return False
-
-        retval_stage = 'validation'
-
-        # The fixed parameters
-        validation_cmd_pre_vol = [
-            "docker", "run", "--rm", "--net", "host",
-            "-e", "USER",
-            "-e", "NXF_DEBUG",
-            "-e", "HOME=" + homedir,
-            "-e", "NXF_ASSETS=" + nxf_assets_dir,
-            "-e", "NXF_USRMAP=" + uid,
-            "-e", "NXF_DOCKER_OPTS=-u " + uid + ":" + gid + " -e HOME=" + homedir,
-            "-v", "/var/run/docker.sock:/var/run/docker.sock"
-        ]
-
-        validation_cmd_post_vol = [
-            "-w", workdir,
-            self.nxf_image + ":" + self.nxf_version,
-            "nextflow", "run", repo_dir, "-profile", "docker"
-        ]
-
-        # This one will be filled in by the volume parameters passed to docker
-        # docker_vol_params = []
-
-        # This one will be filled in by the volume meta declarations, used
-        # to generate the volume parameters
-        volumes = [
-            (homedir, "ro,Z"),
-            (nxf_assets_dir, "Z"),
-            (workdir, "Z"),
-            (repo_dir, "ro,Z")
-        ]
 
         # These are the parameters, including input and output files and directories
 
@@ -327,33 +271,9 @@ class WF_RUNNER(Tool):
         # The list of populable outputs
         variable_outfile_params.extend(self.populable_outputs.items())
 
-        # Preparing the RO volumes
-        for ro_loc_id, ro_loc_val in variable_infile_params:
-            volumes.append((ro_loc_val, "ro,Z"))
-            variable_params.append((ro_loc_id, ro_loc_val))
-
-        # Preparing the RW volumes
-        for rw_loc_id, rw_loc_val in variable_outfile_params:
-            volumes.append((rw_loc_val, "Z"))
-            variable_params.append((rw_loc_id, rw_loc_val))
-
-        # Assembling the command line
-        validation_params = []
-        validation_params.extend(validation_cmd_pre_vol)
-
-        for volume_dir, volume_mode in volumes:
-            validation_params.append("-v")
-            validation_params.append(volume_dir + ':' + volume_dir + ':' + volume_mode)
-
-        validation_params.extend(validation_cmd_post_vol)
-
-        # Last, but not the least important
-        for param_id, param_val in variable_params:
-            validation_params.append("--" + param_id)
-            validation_params.append(param_val)
-
-        logger.debug(' '.join(validation_params))
-        retval = subprocess.call(validation_params)
+        # TODO
+        # Generate input_test.yml/json
+        # subprocess call cwtool with test.cwl input_test.yml
 
         if retval != 0:
             logger.fatal("ERROR: VRE NF evaluation failed. Exit value: " + str(retval))
@@ -381,81 +301,39 @@ class WF_RUNNER(Tool):
             List of matching metadata for the returned files
         """
 
-        # Setting out files names
-        project_path = os.path.abspath(self.configuration.get('execution', '.'))
+        # Set and check execution directory
+        execution_path = os.path.abspath(self.configuration.get('execution', '.'))
+        execution_parent_dir = os.path.dirname(execution_path)
+        if not os.path.isdir(execution_parent_dir):
+            os.makedirs(execution_parent_dir)
 
-        # Ensuring the parent directory already exists
-        pop_project_parent_dir = os.path.dirname(project_path)
-        if not os.path.isdir(pop_project_parent_dir):
-            os.makedirs(pop_project_parent_dir)
+        # Change working dir
 
-        print("RUN PATH: {}".format(project_path))
+        print("RUN PATH: {}".format(execution_path))
 
+        # Set file names for output files (with random name if not predefined)
         for key in output_files.keys():
-            # if key not in self.MASKED_OUT_KEYS:
             if output_files[key] is not None:
                 pop_output_path = os.path.abspath(output_files[key])
             else:
-                pop_output_path = os.path.join(project_path, uuid.uuid4().hex + '.out')
+                pop_output_path = os.path.join(execution_path, uuid.uuid4().hex + '.out')
 
-            # Ensuring the parent directory already exists
-            pop_output_parent_dir = os.path.dirname(pop_output_path)
-            if not os.path.isdir(pop_output_parent_dir):
-                os.makedirs(pop_output_parent_dir)
-
-            # Forcing the creation of the file
-            with open(pop_output_path, mode="a") as pop_output_h:
-                pass
             self.populable_outputs[key] = pop_output_path
             output_files[key] = pop_output_path
 
-        participant_id = self.configuration['participant_id']
+        # Set file names for output files (from VRE config JSON)
+        # out_basename = self.configuration['out_basename']
+        # out1_path = output_files.get("out1")
+        # if out1_path is None:
+        #     out1_path = os.path.join(execution_path, out_basename + '.out')
+        # out1_path = os.path.abspath(out1_path)
+        # output_files['out1'] = out1_path
 
-        metrics_path = output_files.get("metrics")
-        if metrics_path is None:
-            metrics_path = os.path.join(project_path, participant_id + '.json')
-        metrics_path = os.path.abspath(metrics_path)
-        output_files['metrics'] = metrics_path
+        # Validate input files
+        # TODO
 
-        tar_view_path = output_files.get("tar_view")
-        if tar_view_path is None:
-            tar_view_path = os.path.join(project_path, participant_id + '.tar.gz')
-        tar_view_path = os.path.abspath(tar_view_path)
-        output_files['tar_view'] = tar_view_path
-
-        tar_nf_stats_path = output_files.get("tar_nf_stats")
-        if tar_nf_stats_path is None:
-            tar_nf_stats_path = os.path.join(project_path, 'nfstats.tar.gz')
-        tar_nf_stats_path = os.path.abspath(tar_nf_stats_path)
-        output_files['tar_nf_stats'] = tar_nf_stats_path
-
-        tar_other_path = output_files.get("tar_other")
-        if tar_other_path is None:
-            tar_other_path = os.path.join(project_path, 'other_files.tar.gz')
-        tar_other_path = os.path.abspath(tar_other_path)
-        output_files['tar_other'] = tar_other_path
-
-        print(output_files)
-
-        # Defining the output directories
-        results_path = os.path.join(project_path, 'results')
-        stats_path = os.path.join(project_path, 'nf_stats')
-        other_path = os.path.join(project_path, 'other_files')
-
-        # The directories are being created for the workflow manager, so they have the right owner
-        os.makedirs(results_path)
-        os.makedirs(stats_path)
-        os.makedirs(other_path)
-
-        results = self.validate_and_assess(
-            os.path.abspath(input_files["input"]),
-            os.path.abspath(input_files['goldstandard_dir']),
-            os.path.abspath(input_files['assess_dir']),
-            os.path.abspath(input_files['public_ref_dir']),
-            results_path,
-            stats_path,
-            other_path
-        )
+        # Do real work: execute cwltool
+        results = self.execute_cwl_workflow(input_files, self.configuration)
         results = compss_wait_on(results)
 
         if results is False:
@@ -463,7 +341,7 @@ class WF_RUNNER(Tool):
             raise Exception("VRE NF RUNNER pipeline failed. See logs")
             return {}, {}
 
-        # Preparing the tar files
+        # Validate output files
         if os.path.exists(results_path):
             self.packDir(results_path, tar_view_path)
             # Redoing metrics path
@@ -503,7 +381,7 @@ class WF_RUNNER(Tool):
                     theFileType = other_file[other_file.rindex(".") + 1:].lower()
                     if theFileType in self.IMG_FILE_TYPES:
                         orig_file_path = os.path.join(other_root, other_file)
-                        new_file_path = os.path.join(project_path, other_file)
+                        new_file_path = os.path.join(execution_path, other_file)
                         shutil.copyfile(orig_file_path, new_file_path)
 
                         # Populating

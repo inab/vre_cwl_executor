@@ -28,7 +28,7 @@
         },
         {
             "name": "output_basename",
-            "value": "test"
+            "value": "mytest"
         },
         {
             "name": "cwl_wf_repo_uri",
@@ -45,7 +45,7 @@
             "required": true,
             "allow_multiple": true,
             "file": {
-                "file_path": "/test/",
+                "file_path": "mytest",
                 "file_type": "BAM",
                 "data_type": "data_chip_seq",
                 "meta_data": {
