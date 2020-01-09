@@ -16,7 +16,7 @@
     "arguments": [
         {
             "name": "execution",
-            "value": "/home/laura/ipc/vre-process_workflow-executor/cwl_wrapper_test/tests/run000"
+            "value": "/home/laura/ipc/vre-process_cwl-executor/cwl_wrapper_test/tests/run000"
         },
         {
             "name": "project",
@@ -32,7 +32,7 @@
         },
         {
             "name": "cwl_wf_repo_uri",
-            "value": "https://github.com/lrodrin/vre-process_workflow-executor"
+            "value": "https://github.com/lrodrin/vre-process_cwl-executor"
         },
         {
             "name": "cwl_wf_repo_tag",
