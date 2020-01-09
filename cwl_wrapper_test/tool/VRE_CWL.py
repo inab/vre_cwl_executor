@@ -224,10 +224,13 @@ class WF_RUNNER(Tool):
         with tarfile.open(destTarFile, mode='w:gz', bufsize=1024 * 1024) as tar:
             tar.add(resultsDir, arcname='data', recursive=True)
 
-    @task(returns=bool, input_loc=FILE_IN, goldstandard_dir_loc=FILE_IN, assess_dir_loc=FILE_IN,
-          public_ref_dir_loc=FILE_IN, results_loc=FILE_OUT, stats_loc=FILE_OUT, other_loc=FILE_OUT, isModifier=False)
-    def execute_cwl_workflow(self, input_loc, goldstandard_dir_loc, assess_dir_loc, public_ref_dir_loc, results_loc,
-                             stats_loc, other_loc):  # pylint: disable=no-self-use
+    # @task(returns=bool, input_loc=FILE_IN, goldstandard_dir_loc=FILE_IN, assess_dir_loc=FILE_IN,
+    #       public_ref_dir_loc=FILE_IN, results_loc=FILE_OUT, stats_loc=FILE_OUT, other_loc=FILE_OUT, isModifier=False)
+    # def execute_cwl_workflow(self, input_loc, goldstandard_dir_loc, assess_dir_loc, public_ref_dir_loc, results_loc,
+    #                          stats_loc, other_loc):  # pylint: disable=no-self-use
+
+    @task(returns=bool, input_files=FILE_IN, configuration=FILE_IN, isModifier=False)
+    def execute_cwl_workflow(self, input_files, configuration):  # pylint: disable=no-self-use
 
         # First, we need to materialize the workflow
         cwl_wf_repo_uri = self.configuration.get('cwl_wf_repo_uri')
@@ -255,25 +258,27 @@ class WF_RUNNER(Tool):
             if conf_key not in self.MASKED_KEYS:
                 variable_params.append((conf_key, self.configuration[conf_key]))
 
-        variable_infile_params = [
-            ('input', input_loc),
-            ('goldstandard_dir', goldstandard_dir_loc),
-            ('public_ref_dir', public_ref_dir_loc),
-            ('assess_dir', assess_dir_loc)
-        ]
-
-        variable_outfile_params = [
-            ('statsdir', stats_loc),
-            ('outdir', results_loc),
-            ('otherdir', other_loc)
-        ]
+        # variable_infile_params = [
+        #     ('input', input_loc),
+        #     ('goldstandard_dir', goldstandard_dir_loc),
+        #     ('public_ref_dir', public_ref_dir_loc),
+        #     ('assess_dir', assess_dir_loc)
+        # ]
+        #
+        # variable_outfile_params = [
+        #     ('statsdir', stats_loc),
+        #     ('outdir', results_loc),
+        #     ('otherdir', other_loc)
+        # ]
 
         # The list of populable outputs
-        variable_outfile_params.extend(self.populable_outputs.items())
+        # variable_outfile_params.extend(self.populable_outputs.items())
 
         # TODO
         # Generate input_test.yml/json
         # subprocess call cwtool with test.cwl input_test.yml
+
+        retval = subprocess.run(["cwltool", "test.cwl", "input_test.yml"])
 
         if retval != 0:
             logger.fatal("ERROR: VRE NF evaluation failed. Exit value: " + str(retval))
@@ -342,114 +347,114 @@ class WF_RUNNER(Tool):
             return {}, {}
 
         # Validate output files
-        if os.path.exists(results_path):
-            self.packDir(results_path, tar_view_path)
-            # Redoing metrics path
-            for metrics_file in os.listdir(results_path):
-                if metrics_file.startswith(participant_id) and metrics_file.endswith(".json"):
-                    orig_metrics_path = os.path.join(results_path, metrics_file)
-                    shutil.copyfile(orig_metrics_path, metrics_path)
-                    break
+        # if os.path.exists(results_path):
+        #     self.packDir(results_path, tar_view_path)
+        #     # Redoing metrics path
+        #     for metrics_file in os.listdir(results_path):
+        #         if metrics_file.startswith(participant_id) and metrics_file.endswith(".json"):
+        #             orig_metrics_path = os.path.join(results_path, metrics_file)
+        #             shutil.copyfile(orig_metrics_path, metrics_path)
+        #             break
 
         # Preparing the expected outputs
-        if os.path.exists(stats_path):
-            self.packDir(stats_path, tar_nf_stats_path)
+        # if os.path.exists(stats_path):
+        #     self.packDir(stats_path, tar_nf_stats_path)
 
         # Initializing
-        images_file_paths = []
-        images_metadata = {
-            'report_images': Metadata(
-                # These ones are already known by the platform
-                # so comment them by now
-                data_type="report_image",
-                file_type="IMG",
-                file_path=images_file_paths,
-                # Reference and golden data set paths should also be here
-                sources=[input_metadata["input"].file_path],
-                meta_data={
-                    "tool": "VRE_NF_RUNNER"
-                }
-            )
-        }
-        output_files['report_images'] = images_file_paths
+        # images_file_paths = []
+        # images_metadata = {
+        #     'report_images': Metadata(
+        #         # These ones are already known by the platform
+        #         # so comment them by now
+        #         data_type="report_image",
+        #         file_type="IMG",
+        #         file_path=images_file_paths,
+        #         # Reference and golden data set paths should also be here
+        #         sources=[input_metadata["input"].file_path],
+        #         meta_data={
+        #             "tool": "VRE_NF_RUNNER"
+        #         }
+        #     )
+        # }
+        # output_files['report_images'] = images_file_paths
 
-        if os.path.exists(other_path):
-            self.packDir(other_path, tar_other_path)
-            # Searching for image-like files
-            for other_root, other_dirs, other_files in os.walk(other_path):
-                for other_file in other_files:
-                    theFileType = other_file[other_file.rindex(".") + 1:].lower()
-                    if theFileType in self.IMG_FILE_TYPES:
-                        orig_file_path = os.path.join(other_root, other_file)
-                        new_file_path = os.path.join(execution_path, other_file)
-                        shutil.copyfile(orig_file_path, new_file_path)
-
-                        # Populating
-                        images_file_paths.append(new_file_path)
+        # if os.path.exists(other_path):
+        #     self.packDir(other_path, tar_other_path)
+        #     # Searching for image-like files
+        #     for other_root, other_dirs, other_files in os.walk(other_path):
+        #         for other_file in other_files:
+        #             theFileType = other_file[other_file.rindex(".") + 1:].lower()
+        #             if theFileType in self.IMG_FILE_TYPES:
+        #                 orig_file_path = os.path.join(other_root, other_file)
+        #                 new_file_path = os.path.join(execution_path, other_file)
+        #                 shutil.copyfile(orig_file_path, new_file_path)
+        #
+        #                 # Populating
+        #                 images_file_paths.append(new_file_path)
 
         # BEWARE: Order DOES MATTER when there is a dependency from one output on another
-        output_metadata = {
-            "metrics": Metadata(
-                # These ones are already known by the platform
-                # so comment them by now
-                data_type="assessment",
-                file_type="JSON",
-                file_path=metrics_path,
-                # Reference and golden data set paths should also be here
-                sources=[input_metadata["input"].file_path],
-                meta_data={
-                    "tool": "VRE_NF_RUNNER"
-                }
-            ),
-            "tar_view": Metadata(
-                # These ones are already known by the platform
-                # so comment them by now
-                data_type="tool_statistics",
-                file_type="TAR",
-                file_path=tar_view_path,
-                # Reference and golden data set paths should also be here
-                sources=[input_metadata["input"].file_path],
-                meta_data={
-                    "tool": "VRE_NF_RUNNER"
-                }
-            ),
-            "tar_nf_stats": Metadata(
-                # These ones are already known by the platform
-                # so comment them by now
-                data_type="tool_statistics",
-                file_type="TAR",
-                file_path=tar_nf_stats_path,
-                # Reference and golden data set paths should also be here
-                sources=[input_metadata["input"].file_path],
-                meta_data={
-                    "tool": "VRE_NF_RUNNER"
-                }
-            ),
-            "tar_other": Metadata(
-                # These ones are already known by the platform
-                # so comment them by now
-                data_type="tool_statistics",
-                file_type="TAR",
-                file_path=tar_other_path,
-                # Reference and golden data set paths should also be here
-                sources=[input_metadata["input"].file_path],
-                meta_data={
-                    "tool": "VRE_NF_RUNNER"
-                }
-            )
-        }
+        # output_metadata = {
+        #     "metrics": Metadata(
+        #         # These ones are already known by the platform
+        #         # so comment them by now
+        #         data_type="assessment",
+        #         file_type="JSON",
+        #         file_path=metrics_path,
+        #         # Reference and golden data set paths should also be here
+        #         sources=[input_metadata["input"].file_path],
+        #         meta_data={
+        #             "tool": "VRE_NF_RUNNER"
+        #         }
+        #     ),
+        #     "tar_view": Metadata(
+        #         # These ones are already known by the platform
+        #         # so comment them by now
+        #         data_type="tool_statistics",
+        #         file_type="TAR",
+        #         file_path=tar_view_path,
+        #         # Reference and golden data set paths should also be here
+        #         sources=[input_metadata["input"].file_path],
+        #         meta_data={
+        #             "tool": "VRE_NF_RUNNER"
+        #         }
+        #     ),
+        #     "tar_nf_stats": Metadata(
+        #         # These ones are already known by the platform
+        #         # so comment them by now
+        #         data_type="tool_statistics",
+        #         file_type="TAR",
+        #         file_path=tar_nf_stats_path,
+        #         # Reference and golden data set paths should also be here
+        #         sources=[input_metadata["input"].file_path],
+        #         meta_data={
+        #             "tool": "VRE_NF_RUNNER"
+        #         }
+        #     ),
+        #     "tar_other": Metadata(
+        #         # These ones are already known by the platform
+        #         # so comment them by now
+        #         data_type="tool_statistics",
+        #         file_type="TAR",
+        #         file_path=tar_other_path,
+        #         # Reference and golden data set paths should also be here
+        #         sources=[input_metadata["input"].file_path],
+        #         meta_data={
+        #             "tool": "VRE_NF_RUNNER"
+        #         }
+        #     )
+        # }
 
-        # Adding the additional interesting files
-        output_metadata.update(images_metadata)
-
-        # And adding "fake" entries for the other output files
-        for pop_key, pop_path in self.populable_outputs.items():
-            output_metadata[pop_key] = Metadata(
-                file_path=pop_path,
-                sources=[input_metadata["input"].file_path],
-                meta_data={
-                    "tool": "VRE_NF_RUNNER"
-                }
-            )
-
-        return (output_files, output_metadata)
+        # # Adding the additional interesting files
+        # output_metadata.update(images_metadata)
+        #
+        # # And adding "fake" entries for the other output files
+        # for pop_key, pop_path in self.populable_outputs.items():
+        #     output_metadata[pop_key] = Metadata(
+        #         file_path=pop_path,
+        #         sources=[input_metadata["input"].file_path],
+        #         meta_data={
+        #             "tool": "VRE_NF_RUNNER"
+        #         }
+        #     )
+        return output_files
+        # return (output_files, output_metadata)
