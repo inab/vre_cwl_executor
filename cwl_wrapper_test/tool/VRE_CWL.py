@@ -83,7 +83,7 @@ class WF_RUNNER(Tool):
         #                                                                                       'version') else self.DEFAULT_NXF_VERSION
         #
         # self.wf_basedir = os.path.abspath(os.path.expanduser(
-        #     local_config.get('workflows', 'basedir') if local_config.has_option('workflows',
+        #     local_config.get('input_data', 'basedir') if local_config.has_option('input_data',
         #                                                                         'basedir') else self.DEFAULT_WF_BASEDIR))
 
         # Where the external commands should be located
