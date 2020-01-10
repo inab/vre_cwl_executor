@@ -1,0 +1,8 @@
+  input_reads: 
+    class: File
+    location: /gpfs/cavatica_tools/test/NA12878_20k.b37.bam
+  biospecimen_name: "hg38"
+  output_basename: "test"
+  indexed_reference_fasta:
+    class: File 
+    location: /gpfs/cavatica_tools/test/hg38.fa

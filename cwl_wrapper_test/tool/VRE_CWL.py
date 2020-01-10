@@ -83,7 +83,7 @@ class WF_RUNNER(Tool):
         #                                                                                       'version') else self.DEFAULT_NXF_VERSION
         #
         # self.wf_basedir = os.path.abspath(os.path.expanduser(
-        #     local_config.get('input_data', 'basedir') if local_config.has_option('input_data',
+        #     local_config.get('data', 'basedir') if local_config.has_option('data',
         #                                                                         'basedir') else self.DEFAULT_WF_BASEDIR))
 
         # Where the external commands should be located
@@ -275,10 +275,10 @@ class WF_RUNNER(Tool):
         # variable_outfile_params.extend(self.populable_outputs.items())
 
         # TODO
-        # Generate input_test.yml/json
-        # subprocess call cwtool with test.cwl input_test.yml
+        # Generate input_example.yml/json
+        # subprocess call cwtool with example.cwl input_example.yml
 
-        retval = subprocess.run(["cwltool", "test.cwl", "input_test.yml"])
+        retval = subprocess.run(["cwltool", "example.cwl", "input_example.yml"])
 
         if retval != 0:
             logger.fatal("ERROR: VRE NF evaluation failed. Exit value: " + str(retval))

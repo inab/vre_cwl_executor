@@ -1,6 +1,6 @@
 # import subprocess
 #
-# retval = subprocess.run(["cwltool", "test.cwl", "input_test.yml"])
+# retval = subprocess.run(["cwltool", "example.cwl", "input_example.yml"])
 # print(retval)
 
 import json
@@ -133,17 +133,17 @@ def fetch_files_in_dir(dir_path,  # searches for files in dir_path
 
 
 if __name__ == '__main__':
-    # pack = pack_cwl("/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/input_data"
+    # pack = pack_cwl("/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/data"
     #                 "/samtools_split.cwl")
     #
     # print(pack)
     #
     # files = fetch_files_in_dir(
-    #     dir_path="/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/input_data",
+    #     dir_path="/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/data",
     #     file_exts=["cwl"],
     #     ignore_subdirs=True)
     # print(files)
     #
-    import_cwl("/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/input_data/workflows/test.cwl", "caca")
+    import_cwl("/cwl_wrapper_test/tests/data/workflows/example.cwl", "caca")
     # import_cwl("https://raw.githubusercontent.com/CompEpigen/ATACseq_workflows/1.2.0/CWL/workflows/ATACseq.cwl", "test")
 
