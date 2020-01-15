@@ -278,7 +278,7 @@ class WF_RUNNER(Tool):
         # Generate input_example.yml/json
         # subprocess call cwtool with example.cwl input_example.yml
 
-        retval = subprocess.run(["cwltool", "example.cwl", "input_example.yml"])
+        retval = subprocess.run(["cwltool", "basic_example.cwl", "input_basic_example.yml"])
 
         if retval != 0:
             logger.fatal("ERROR: VRE NF evaluation failed. Exit value: " + str(retval))
