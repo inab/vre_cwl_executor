@@ -16,7 +16,7 @@
     "arguments": [
         {
             "name": "execution",
-            "value": "/home/laura/ipc/vre-process_cwl-executor/cwl_wrapper_test/tests/run000"
+            "value": "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/run000"
         },
         {
             "name": "project",
@@ -32,7 +32,7 @@
         },
         {
             "name": "cwl_wf_repo_uri",
-            "value": "https://github.com/lrodrin/vre-process_cwl-executor"
+            "value": "https://raw.githubusercontent.com/lrodrin/vre-process_cwl-executor/master/cwl_wrapper_test/tests/data/workflows/basic_example.cwl"
         },
         {
             "name": "cwl_wf_repo_tag",
@@ -41,16 +41,16 @@
     ],
     "output_files": [
         {
-            "name": "aligned_bams",
+            "name": "bam_files",
             "required": true,
             "allow_multiple": true,
             "file": {
-                "file_path": "mytest",
+                "file_path": "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/run000/mytest",
                 "file_type": "BAM",
                 "data_type": "data_chip_seq",
                 "meta_data": {
                     "visible": true,
-                    "description": "Aligned BAM"
+                    "description": "Splitted unaligned BAMs"
                 }
             }
         }

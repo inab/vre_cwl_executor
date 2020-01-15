@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 #
-# MuG - Process TSV Pipelines documentation build configuration file, created by
+# VRE - Process TSV Pipelines documentation build configuration file, created by
 # sphinx-quickstart on Thu Feb 23 13:50:00 2017.
 #
 # This file is execfile()d with the current directory set to its
@@ -30,11 +30,13 @@ class Mock(MagicMock):
     def __getattr__(cls, name):
         return MagicMock()
 
+
 MOCK_MODULES = []
 sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 import mg_process_test.tool
-#import script
+
+# import script
 
 
 # -- General configuration ------------------------------------------------
@@ -49,9 +51,9 @@ import mg_process_test.tool
 extensions = [
     'sphinx.ext.autodoc',
     'sphinx.ext.napoleon',
-    #'sphinx.ext.intersphinx',
-    #'sphinx.ext.todo',
-    #'sphinx.ext.coverage',
+    # 'sphinx.ext.intersphinx',
+    # 'sphinx.ext.TODO',
+    # 'sphinx.ext.coverage',
     'sphinx.ext.viewcode'
 ]
 
@@ -68,9 +70,9 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-project = 'MuG - Test Pipelines'
-copyright = '2018, Mark McDowall'
-author = 'Mark McDowall'
+project = 'VRE - Test Pipelines'
+copyright = '2020, Barcelona Supercomputing Center'
+author = 'Laura Rodriguez Navas'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -96,16 +98,15 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 # The name of the Pygments (syntax highlighting) style to use.
 pygments_style = 'sphinx'
 
-# If true, `todo` and `todoList` produce output, else they produce nothing.
+# If true, `TODO` and `todoList` produce output, else they produce nothing.
 todo_include_todos = False
-
 
 # -- Options for HTML output ----------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
 #
-#html_theme = 'alabaster'
+# html_theme = 'alabaster'
 html_theme = 'default'
 
 # Theme options are theme-specific and customize the look and feel of a theme
@@ -119,12 +120,10 @@ html_theme = 'default'
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ['_static']
 
-
 # -- Options for HTMLHelp output ------------------------------------------
 
 # Output file base name for HTML help builder.
-htmlhelp_basename = 'MuG-ProcessTestPipelinesdoc'
-
+htmlhelp_basename = 'VRE-ProcessTestPipelinesdoc'
 
 # -- Options for LaTeX output ---------------------------------------------
 
@@ -150,20 +149,18 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'MuG-ProcessTestPipelines.tex', 'MuG - Process Test Pipelines Documentation',
+    (master_doc, 'VRE-ProcessTestPipelines.tex', 'VRE - Process Test Pipelines Documentation',
      'Mark McDowall', 'manual'),
 ]
-
 
 # -- Options for manual page output ---------------------------------------
 
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'mug-processtsvpipelines', 'MuG - Process Test Pipelines Documentation',
+    (master_doc, 'vre-processtsvpipelines', 'VRE - Process Test Pipelines Documentation',
      [author], 1)
 ]
-
 
 # -- Options for Texinfo output -------------------------------------------
 
@@ -171,13 +168,10 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'MuG-ProcessTestPipelines', 'MuG - Process Test Pipelines Documentation',
-     author, 'MuG-ProcessTestPipelines', 'One line description of project.',
+    (master_doc, 'VRE-ProcessTestPipelines', 'VRE - Process Test Pipelines Documentation',
+     author, 'VRE-ProcessTestPipelines', 'One line description of project.',
      'Miscellaneous'),
 ]
-
-
-
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}

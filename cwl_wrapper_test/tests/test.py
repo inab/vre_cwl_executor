@@ -1,27 +1,15 @@
 # import subprocess
 #
-# retval = subprocess.run(["cwltool", "example.cwl", "input_example.yml"])
+# retval = subprocess.run(["cwltool", "basic_example.cwl", "input_basic_example.yml"])
 # print(retval)
 
 import json
 import os
-import zipfile
 from re import match
 from shutil import copyfile
 
 from distutils.version import StrictVersion
 from pkg_resources import get_distribution
-
-
-def unzip_dir(zip_path, target_dir):
-    """
-    Unzip directory specified by target_dir
-    """
-    zip_path = os.path.abspath(zip_path)
-    assert zipfile.is_zipfile(zip_path), "The provided file is not a zip."
-    assert os.path.isdir(target_dir), "The provided target dir does not exist or is not a dir."
-    with zipfile.ZipFile(zip_path, "r") as zip_ref:
-        zip_ref.extractall(target_dir)
 
 
 def pack_cwl(cwl_path):
@@ -52,7 +40,6 @@ def pack_cwl(cwl_path):
 
 def import_cwl(wf_path, name):
     cwl_filename = "{}.{}".format(name, "cwl")
-    print(cwl_filename)
 
     cwl_file_path = os.path.join(os.path.curdir, cwl_filename)
     if not os.path.exists(cwl_file_path):
@@ -62,8 +49,6 @@ def import_cwl(wf_path, name):
             errstr = "ERROR: Unable to create intermediate directories. Error: {}".format(error)
             raise Exception(errstr)
 
-    print(cwl_file_path)
-
     try:
         packed_cwl = pack_cwl(wf_path)
 
@@ -71,12 +56,12 @@ def import_cwl(wf_path, name):
         raise Exception("The loaded CWL document is not valid. Error: {}".format(str(e)))
 
     # temp_dir = make_temp_dir()
-    wf_temp_path = os.path.join(os.path.curdir, "packed.cwl")
-    # try:
-    #     with open(wf_temp_path, 'w') as cwl_file:
-    #         json.dump(packed_cwl, cwl_file)
-    # except Exception as e:
-    #     raise AssertionError("Could not write CWL file. Error: %s" % e)
+    packed_cwl_path = os.path.join(cwl_file_path, "packed.cwl")
+    try:
+        with open(packed_cwl_path, 'w') as cwl_file:
+            json.dump(packed_cwl, cwl_file)
+    except Exception as e:
+        raise AssertionError("Could not write CWL file. Error: %s" % e)
     # job_templ_path = os.path.join(temp_dir, "job_templ.xlsx")
     # generate_job_template_from_cwl(
     #     workflow_file=wf_temp_path,
@@ -84,52 +69,112 @@ def import_cwl(wf_path, name):
     #     output_file=job_templ_path,
     #     show_please_fill=True
     # )
+    cwl_document = read_config_from_cwl_file(packed_cwl_path)
+    print(cwl_document)
     #copyfile(wf_temp_path, wf_target_path)
     # job_templ_target_path = get_path("job_templ", wf_target=cwl_filename)
     # copyfile(job_templ_path, job_templ_target_path)
     # rmtree(temp_dir)
 
 
-def fetch_files_in_dir(dir_path,  # searches for files in dir_path
-                       file_exts,  # match files with extensions in this list
-                       search_string="",  # match files that contain this string in the name
-                       # "" to disable
-                       regex_pattern="",  # matches files by regex pattern
-                       ignore_subdirs=False,  # if true, ignores subdirectories
-                       return_abspaths=False
-                       ):
-    # searches for files in dir_path
-    # onyl hit that fullfill following criteria are return:
-    #   - file extension matches one entry in the file_exts list
-    #   - search_string is contained in the file name ("" to disable)
-    file_exts = ["." + e for e in file_exts]
-    hits = []
-    abs_dir_path = os.path.abspath(dir_path)
-    for root, dir_, files in os.walk(abs_dir_path):
-        for file_ in files:
-            file_ext = os.path.splitext(file_)[1]
-            if file_ext not in file_exts:
-                continue
-            if search_string != "" and search_string not in file_:
-                continue
-            if search_string != "" and not match(regex_pattern, file_):
-                continue
-            if ignore_subdirs and os.path.abspath(root) != abs_dir_path:
-                continue
-            file_reldir = os.path.relpath(root, abs_dir_path)
-            file_relpath = os.path.join(file_reldir, file_)
-            file_nameroot = os.path.splitext(file_)[0]
-            file_dict = {
-                "file_name": file_,
-                "file_nameroot": file_nameroot,
-                "file_relpath": file_relpath,
-                "file_reldir": file_reldir
-                # "file_ext":file_ext
-            }
-            if return_abspaths:
-                file_dict["file_abspath"] = os.path.join(abs_dir_path, file_)
-            hits.append(file_dict)
-    return hits
+def read_config_from_cwl_file(cwl_file):
+    print(cwl_file)
+    print_pref = "[read_cwl_file]:"
+    configs = {}
+    metadata = {
+        "doc": "",
+        "workflow_name": os.path.basename(cwl_file),
+        "workflow_path": os.path.abspath(cwl_file),
+        "workflow_type": "CWL"
+    }
+    print(os.path.basename(cwl_file))
+    print(os.path.abspath(cwl_file))
+    # cwltool needs to be imported on demand since
+    # repeatedly calling functions on a document named
+    # with same name caused errors.
+    from cwltool.context import LoadingContext
+    from cwltool.load_tool import load_tool
+    from cwltool.workflow import default_make_tool
+    loadingContext = LoadingContext({"construct_tool_object": default_make_tool, "disable_js_validation": True})
+    try:
+        cwl_document = load_tool(cwl_file, loadingContext)
+    except AssertionError as e:
+        raise AssertionError( print_pref + "failed to read cwl file \"" + cwl_file + "\": does not exist or is invalid")
+    inp_records = cwl_document.inputs_record_schema["fields"]
+    outp_records = cwl_document.outputs_record_schema["fields"]
+    print(inp_records)
+    print(outp_records)
+    if "doc" in cwl_document.tool:
+        metadata["doc"] = cwl_document.tool["doc"]
+    # for inp_rec in inp_records:
+    #     name = clean_string( inp_rec["name"] )
+    #     is_array = False
+    #     null_allowed = False
+    #     null_items_allowed = False
+    #     default_value = [""]
+    #     # read type:
+    #     try:
+    #         type_, null_allowed, is_array, null_items_allowed = read_inp_rec_type_field(inp_rec["type"])
+    #     except Exception as e:
+    #         raise AssertionError( print_pref + "E: reading type of param \"{}\": {}".format(name, str(e)))
+    #     # get the default:
+    #     if "default" in inp_rec:
+    #         if is_basic_type_instance(inp_rec["default"]):
+    #             default_value = [clean_string(inp_rec["default"])]
+    #         else:
+    #             if is_array and isinstance(inp_rec["default"], list):
+    #                 default_value = []
+    #                 for entry in inp_rec["default"]:
+    #                     if is_basic_type_instance(inp_rec["default"]):
+    #                         default_value.append(clean_string(entry))
+    #                     else:inp_records = cwl_document.inputs_record_schema["fields"]
+    if "doc" in cwl_document.tool:
+        metadata["doc"] = cwl_document.tool["doc"]
+    # for inp_rec in inp_records:
+    #     name = clean_string( inp_rec["name"] )
+    #     is_array = False
+    #                         print(print_pref + "W: invalid default value for parameter " + name +
+    #                             ": will be ignored", file=sys.stderr)
+    #                         default_value = [""]
+    #             elif type_ == "File" and isinstance(inp_rec["default"], dict):
+    #                 print(print_pref + "W: invalid default value for parameter " + name +
+    #                     ": defaults for File class are not supported yet; will be ignored", file=sys.stderr)
+    #                 default_value = [""]
+    #             else:
+    #                 print(print_pref + "W: invalid default value for parameter " + name +
+    #                     ": will be ignored", file=sys.stderr)
+    #                 default_value = [""]
+    #     else:
+    #         default_value = [""]
+    #     # read secondary files:
+    #     if type_ == "File" and "secondaryFiles" in inp_rec:
+    #         if isinstance(inp_rec["secondaryFiles"], str):
+    #             secondary_files = [ inp_rec["secondaryFiles"] ]
+    #         elif isinstance(inp_rec["secondaryFiles"], list):
+    #             secondary_files = inp_rec["secondaryFiles"]
+    #         else:
+    #             raise AssertionError( print_pref + "E: invalid secondaryFiles field for parameter " + name )
+    #     else:
+    #         secondary_files = [ "" ]
+    #     # read doc:
+    #     if "doc" in inp_rec:
+    #         doc = inp_rec["doc"]
+    #     else:
+    #         doc = ""
+    #     # assemble config parameters:
+    #     inp_configs = {
+    #         "type": type_,
+    #         "is_array": is_array,
+    #         "null_allowed": null_allowed,
+    #         "null_items_allowed": null_items_allowed,
+    #         "secondary_files": secondary_files,
+    #         "default_value": default_value,
+    #         "doc": doc
+    #     }
+    #     # add to configs dict:
+    #     configs[ name ] = inp_configs
+    # return configs, metadata
+    return cwl_document, metadata
 
 
 if __name__ == '__main__':
@@ -144,6 +189,6 @@ if __name__ == '__main__':
     #     ignore_subdirs=True)
     # print(files)
     #
-    import_cwl("/cwl_wrapper_test/tests/data/workflows/example.cwl", "caca")
+    import_cwl("https://raw.githubusercontent.com/lrodrin/vre-process_cwl-executor/master/cwl_wrapper_test/tests/data/workflows/basic_example.cwl", "basic_example")
     # import_cwl("https://raw.githubusercontent.com/CompEpigen/ATACseq_workflows/1.2.0/CWL/workflows/ATACseq.cwl", "test")
 

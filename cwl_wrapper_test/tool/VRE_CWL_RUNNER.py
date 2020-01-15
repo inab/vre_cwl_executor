@@ -18,20 +18,14 @@
 """
 from __future__ import print_function
 
-# Required for ReadTheDocs
-# from functools import wraps  # pylint: disable=unused-import
-
 import argparse
 import sys
+import json
 
 from basic_modules.workflow import Workflow
 from utils import logger
 
 from VRE_CWL import WF_RUNNER
-
-# from cwl_wrapper_test.tool.VRE_CWL import WF_RUNNER
-
-import json
 
 
 class process_WF_RUNNER(Workflow):
@@ -45,11 +39,9 @@ class process_WF_RUNNER(Workflow):
         """
         Initialise the tool with its configuration.
 
-        Parameters
-        ----------
-        configuration : dict
-           a dictionary containing parameters that define how the operation
-           should be carried out, which are specific to each Tool.
+        :param configuration: a dictionary containing parameters that define how the operation should be carried out,
+        which are specific to each Tool.
+        :type configuration: dict
         """
         logger.info("Processing Test")
         if configuration is None:
@@ -61,39 +53,36 @@ class process_WF_RUNNER(Workflow):
         """
         Main run function for processing a test file.
 
-        Parameters
-        ----------
-        input_files : dict
-           Dictionary of file locations
-        metadata : list
-           Required meta data
-        output_files : dict
-           Locations of the output files to be returned by the pipeline
-
-        Returns
-        -------
-        output_files : dict
-           Locations for the output txt
-        output_metadata : dict
-           Matching metadata for each of the files
+        :param input_files: Dictionary of file locations
+        :param metadata: Required meta data
+        :param output_files: Locations of the output files to be returned by the pipeline
+        :type input_files: dict
+        :type metadata: list
+        :type output_files: dict
+        :return: output_files (Locations for the output txt), output_metadata( Matching metadata for each of the files)
+        :rtype: dict, dict
         """
-
-        # Initialise the test tool
+        logger.info("Initialise the test tool")
         tt_handle = WF_RUNNER(self.configuration)
         tt_files, tt_meta = tt_handle.run(input_files, metadata, output_files)
-
         return tt_files, tt_meta
 
 
 def main_json(config, in_metadata, out_metadata):
     """
-    Main function
-    -------------
+    Main function.
 
-    This function launches the app using configuration written in
-    two json files: config.json and input_metadata.json.
+    This function launches the app using configuration written in two json files: config.json and input_metadata.json.
+
+    :param config:
+    :param in_metadata:
+    :param out_metadata:
+    :type config:
+    :type in_metadata:
+    :type out_metadata:
+    :return: If result is True, execution finished successfully. False, otherwise.
+    :rtype: bool
     """
-    # 1. Instantiate and launch the App
     logger.info("1. Instantiate and launch the App")
     from apps.jsonapp import JSONApp
     app = JSONApp()
@@ -111,14 +100,9 @@ def main_json(config, in_metadata, out_metadata):
     if in_fixed:
         with open(in_metadata, "w") as in_metF:
             json.dump(in_metaArr, in_metF)
-    print(process_WF_RUNNER, config, in_metadata, out_metadata)
 
-    result = app.launch(process_WF_RUNNER,
-                        config,
-                        in_metadata,
-                        out_metadata)
+    result = app.launch(process_WF_RUNNER, config, in_metadata, out_metadata)
 
-    # 2. The App has finished
     logger.info("2. Execution finished; see " + out_metadata)
 
     return result

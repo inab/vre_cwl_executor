@@ -23,6 +23,7 @@ import argparse
 from utils import logger
 from mg_process_test.workflow.test_workflow import process_test
 
+
 # ------------------------------------------------------------------------------
 
 
@@ -48,6 +49,7 @@ def main_json(config, in_metadata, out_metadata):
 
     return result
 
+
 # ------------------------------------------------------------------------------
 
 
@@ -70,6 +72,7 @@ if __name__ == "__main__":
 
     if LOCAL:
         import sys
+
         sys._run_from_cmdl = True  # pylint: disable=protected-access
 
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)

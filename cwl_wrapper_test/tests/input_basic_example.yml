@@ -2,7 +2,7 @@
     class: File
     location: /home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/NA12878.bam
   biospecimen_name: "hg38"
-  output_basename: "test"
+  output_basename: "mytest"
   indexed_reference_fasta:
     class: File 
     location: /home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/hg38.fa
