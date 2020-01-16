@@ -59,13 +59,19 @@ class process_WF_RUNNER(Workflow):
         :type input_files: dict
         :type metadata: list
         :type output_files: dict
-        :return: output_files (Locations for the output txt), output_metadata( Matching metadata for each of the files)
+        :return: Locations for the output txt (output_files), Matching metadata for each of the files (output_metadata)
         :rtype: dict, dict
         """
-        logger.info("Initialise the test tool")
-        tt_handle = WF_RUNNER(self.configuration)
-        tt_files, tt_meta = tt_handle.run(input_files, metadata, output_files)
-        return tt_files, tt_meta
+        try:
+            logger.info("Initialise the test tool")
+            tt_handle = WF_RUNNER(self.configuration)
+            tt_files, tt_meta = tt_handle.run(input_files, metadata, output_files)
+            return tt_files, tt_meta
+
+        except Exception as error:
+            errstr = "Test tool wasn't processed successfully. ERROR: {}".format(error)
+            logger.error(errstr)
+            raise Exception(errstr)
 
 
 def main_json(config, in_metadata, out_metadata):
@@ -83,29 +89,33 @@ def main_json(config, in_metadata, out_metadata):
     :return: If result is True, execution finished successfully. False, otherwise.
     :rtype: bool
     """
-    logger.info("1. Instantiate and launch the App")
-    from apps.jsonapp import JSONApp
-    app = JSONApp()
+    try:
+        logger.info("1. Instantiate and launch the App")
+        from apps.jsonapp import JSONApp
+        app = JSONApp()
 
-    # Fixing possible problems in the input metadata
-    with open(in_metadata, "r") as in_metF:
-        in_metaArr = json.load(in_metF)
+        # Fixing possible problems in the input metadata
+        with open(in_metadata, "r") as in_metF:
+            in_metaArr = json.load(in_metF)
 
-    in_fixed = False
-    for in_m in in_metaArr:
-        if in_m.get('taxon_id', 0) == 0:
-            in_m['taxon_id'] = -1
-            in_fixed = True
+        in_fixed = False
+        for in_m in in_metaArr:
+            if in_m.get('taxon_id', 0) == 0:
+                in_m['taxon_id'] = -1
+                in_fixed = True
 
-    if in_fixed:
-        with open(in_metadata, "w") as in_metF:
-            json.dump(in_metaArr, in_metF)
+        if in_fixed:
+            with open(in_metadata, "w") as in_metF:
+                json.dump(in_metaArr, in_metF)
 
-    result = app.launch(process_WF_RUNNER, config, in_metadata, out_metadata)
+        result = app.launch(process_WF_RUNNER, config, in_metadata, out_metadata)  # launch the app
+        logger.info("2. App successfully launched; see " + out_metadata)
+        return result
 
-    logger.info("2. Execution finished; see " + out_metadata)
-
-    return result
+    except Exception as error:
+        errstr = "App wasn't successfully launched. ERROR: {}".format(error)
+        logger.error(errstr)
+        raise Exception(errstr)
 
 
 if __name__ == "__main__":
