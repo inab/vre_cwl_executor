@@ -21,7 +21,6 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
-import tarfile
 import uuid
 
 from utils import logger
@@ -34,7 +33,7 @@ try:
     from pycompss.api.api import compss_wait_on
 except ImportError:
     # logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
-    # logger.warn("          Using mock decorators.")
+    # logger.warn("\t\tUsing mock decorators.")
 
     from utils.dummy_pycompss import FILE_IN, FILE_OUT  # pylint: disable=ungrouped-imports
     from utils.dummy_pycompss import task  # pylint: disable=ungrouped-imports
@@ -47,7 +46,7 @@ class WF_RUNNER(Tool):
     """
     Tool for writing to a file
     """
-    MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_repo_uri', 'cwl_wf_repo_tag'}
+    MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_uri', 'cwl_wf_tag'}  # arguments from config.json
 
     def __init__(self, configuration=None):
         """
@@ -60,27 +59,22 @@ class WF_RUNNER(Tool):
             configuration = {}
 
         self.configuration.update(configuration)
+
         # Arrays are serialized
         for k, v in self.configuration.items():
             if isinstance(v, list):
                 self.configuration[k] = ' '.join(v)
 
-        self.populable_outputs = {}
-
-    def packDir(self, resultsDir, destTarFile):
-        # And create the VRE tar file
-        with tarfile.open(destTarFile, mode='w:gz', bufsize=1024 * 1024) as tar:
-            tar.add(resultsDir, arcname='data', recursive=True)
+        self.populable_outputs = {}  # TODO description
 
     @task(returns=bool, input_files=FILE_IN, configuration=FILE_IN, isModifier=False)
     def execute_cwl_workflow(self, input_files, configuration):  # pylint: disable=no-self-use
 
         # First, we need to materialize the workflow
-        cwl_wf_repo_uri = self.configuration.get('cwl_wf_repo_uri')
-        cwl_wf_repo_tag = self.configuration.get('cwl_wf_repo_tag')
-
-        if (cwl_wf_repo_uri is None) or (cwl_wf_repo_tag is None):
-            logger.fatal("FATAL ERROR: both 'cwl_wf_repo_uri' and 'cwl_wf_repo_tag' parameters must be defined")
+        cwl_wf_uri = self.configuration.get('cwl_wf_uri')
+        cwl_wf_tag = self.configuration.get('cwl_wf_tag')
+        if (cwl_wf_uri is None) or (cwl_wf_tag is None):
+            logger.fatal("FATAL ERROR: both 'cwl_wf_uri' and 'cwl_wf_tag' parameters must be defined")
             return False
 
         # Parameters which are not input or output files are in the configuration
@@ -105,36 +99,28 @@ class WF_RUNNER(Tool):
 
     def run(self, input_files, input_metadata, output_files):
         """
-        The main function to run the compute_metrics tool
+        The main function to run the compute_metrics tool.
 
-        Parameters
-        ----------
-        input_files : dict
-            List of input files - In this case there are no input files required
-        input_metadata: dict
-            Matching metadata for each of the files, plus any additional data
-        output_files : dict
-            List of the output files that are to be generated
-
-        Returns
-        -------
-        output_files : dict
-            List of files with a single entry.
-        output_metadata : dict
-            List of matching metadata for the returned files
+        :param input_files: List of input files - In this case there are no input files required.
+        :param input_metadata: Matching metadata for each of the files, plus any additional data.
+        :param output_files: List of the output files that are to be generated.
+        :type input_files: dict
+        :type input_metadata: dict
+        :type output_files: dict
+        :return: List of files with a single entry (output_files), List of matching metadata for the returned files
+        (output_metadata).
+        :rtype: dict, dict
         """
 
-        # Set and check execution directory
+        # Set and check execution directory. If not exists the directory will be created.
         execution_path = os.path.abspath(self.configuration.get('execution', '.'))
         execution_parent_dir = os.path.dirname(execution_path)
         if not os.path.isdir(execution_parent_dir):
             os.makedirs(execution_parent_dir)
 
-        print("RUN PATH: {}".format(execution_path))
-
-        # Update working dir to execution path
+        # Update working directory to execution path
         os.chdir(execution_path)
-        print("RUN PATH: {}".format(execution_path))
+        logger.debug("Execution path: {}".format(execution_path))
 
         # Set file names for output files (with random name if not predefined)
         for key in output_files.keys():
@@ -143,18 +129,22 @@ class WF_RUNNER(Tool):
             else:
                 pop_output_path = os.path.join(execution_path, uuid.uuid4().hex + '.out')
 
+            # Forcing the creation of the file
+            with open(pop_output_path, mode="a") as pop_output_h:  # TODO JM ???
+                pass
             self.populable_outputs[key] = pop_output_path
             output_files[key] = pop_output_path
 
-        # Do real work: execute cwltool
+        logger.debug("Init execution of the CWL Workflow")
         results = self.execute_cwl_workflow(input_files, self.configuration)
-        results = compss_wait_on(results)
+        results = compss_wait_on(results)  # TODO JM ???
 
-
-        results = True  # TODO avoid fail in testing
+        results = True  # TODO temporarily. forced to not stop the execution. it should be deleted
         if results is False:
             logger.fatal("VRE CWL RUNNER pipeline failed. See logs")
             raise Exception("VRE CWL RUNNER pipeline failed. See logs")
-            return {}, {}
 
-        return output_files
+        # TODO prepare the expected outputs
+        output_metadata = {}
+
+        return output_files, output_metadata

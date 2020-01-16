@@ -1,0 +1,7 @@
+  input_bam:
+    class: File
+    location: /home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/NA12878.bam
+  output_basename: "mytest"
+  indexed_reference_fasta:
+    class: File
+    location: /home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/hg38.fa

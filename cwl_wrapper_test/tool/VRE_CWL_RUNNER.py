@@ -53,13 +53,13 @@ class process_WF_RUNNER(Workflow):
         """
         Main run function for processing a test file.
 
-        :param input_files: Dictionary of file locations
-        :param metadata: Required meta data
-        :param output_files: Locations of the output files to be returned by the pipeline
+        :param input_files: Dictionary of file locations.
+        :param metadata: Required meta data.
+        :param output_files: Locations of the output files to be returned by the pipeline.
         :type input_files: dict
         :type metadata: list
         :type output_files: dict
-        :return: Locations for the output txt (output_files), Matching metadata for each of the files (output_metadata)
+        :return: Locations for the output txt (output_files), Matching metadata for each of the files (output_metadata).
         :rtype: dict, dict
         """
         try:
