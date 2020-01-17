@@ -147,9 +147,9 @@ class WF_RUNNER(Tool):
             logger.fatal("VRE CWL RUNNER pipeline failed. See logs")
             raise Exception("VRE CWL RUNNER pipeline failed. See logs")
 
-        # TODO if out_metadata.json doesn't exists, needs to create
+        # TODO if out_metadata.json doesn't exists, needs to create!!!!!!!!!!!
 
-        # TODO prepare the expected outputs
+        # TODO prepare the expected outputs ara es fen trampa
         output_metadata = {
             "bam_files": Metadata(
                 # These ones are already known by the platform
