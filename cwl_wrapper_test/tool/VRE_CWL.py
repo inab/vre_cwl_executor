@@ -23,6 +23,7 @@ import subprocess
 import sys
 import tarfile
 
+from basic_modules.metadata import Metadata
 from utils import logger
 
 try:
@@ -78,7 +79,7 @@ class WF_RUNNER(Tool):
             return False
 
         # TODO build URL cwl_wf_uri + cwl_wf_tag of CWL workflow file args
-        cwl_wf_url = "https://raw.githubusercontent.com/lrodrin/vre-process_cwl-executor/master/cwl_wrapper_test/tests/data/workflows/samtools_cram2bam.cwl"
+        cwl_wf_url = "https://raw.githubusercontent.com/lrodrin/vre-process_cwl-executor/master/cwl_wrapper_test/tests/data/workflows/basic_example.cwl"
 
         # TODO create input_example.yml/json
         # Parameters which are not input or output files are in the configuration
@@ -87,7 +88,7 @@ class WF_RUNNER(Tool):
             if conf_key not in self.MASKED_KEYS:
                 variable_params.append((conf_key, self.configuration[conf_key]))
 
-        cwl_wf_input_yml_path = "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/input_cram2bam.yml"
+        cwl_wf_input_yml_path = "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/input_basic_example.yml"
 
         # Call cwltool
         # TODO consider different subprocess call (Popen)
@@ -146,12 +147,27 @@ class WF_RUNNER(Tool):
             logger.fatal("VRE CWL RUNNER pipeline failed. See logs")
             raise Exception("VRE CWL RUNNER pipeline failed. See logs")
 
+        # TODO if out_metadata.json doesn't exists, needs to create
+
         # TODO prepare the expected outputs
-        output_metadata = {}
-        print("HELLO")
-        for key in self.populable_outputs:
-            if os.path.isdir(self.populable_outputs[key]):  # if exists create tar
-                with tarfile.open(key, mode='w:gz', bufsize=1024 * 1024) as tar:
-                    tar.add(self.populable_outputs[key], arcname='data', recursive=True)
+        output_metadata = {
+            "bam_files": Metadata(
+                # These ones are already known by the platform
+                # so comment them by now
+                data_type="data_chip_seq",
+                file_type="BAM",
+                file_path="/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests",
+                # Reference and golden data set paths should also be here
+                # sources=[input_metadata["input"].file_path],
+                meta_data={
+                    "tool": "VRE_CWL_RUNNER"
+                }
+            )
+        }
+        # print("HELLO")
+        # for key in self.populable_outputs:
+        #     if os.path.isdir(self.populable_outputs[key]):  # if exists create tar
+        #         with tarfile.open(key, mode='w:gz', bufsize=1024 * 1024) as tar:
+        #             tar.add(self.populable_outputs[key], arcname='data', recursive=True)
 
         return output_files, output_metadata

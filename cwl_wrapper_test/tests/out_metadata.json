@@ -1,0 +1,15 @@
+{
+    "output_files": [
+        {
+            "name": "bam_files",
+            "file_path": "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/run000",
+            "data_type": "data_chip_seq",
+            "file_type": "BAM",
+            "sources": [],
+            "taxon_id": null,
+            "meta_data": {
+                "tool": "VRE_CWL_RUNNER"
+            }
+        }
+    ]
+}
