@@ -1,8 +1,8 @@
 [
     {
         "_id": "unique_file_id_5e14abe0a37012.29503907",
-        "file_path": "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/NA12878.bam",
-        "file_type": "BAM",
+        "file_path": "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/NA12878.cram",
+        "file_type": "CRAM",
         "data_type": "data_chip_seq",
         "compressed": 0,
         "user_id": "user_id",

@@ -21,7 +21,7 @@ from __future__ import print_function
 import os
 import subprocess
 import sys
-import uuid
+import tarfile
 
 from utils import logger
 
@@ -70,27 +70,28 @@ class WF_RUNNER(Tool):
     @task(returns=bool, input_files=FILE_IN, configuration=FILE_IN, isModifier=False)
     def execute_cwl_workflow(self, input_files, configuration):  # pylint: disable=no-self-use
 
-        # First, we need to materialize the workflow
+        # First, we need to get the CWL workflow file
         cwl_wf_uri = self.configuration.get('cwl_wf_uri')
         cwl_wf_tag = self.configuration.get('cwl_wf_tag')
         if (cwl_wf_uri is None) or (cwl_wf_tag is None):
             logger.fatal("FATAL ERROR: both 'cwl_wf_uri' and 'cwl_wf_tag' parameters must be defined")
             return False
 
+        # TODO build URL cwl_wf_uri + cwl_wf_tag of CWL workflow file args
+        cwl_wf_url = "https://raw.githubusercontent.com/lrodrin/vre-process_cwl-executor/master/cwl_wrapper_test/tests/data/workflows/samtools_cram2bam.cwl"
+
+        # TODO create input_example.yml/json
         # Parameters which are not input or output files are in the configuration
         variable_params = []
         for conf_key in self.configuration.keys():
             if conf_key not in self.MASKED_KEYS:
                 variable_params.append((conf_key, self.configuration[conf_key]))
 
-        # TODO
-        # Generate input_example.yml/json
+        cwl_wf_input_yml_path = "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/input_cram2bam.yml"
 
-        retval = subprocess.run(["cwltool",
-                                 "https://raw.githubusercontent.com/lrodrin/vre-process_cwl-executor/master/cwl_wrapper_test/tests/data/workflows/basic_example.cwl",
-                                 "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/input_basic_example.yml"])
-
-        print("HELLO %s" % retval.returncode)
+        # Call cwltool
+        # TODO consider different subprocess call (Popen)
+        retval = subprocess.run(["cwltool", cwl_wf_url, cwl_wf_input_yml_path])
 
         if retval.returncode != 0:
             logger.warning("VRE CWL execution. Exit value: " + str(retval.returncode))
@@ -126,14 +127,15 @@ class WF_RUNNER(Tool):
         for key in output_files.keys():
             if output_files[key] is not None:
                 pop_output_path = os.path.abspath(output_files[key])
+                self.populable_outputs[key] = pop_output_path
+                output_files[key] = pop_output_path
+                # TODO consider cases to future regular expressions (dir, file, multifiles, etc.)
             else:
-                pop_output_path = os.path.join(execution_path, uuid.uuid4().hex + '.out')
-
-            # Forcing the creation of the file
-            with open(pop_output_path, mode="a") as pop_output_h:  # TODO JM ???
-                pass
-            self.populable_outputs[key] = pop_output_path
-            output_files[key] = pop_output_path
+                # TODO validate if required True/False param output_files dict config.json.
+                #  case: if True raise error else raise warning
+                errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
+                logger.error(errstr)
+                raise Exception(errstr)
 
         logger.debug("Init execution of the CWL Workflow")
         results = self.execute_cwl_workflow(input_files, self.configuration)
@@ -146,5 +148,10 @@ class WF_RUNNER(Tool):
 
         # TODO prepare the expected outputs
         output_metadata = {}
+        print("HELLO")
+        for key in self.populable_outputs:
+            if os.path.isdir(self.populable_outputs[key]):  # if exists create tar
+                with tarfile.open(key, mode='w:gz', bufsize=1024 * 1024) as tar:
+                    tar.add(self.populable_outputs[key], arcname='data', recursive=True)
 
         return output_files, output_metadata

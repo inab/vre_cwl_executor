@@ -5,3 +5,6 @@
   indexed_reference_fasta:
     class: File
     location: /home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/hg38.fa
+  indexed_reference_fai:
+      class: File
+      location: /home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/hg38.fa.fai

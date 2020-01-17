@@ -10,6 +10,7 @@ inputs:
   input_cram: File
   output_basename: string
   indexed_reference_fasta: File
+  indexed_reference_fai: File
 
 outputs:
   output: {type: File, outputSource: samtools_cram2bam/output}
@@ -21,4 +22,5 @@ steps:
       input_cram: input_cram
       output_basename: output_basename
       reference: indexed_reference_fasta
+      indexed_reference_fai: indexed_reference_fai
     out: [output]

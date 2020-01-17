@@ -65,6 +65,8 @@ class process_WF_RUNNER(Workflow):
         try:
             logger.info("Initialise the test tool")
             tt_handle = WF_RUNNER(self.configuration)
+            print(output_files)
+            print(metadata)
             tt_files, tt_meta = tt_handle.run(input_files, metadata, output_files)
             return tt_files, tt_meta
 
