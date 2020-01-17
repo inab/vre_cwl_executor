@@ -45,7 +45,7 @@
             "required": true,
             "allow_multiple": true,
             "file": {
-                "file_path": "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/run000/[A-Z].bam",
+                "file_path": "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/run000/mytest",
                 "file_type": "BAM",
                 "data_type": "data_chip_seq",
                 "meta_data": {

@@ -1,24 +1,24 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf-bam2cram-custom
+id: kf-cram2bam-custom
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
   - class: SubworkflowFeatureRequirement
 
 inputs:
-  input_bam: File
+  input_cram: File
   output_basename: string
   indexed_reference_fasta: File
 
 outputs:
-  cram: {type: File, outputSource: samtools_cram_to_bam/output}
+  output: {type: File, outputSource: samtools_cram2bam/output}
 
 steps:
-  samtools_cram_to_bam:
-    run: ../tools/samtools_bam_to_cram.cwl
+  samtools_cram2bam:
+    run: ../tools/samtools_cram2bam.cwl
     in:
-      input_bam: input_bam
+      input_cram: input_cram
       output_basename: output_basename
       reference: indexed_reference_fasta
     out: [output]
