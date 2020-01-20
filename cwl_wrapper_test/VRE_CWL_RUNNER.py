@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 .. See the NOTICE file distributed with this work for additional information
@@ -16,8 +16,6 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from __future__ import print_function
-
 import argparse
 import sys
 import json
@@ -25,7 +23,7 @@ import json
 from basic_modules.workflow import Workflow
 from utils import logger
 
-from VRE_CWL import WF_RUNNER
+from tool.VRE_CWL import WF_RUNNER
 
 
 class process_WF_RUNNER(Workflow):
@@ -43,7 +41,7 @@ class process_WF_RUNNER(Workflow):
         which are specific to each Tool.
         :type configuration: dict
         """
-        logger.info("Processing Test")
+        logger.info("Processing CWL Test")
         if configuration is None:
             configuration = {}
 
@@ -63,15 +61,13 @@ class process_WF_RUNNER(Workflow):
         :rtype: dict, dict
         """
         try:
-            logger.info("Initialise the test tool")
+            logger.info("Initialise the CWL Test Tool")
             tt_handle = WF_RUNNER(self.configuration)
-            print(output_files)
-            print(metadata)
             tt_files, tt_meta = tt_handle.run(input_files, metadata, output_files)
             return tt_files, tt_meta
 
         except Exception as error:
-            errstr = "Test tool wasn't processed successfully. ERROR: {}".format(error)
+            errstr = "CAWL Test Tool wasn't processed successfully. ERROR: {}".format(error)
             logger.error(errstr)
             raise Exception(errstr)
 

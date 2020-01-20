@@ -31,7 +31,7 @@
             "value": "mytest"
         },
         {
-            "name": "cwl_wf_uri",
+            "name": "cwl_wf_url",
             "value": "https://raw.githubusercontent.com/lrodrin/vre-process_cwl-executor/master/cwl_wrapper_test/tests/data/workflows/basic_example.cwl"
         },
         {
@@ -41,11 +41,11 @@
     ],
     "output_files": [
         {
-            "name": "bam_files",
+            "name": "bam_file",
             "required": true,
-            "allow_multiple": true,
+            "allow_multiple": false,
             "file": {
-                "file_path": "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/run000",
+                "file_path": "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/run000/A.bam",
                 "file_type": "BAM",
                 "data_type": "data_chip_seq",
                 "meta_data": {

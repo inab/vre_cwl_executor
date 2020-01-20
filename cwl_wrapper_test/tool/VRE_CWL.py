@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 .. See the NOTICE file distributed with this work for additional information
@@ -16,12 +16,9 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-from __future__ import print_function
-
 import os
 import subprocess
 import sys
-import tarfile
 
 from basic_modules.metadata import Metadata
 from utils import logger
@@ -43,11 +40,32 @@ except ImportError:
 from basic_modules.tool import Tool
 
 
+def get_CWL_workflow(cwl_wf_url, cwl_wf_tag):
+    """
+    Get CWL Workflow from repository specified by cwl_wf_url and cwl_wf_tag.
+
+    :param cwl_wf_url:
+    :param cwl_wf_tag:
+    :return:
+    """
+    pass
+
+
+def create_inputs_object():
+    """
+    Create the YAML or JSON file with the formatted description of the required input values for the given CWL Workflow.
+
+    :return: inputs_object file
+    :rtype: YAML or JSON
+    """
+    pass
+
+
 class WF_RUNNER(Tool):
     """
     Tool for writing to a file
     """
-    MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_uri', 'cwl_wf_tag'}  # arguments from config.json
+    MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url', 'cwl_wf_tag'}  # arguments from config.json
 
     def __init__(self, configuration=None):
         """
@@ -71,27 +89,32 @@ class WF_RUNNER(Tool):
     @task(returns=bool, input_files=FILE_IN, configuration=FILE_IN, isModifier=False)
     def execute_cwl_workflow(self, input_files, configuration):  # pylint: disable=no-self-use
 
+        print(input_files)
+        print(configuration)
+
         # First, we need to get the CWL workflow file
-        cwl_wf_uri = self.configuration.get('cwl_wf_uri')
+        cwl_wf_url = self.configuration.get('cwl_wf_url')
         cwl_wf_tag = self.configuration.get('cwl_wf_tag')
-        if (cwl_wf_uri is None) or (cwl_wf_tag is None):
-            logger.fatal("FATAL ERROR: both 'cwl_wf_uri' and 'cwl_wf_tag' parameters must be defined")
+        if (cwl_wf_url is None) or (cwl_wf_tag is None):
+            logger.fatal("FATAL ERROR: both 'cwl_wf_url' and 'cwl_wf_tag' parameters must be defined")
             return False
 
-        # TODO build URL cwl_wf_uri + cwl_wf_tag of CWL workflow file args
-        cwl_wf_url = "https://raw.githubusercontent.com/lrodrin/vre-process_cwl-executor/master/cwl_wrapper_test/tests/data/workflows/basic_example.cwl"
+        # TODO get CWL workflow from the construction of cwl_wf_url + cwl_wf_tag config.json arguments
+        get_CWL_workflow(cwl_wf_url, cwl_wf_tag)
 
-        # TODO create input_example.yml/json
+        # TODO create the YAML/JSON file - input_basic_example.yml
         # Parameters which are not input or output files are in the configuration
         variable_params = []
         for conf_key in self.configuration.keys():
             if conf_key not in self.MASKED_KEYS:
                 variable_params.append((conf_key, self.configuration[conf_key]))
 
-        cwl_wf_input_yml_path = "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/input_basic_example.yml"
+        create_inputs_object()
+        cwl_wf_input_yml_path = "/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests" \
+                                "/input_basic_example.yml"
 
-        # Call cwltool
-        # TODO consider different subprocess call (Popen)
+        # cwltool executor for CWL Workflow # TODO change to subprocess Popen
+        logger.debug("cwltool executor for CWL Workflow")
         retval = subprocess.run(["cwltool", cwl_wf_url, cwl_wf_input_yml_path])
 
         if retval.returncode != 0:
@@ -147,27 +170,24 @@ class WF_RUNNER(Tool):
             logger.fatal("VRE CWL RUNNER pipeline failed. See logs")
             raise Exception("VRE CWL RUNNER pipeline failed. See logs")
 
-        # TODO if out_metadata.json doesn't exists, needs to create!!!!!!!!!!!
+        logger.debug("Creating output metadata")
+        output_metadata = dict()
+        for key in output_files.keys():
+            if os.path.isfile(output_files[key]):
+                meta = Metadata()
+                # Set file_path for output files
+                meta.file_path = output_files[key]
+                # Set sources for output files
+                meta_sources_list = list()
+                for input_name in input_metadata.keys():
+                    meta_sources_list.append(input_metadata[input_name].file_path)
+                meta.sources = meta_sources_list
+                # Append new element in output metadata
+                output_metadata.update({key: meta})
 
-        # TODO prepare the expected outputs ara es fen trampa
-        output_metadata = {
-            "bam_files": Metadata(
-                # These ones are already known by the platform
-                # so comment them by now
-                data_type="data_chip_seq",
-                file_type="BAM",
-                file_path="/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests",
-                # Reference and golden data set paths should also be here
-                # sources=[input_metadata["input"].file_path],
-                meta_data={
-                    "tool": "VRE_CWL_RUNNER"
-                }
-            )
-        }
-        # print("HELLO")
-        # for key in self.populable_outputs:
-        #     if os.path.isdir(self.populable_outputs[key]):  # if exists create tar
-        #         with tarfile.open(key, mode='w:gz', bufsize=1024 * 1024) as tar:
-        #             tar.add(self.populable_outputs[key], arcname='data', recursive=True)
+            else:
+                logger.warning("Output {} not found. Path {} not exists".format(key, output_files[key]))
+
+        logger.debug("Output metadata created")
 
         return output_files, output_metadata
