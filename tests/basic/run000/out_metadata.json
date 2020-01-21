@@ -1,0 +1,16 @@
+{
+    "output_files": [
+        {
+            "name": "bam_file",
+            "file_path": "/home/laura/PycharmProjects/vre-process_cwl-executor/tests/basic/run000/A.bam",
+            "data_type": null,
+            "file_type": null,
+            "sources": [
+                "/home/laura/PycharmProjects/vre-process_cwl-executor/tests/basic/NA12878.bam",
+                "/home/laura/PycharmProjects/vre-process_cwl-executor/tests/basic/hg38.fa"
+            ],
+            "taxon_id": null,
+            "meta_data": {}
+        }
+    ]
+}
