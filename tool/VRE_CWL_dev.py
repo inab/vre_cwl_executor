@@ -40,6 +40,27 @@ except ImportError:
 from basic_modules.tool import Tool
 
 
+def get_CWL_workflow(cwl_wf_url, cwl_wf_tag):
+    """
+    Get CWL Workflow from repository specified by cwl_wf_url and cwl_wf_tag.
+
+    :param cwl_wf_url:
+    :param cwl_wf_tag:
+    :return:
+    """
+    pass
+
+
+def create_inputs_object():
+    """
+    Create the YAML or JSON file with the formatted description of the required input values for the given CWL Workflow.
+
+    :return: inputs_object file
+    :rtype: YAML or JSON
+    """
+    pass
+
+
 class WF_RUNNER(Tool):
     """
     Tool for writing to a file
@@ -63,7 +84,7 @@ class WF_RUNNER(Tool):
             if isinstance(v, list):
                 self.configuration[k] = ' '.join(v)
 
-        self.populable_outputs = {}
+        self.populable_outputs = {}  # TODO description
 
     @task(returns=bool, input_files=FILE_IN, configuration=FILE_IN, isModifier=False)
     def execute_cwl_workflow(self, input_files, configuration):  # pylint: disable=no-self-use
@@ -75,16 +96,24 @@ class WF_RUNNER(Tool):
             logger.fatal("FATAL ERROR: both 'cwl_wf_url' and 'cwl_wf_tag' parameters must be defined")
             return False
 
+        # TODO get CWL workflow from the construction of cwl_wf_url + cwl_wf_tag config.json arguments
+        get_CWL_workflow(cwl_wf_url, cwl_wf_tag)
+
+        # TODO create the YAML/JSON file - input_basic_example.yml
         # Parameters which are not input or output files are in the configuration
         variable_params = []
         for conf_key in self.configuration.keys():
             if conf_key not in self.MASKED_KEYS:
                 variable_params.append((conf_key, self.configuration[conf_key]))
 
+        create_inputs_object()
         cwl_wf_input_yml_path = "/home/laura/PycharmProjects/vre-process_cwl-executor/tests/basic/input_basic_example.yml"
 
-        # cwltool executor for CWL Workflow
+        # cwltool executor for CWL Workflow # TODO change to subprocess Popen
         logger.debug("cwltool executor for CWL Workflow")
+        # process = subprocess.run(["cwltool", cwl_wf_url, cwl_wf_input_yml_path])
+
+        # TESTING
         process = subprocess.Popen(["cwltool", cwl_wf_url, cwl_wf_input_yml_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
 
         for line in iter(process.stderr.readline, b''):
@@ -99,6 +128,8 @@ class WF_RUNNER(Tool):
             logger.progress(str("HELLO"), status="ERROR")
         else:
             logger.progress(str("HELLO"), status="FINISHED")
+
+        # TESTING
 
         return process.returncode == 0
 
@@ -133,7 +164,10 @@ class WF_RUNNER(Tool):
                 pop_output_path = os.path.abspath(output_files[key])
                 self.populable_outputs[key] = pop_output_path
                 output_files[key] = pop_output_path
+                # TODO consider cases to future regular expressions (dir, file, multifiles, etc.)
             else:
+                # TODO validate if required True/False param output_files dict config.json.
+                #  case: if True raise error else raise warning
                 errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
                 logger.error(errstr)
                 raise Exception(errstr)

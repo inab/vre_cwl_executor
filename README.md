@@ -8,7 +8,7 @@ This repo structure workflows and tools can be forked and used as the base templ
 
 # Requirements
 - pyenv and pyenv-virtualenv
-- Python <= 3.6.9
+- Python 3.6.9+
 - Python Modules:
   - pylint
   - pytest

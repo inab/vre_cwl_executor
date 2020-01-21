@@ -16,9 +16,9 @@
 Tools
 =====
 
-.. automodule:: mg_process_test.tool
+.. automodule:: tests.basic.tool
 
    Test Tool
    -----------
-   .. autoclass:: mg_process_test.tool.testTool.testTool
+   .. autoclass:: tests.basic.tool.testTool.testTool
       :members:
