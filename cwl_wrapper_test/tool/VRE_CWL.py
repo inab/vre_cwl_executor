@@ -89,9 +89,6 @@ class WF_RUNNER(Tool):
     @task(returns=bool, input_files=FILE_IN, configuration=FILE_IN, isModifier=False)
     def execute_cwl_workflow(self, input_files, configuration):  # pylint: disable=no-self-use
 
-        print(input_files)
-        print(configuration)
-
         # First, we need to get the CWL workflow file
         cwl_wf_url = self.configuration.get('cwl_wf_url')
         cwl_wf_tag = self.configuration.get('cwl_wf_tag')
@@ -115,12 +112,9 @@ class WF_RUNNER(Tool):
 
         # cwltool executor for CWL Workflow # TODO change to subprocess Popen
         logger.debug("cwltool executor for CWL Workflow")
-        retval = subprocess.run(["cwltool", cwl_wf_url, cwl_wf_input_yml_path])
+        process = subprocess.run(["cwltool", cwl_wf_url, cwl_wf_input_yml_path])
 
-        if retval.returncode != 0:
-            logger.warning("VRE CWL execution. Exit value: " + str(retval.returncode))
-
-        return retval.returncode == 0
+        return process.returncode == 0
 
     def run(self, input_files, input_metadata, output_files):
         """
