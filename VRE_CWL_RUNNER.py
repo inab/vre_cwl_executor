@@ -55,7 +55,7 @@ class process_WF_RUNNER(Workflow):
         :param metadata: Required meta data.
         :param output_files: Locations of the output files to be returned by the pipeline.
         :type input_files: dict
-        :type metadata: list
+        :type metadata: dict
         :type output_files: dict
         :return: Locations for the output txt (output_files), Matching metadata for each of the files (output_metadata).
         :rtype: dict, dict
