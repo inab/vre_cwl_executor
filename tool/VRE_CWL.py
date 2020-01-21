@@ -107,7 +107,7 @@ class WF_RUNNER(Tool):
                 variable_params.append((conf_key, self.configuration[conf_key]))
 
         create_inputs_object()
-        cwl_wf_input_yml_path = "/home/laura/PycharmProjects/vre-process_cwl-executor/tests/input_basic_example.yml"
+        cwl_wf_input_yml_path = "/home/laura/PycharmProjects/vre-process_cwl-executor/tests/basic/input_basic_example.yml"
 
         # cwltool executor for CWL Workflow # TODO change to subprocess Popen
         logger.debug("cwltool executor for CWL Workflow")

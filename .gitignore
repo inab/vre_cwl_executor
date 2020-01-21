@@ -10,4 +10,4 @@ env/*
 *.egg-info*
 .cache
 .pytest_cache
-/tests/data/tmp
+/tests/basic/data/tmp
