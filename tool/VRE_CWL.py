@@ -140,7 +140,6 @@ class WF_RUNNER(Tool):
 
         logger.debug("Init execution of the CWL Workflow")
         results = self.execute_cwl_workflow(input_files, self.configuration)
-        results = compss_wait_on(results)  # TODO JM ???
 
         results = True  # TODO temporarily. forced to not stop the execution. it should be deleted
         if results is False:
