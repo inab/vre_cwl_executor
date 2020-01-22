@@ -14,3 +14,4 @@ env/*
 /tests/basic/run000
 *.fa
 *.bam
+/tests/data/build

@@ -1,0 +1,154 @@
+{
+  "@context": {
+    "ao": "http://purl.org/ao/",
+    "bundle": "http://purl.org/wf4ever/bundle#",
+    "dc": "http://purl.org/dc/elements/1.1/",
+    "dct": "http://purl.org/dc/terms/",
+    "dcterms": "http://purl.org/dc/terms/",
+    "doi": "http://dx.doi.org/",
+    "foaf": "http://xmlns.com/foaf/0.1/",
+    "oa": "http://www.w3.org/ns/oa#",
+    "ore": "http://www.openarchives.org/ore/terms/",
+    "owl": "http://www.w3.org/2002/07/owl#",
+    "pav": "http://purl.org/pav/",
+    "prov": "http://www.w3.org/ns/prov#",
+    "rdf": "http://www.w3.org/1999/02/22-rdf-syntax-ns#",
+    "rdfs": "http://www.w3.org/2000/01/rdf-schema#",
+    "ro": "http://purl.org/wf4ever/ro#",
+    "roterms": "http://purl.org/wf4ever/roterms#",
+    "sh": "http://www.w3.org/ns/shacl#",
+    "xsd": "http://www.w3.org/2001/XMLSchema#"
+  },
+  "@graph": [
+    {
+      "@id": "_:ub290bL66C17",
+      "@type": "foaf:Person",
+      "foaf:name": "Adam Cowdy"
+    },
+    {
+      "@id": "file:///workflows/workflow1.cwl",
+      "@type": "ro:Resource"
+    },
+    {
+      "@id": "file:///workflowsProxy",
+      "@type": "ore:Proxy",
+      "dcterms:created": {
+        "@type": "xsd:dateTime",
+        "@value": "2018-11-22T12:00:00+00:00"
+      },
+      "dcterms:creator": {
+        "@id": "_:ub290bL46C17"
+      },
+      "ore:proxyFor": {
+        "@id": "file:///workflows"
+      },
+      "ore:proxyIn": {
+        "@id": "file:///"
+      }
+    },
+    {
+      "@id": "file:///.ro/manifest.ttl",
+      "@type": "ro:Manifest",
+      "dcterms:created": {
+        "@type": "xsd:dateTime",
+        "@value": "2018-11-22T12:00:00+00:00"
+      },
+      "dcterms:creator": {
+        "@id": "_:ub290bL34C17"
+      },
+      "ore:describes": {
+        "@id": "file:///"
+      }
+    },
+    {
+      "@id": "file:///.ro/annotations/ann1",
+      "@type": "ro:Annotation",
+      "dcterms:created": {
+        "@type": "xsd:dateTime",
+        "@value": "2018-11-22T12:00:00+00:00"
+      },
+      "dcterms:creator": {
+        "@id": "_:ub290bL66C17"
+      },
+      "oa:hasBody": {
+        "@id": "file:///.ro/ann1"
+      },
+      "oa:hasTarget": {
+        "@id": "file:///workflows/workflow1.cwl"
+      }
+    },
+    {
+      "@id": "_:ub290bL57C17",
+      "@type": "foaf:Person",
+      "foaf:name": "Adam Cowdy"
+    },
+    {
+      "@id": "_:ub290bL46C17",
+      "@type": "foaf:Person",
+      "foaf:name": "Adam Cowdy"
+    },
+    {
+      "@id": "file:///",
+      "@type": [
+        "ore:Aggregation",
+        "ro:ResearchObject"
+      ],
+      "dcterms:created": {
+        "@type": "xsd:dateTime",
+        "@value": "2018-11-22T12:00:00+00:00"
+      },
+      "dcterms:creator": {
+        "@id": "_:ub290bL22C17"
+      },
+      "ore:aggregates": [
+        {
+          "@id": "file:///workflows"
+        },
+        {
+          "@id": "file:///.ro/annotations/ann1"
+        },
+        {
+          "@id": "file:///workflows/workflow1.cwl"
+        }
+      ],
+      "ore:isDescribedBy": {
+        "@id": "file:///.ro/manifest.ttl"
+      }
+    },
+    {
+      "@id": "_:ub290bL22C17",
+      "@type": "foaf:Person",
+      "foaf:name": "Adam Cowdy"
+    },
+    {
+      "@id": "file:///workflows",
+      "@type": "ro:Folder",
+      "ore:aggregates": {
+        "@id": "file:///workflows/workflow1.cwl"
+      }
+    },
+    {
+      "@id": "file:///workflow1proxy",
+      "@type": "ore:Proxy",
+      "dcterms:created": {
+        "@type": "xsd:dateTime",
+        "@value": "2018-11-22T12:00:00+00:00"
+      },
+      "dcterms:creator": {
+        "@id": "_:ub290bL57C17"
+      },
+      "ore:proxyFor": {
+        "@id": "file:///workflows/workflow1.cwl"
+      },
+      "ore:proxyIn": {
+        "@id": "file:///"
+      }
+    },
+    {
+      "@id": "_:ub290bL34C17",
+      "@type": "foaf:Person",
+      "foaf:name": "Adam Cowdy"
+    }
+  ]
+}
+
