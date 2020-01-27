@@ -1,5 +1,3 @@
 pylint
 pytest
-mg-tool-api
-cwltool
 sphinx
