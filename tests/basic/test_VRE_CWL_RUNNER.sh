@@ -10,8 +10,8 @@
 
 # Local installation - EDIT IF REQUIRED
 
-WORKING_DIR=/home/laura/PycharmProjects/vre-process_cwl-executor/tests/basic/run000
-TOOL_EXECUTABLE=/home/laura/PycharmProjects/vre-process_cwl-executor/VRE_CWL_RUNNER
+WORKING_DIR=/home/laura/PycharmProjects/vre_cwl_executor/tests/basic/run000
+TOOL_EXECUTABLE=/home/laura/PycharmProjects/vre_cwl_executor/VRE_CWL_RUNNER
 
 # Test input files
 

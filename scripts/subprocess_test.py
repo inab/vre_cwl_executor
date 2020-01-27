@@ -4,8 +4,8 @@ import shlex
 import time
 from utils import logger
 
-cwl = "https://raw.githubusercontent.com/lrodrin/vre-process_cwl-executor/master/tests/basic/data/workflows/basic_example.cwl"
-yml = "/home/laura/PycharmProjects/vre-process_cwl-executor/tests/basic/input_basic_example.yml"
+cwl = "https://raw.githubusercontent.com/lrodrin/vre_cwl_executor/master/tests/basic/data/workflows/basic_example.cwl"
+yml = "/home/laura/PycharmProjects/vre_cwl_executor/tests/basic/input_basic_example.yml"
 
 import subprocess
 
