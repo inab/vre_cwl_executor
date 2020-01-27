@@ -1,4 +1,4 @@
-# iPC VRE Process CWL Executor
+# iPC VRE CWL Executor
 
 Example pipelines file that is ready to run in the VRE matching the code in the HowTo documentation.
 
@@ -21,16 +21,16 @@ Directly from GitHub:
 ```
 cd ${HOME}/user
 
-git clone https://github.com/inab/vre-process_cwl-executor.git
+git clone https://github.com/inab/vre_cwl_executor.git
 
-cd vre-process_cwl-executor
+cd vre_cwl_executor
 ```
 
 Create the Python environment
 
 ```
-pyenv-virtualenv 3.6.9 vre-process_cwl-executor
-pyenv activate vre-process_cwl-executor
+pyenv-virtualenv 3.6.9 vre_cwl_executor
+pyenv activate vre_cwl_executor
 pip install -e .
 pip install -r requirements.txt
 ```
