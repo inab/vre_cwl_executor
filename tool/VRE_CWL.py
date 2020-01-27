@@ -18,26 +18,10 @@
 """
 import os
 import subprocess
-import sys
 import time
 
 from basic_modules.metadata import Metadata
 from utils import logger
-
-try:
-    if hasattr(sys, '_run_from_cmdl') is True:
-        raise ImportError
-    from pycompss.api.parameter import FILE_IN, FILE_OUT
-    from pycompss.api.task import task
-    from pycompss.api.api import compss_wait_on
-except ImportError:
-    # logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
-    # logger.warn("\t\tUsing mock decorators.")
-
-    from utils.dummy_pycompss import FILE_IN, FILE_OUT  # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import task  # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import compss_wait_on  # pylint: disable=ungrouped-imports
-
 from basic_modules.tool import Tool
 
 
@@ -66,7 +50,6 @@ class WF_RUNNER(Tool):
 
         self.populable_outputs = {}
 
-    @task(returns=bool, isModifier=False)
     def execute_cwl_workflow(self):  # pylint: disable=no-self-use
         """
         The main function to run the remote CWL workflow
