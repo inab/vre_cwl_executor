@@ -6,7 +6,7 @@ This repo structure workflows and tools can be forked and used as the base templ
 
 ## Requirements
 - Python 3.6.9+
-- Python3.6-venv
+- Python3-dev and Python3-venv
 - Python Modules:
   - pylint
   - pytest
@@ -29,7 +29,7 @@ cd vre_cwl_executor
 Create the Python environment
 
 ```
-python3 -m venv .
+python3 -m venv ${HOME}/user/vre_cwl_executor/venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
