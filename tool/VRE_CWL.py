@@ -70,7 +70,7 @@ class WF_RUNNER(Tool):
                     variable_params.append((conf_key, self.configuration[conf_key]))
 
             logger.info("3) Pack information to YAML or JSON")
-            cwl_wf_input_yml_path = "/home/laura/PycharmProjects/vre_cwl_executor/tests/basic/input_basic_example.yml"
+            cwl_wf_input_yml_path = "{}/PycharmProjects/vre_cwl_executor/tests/basic/input_basic_example.yml".format(os.environ['HOME'])
 
             logger.debug("Starting cwltool execution")
             process = subprocess.Popen(["cwltool", cwl_wf_url, cwl_wf_input_yml_path], stdout=subprocess.PIPE,
