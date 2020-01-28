@@ -22,5 +22,5 @@ for prog in docker cwltool ; do
 	fi
 done
 
-exec python -u "${BASEDIR}"/"${PROGNAME}".py "$@"
+exec python3 -u "${BASEDIR}"/"${PROGNAME}".py "$@"
 exit 1

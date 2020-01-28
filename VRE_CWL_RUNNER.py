@@ -41,7 +41,7 @@ class process_WF_RUNNER(Workflow):
         which are specific to each Tool.
         :type configuration: dict
         """
-        logger.info("Processing CWL Test")
+        logger.debug("Processing CWL Test")
         if configuration is None:
             configuration = {}
 

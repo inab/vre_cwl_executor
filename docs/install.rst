@@ -39,11 +39,11 @@ Directly from GitHub:
 .. code-block:: none
    :linenos:
 
-   git clone https://github.com/lrodrin/vre-process_cwl-executor.git
+   git clone https://github.com/lrodrin/vre_cwl_executor.git
 
 Using pip:
 
 .. code-block:: none
    :linenos:
 
-   pip install git+https://github.com/lrodrin/vre-process_cwl-executor.git
+   pip install git+https://github.com/lrodrin/vre_cwl_executor.git

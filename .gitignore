@@ -1,4 +1,3 @@
-*.txt
 .python-version
 *.pyc
 env
@@ -14,5 +13,5 @@ env/*
 /tests/basic/run000
 *.fa
 *.bam
-/tests/data/build
 /venv
+/VRE_CWL_RUNNER.log

@@ -178,17 +178,17 @@ def read_config_from_cwl_file(cwl_file):
 
 
 if __name__ == '__main__':
-    # pack = pack_cwl("/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/data"
+    # pack = pack_cwl("/home/laura/PycharmProjects/vre_cwl_executor/cwl_wrapper_test/tests/data"
     #                 "/samtools_split.cwl")
     #
     # print(pack)
     #
     # files = fetch_files_in_dir(
-    #     dir_path="/home/laura/PycharmProjects/vre-process_cwl-executor/cwl_wrapper_test/tests/data",
+    #     dir_path="/home/laura/PycharmProjects/vre_cwl_executor/cwl_wrapper_test/tests/data",
     #     file_exts=["cwl"],
     #     ignore_subdirs=True)
     # print(files)
     #
-    import_cwl("https://raw.githubusercontent.com/lrodrin/vre-process_cwl-executor/master/cwl_wrapper_test/tests/data/workflows/basic_example.cwl", "basic_example")
+    import_cwl("https://raw.githubusercontent.com/lrodrin/vre_cwl_executor/master/cwl_wrapper_test/tests/data/workflows/basic_example.cwl", "basic_example")
     # import_cwl("https://raw.githubusercontent.com/CompEpigen/ATACseq_workflows/1.2.0/CWL/workflows/ATACseq.cwl", "test")
 

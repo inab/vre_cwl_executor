@@ -18,25 +18,10 @@
 """
 import os
 import subprocess
-import sys
+import time
 
 from basic_modules.metadata import Metadata
 from utils import logger
-
-try:
-    if hasattr(sys, '_run_from_cmdl') is True:
-        raise ImportError
-    from pycompss.api.parameter import FILE_IN, FILE_OUT
-    from pycompss.api.task import task
-    from pycompss.api.api import compss_wait_on
-except ImportError:
-    # logger.warn("[Warning] Cannot import \"pycompss\" API packages.")
-    # logger.warn("\t\tUsing mock decorators.")
-
-    from utils.dummy_pycompss import FILE_IN, FILE_OUT  # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import task  # pylint: disable=ungrouped-imports
-    from utils.dummy_pycompss import compss_wait_on  # pylint: disable=ungrouped-imports
-
 from basic_modules.tool import Tool
 
 
@@ -65,42 +50,50 @@ class WF_RUNNER(Tool):
 
         self.populable_outputs = {}
 
-    @task(returns=bool, input_files=FILE_IN, configuration=FILE_IN, isModifier=False)
-    def execute_cwl_workflow(self, input_files, configuration):  # pylint: disable=no-self-use
+    def execute_cwl_workflow(self):  # pylint: disable=no-self-use
+        """
+        The main function to run the remote CWL workflow
+        """
+        try:
+            logger.debug("Getting the CWL workflow file")
+            cwl_wf_url = self.configuration.get('cwl_wf_url')
+            cwl_wf_tag = self.configuration.get('cwl_wf_tag')
+            if (cwl_wf_url is None) or (cwl_wf_tag is None):
+                errstr = "Both 'cwl_wf_url' and 'cwl_wf_tag' parameters must be defined"
+                logger.fatal(errstr)
+                raise Exception(errstr)
 
-        # First, we need to get the CWL workflow file
-        cwl_wf_url = self.configuration.get('cwl_wf_url')
-        cwl_wf_tag = self.configuration.get('cwl_wf_tag')
-        if (cwl_wf_url is None) or (cwl_wf_tag is None):
-            logger.fatal("FATAL ERROR: both 'cwl_wf_url' and 'cwl_wf_tag' parameters must be defined")
-            return False
+            logger.debug("Adding parameters which are not input or output files are in the configuration")
+            variable_params = []
+            for conf_key in self.configuration.keys():
+                if conf_key not in self.MASKED_KEYS:
+                    variable_params.append((conf_key, self.configuration[conf_key]))
 
-        # Parameters which are not input or output files are in the configuration
-        variable_params = []
-        for conf_key in self.configuration.keys():
-            if conf_key not in self.MASKED_KEYS:
-                variable_params.append((conf_key, self.configuration[conf_key]))
+            logger.info("3) Pack information to YAML or JSON")
+            cwl_wf_input_yml_path = "{}/PycharmProjects/vre_cwl_executor/tests/basic/input_basic_example.yml".format(os.environ['HOME'])
 
-        cwl_wf_input_yml_path = "/home/laura/PycharmProjects/vre-process_cwl-executor/tests/basic/input_basic_example.yml"
+            logger.debug("Starting cwltool execution")
+            process = subprocess.Popen(["cwltool", cwl_wf_url, cwl_wf_input_yml_path], stdout=subprocess.PIPE,
+                                       stderr=subprocess.PIPE)
 
-        # cwltool executor for CWL Workflow
-        logger.debug("cwltool executor for CWL Workflow")
-        process = subprocess.Popen(["cwltool", cwl_wf_url, cwl_wf_input_yml_path], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # Sending the stdout to the log file
+            for line in iter(process.stderr.readline, b''):
+                print(line.rstrip().decode("utf-8").replace("", " "))
 
-        for line in iter(process.stderr.readline, b''):
-            print(line.rstrip().decode("utf-8"))
-
-        rc = process.poll()
-        while rc is None:
             rc = process.poll()
-            process.sleep(0.1)
+            while rc is None:
+                rc = process.poll()
+                time.sleep(0.1)
 
-        if rc is not None and rc != 0:
-            logger.progress(str("HELLO"), status="ERROR")
-        else:
-            logger.progress(str("HELLO"), status="FINISHED")
+            if rc is not None and rc != 0:
+                logger.progress("Something went wrong inside the cwltool execution. See logs", status="WARNING")
+            else:
+                logger.progress("cwltool execution finished successfully", status="FINISHED")
 
-        return process.returncode == 0
+        except:
+            errstr = "The CWL execution failed. See logs"
+            logger.error(errstr)
+            raise Exception(errstr)
 
     def run(self, input_files, input_metadata, output_files):
         """
@@ -116,55 +109,54 @@ class WF_RUNNER(Tool):
         (output_metadata).
         :rtype: dict, dict
         """
+        try:
+            # Set and check execution directory. If not exists the directory will be created.
+            execution_path = os.path.abspath(self.configuration.get('execution', '.'))
+            execution_parent_dir = os.path.dirname(execution_path)
+            if not os.path.isdir(execution_parent_dir):
+                os.makedirs(execution_parent_dir)
 
-        # Set and check execution directory. If not exists the directory will be created.
-        execution_path = os.path.abspath(self.configuration.get('execution', '.'))
-        execution_parent_dir = os.path.dirname(execution_path)
-        if not os.path.isdir(execution_parent_dir):
-            os.makedirs(execution_parent_dir)
+            # Update working directory to execution path
+            os.chdir(execution_path)
+            logger.debug("Execution path: {}".format(execution_path))
 
-        # Update working directory to execution path
-        os.chdir(execution_path)
-        logger.debug("Execution path: {}".format(execution_path))
+            # Set file names for output files (with random name if not predefined)
+            for key in output_files.keys():
+                if output_files[key] is not None:
+                    pop_output_path = os.path.abspath(output_files[key])
+                    self.populable_outputs[key] = pop_output_path
+                    output_files[key] = pop_output_path
+                else:
+                    errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
+                    logger.error(errstr)
+                    raise Exception(errstr)
 
-        # Set file names for output files (with random name if not predefined)
-        for key in output_files.keys():
-            if output_files[key] is not None:
-                pop_output_path = os.path.abspath(output_files[key])
-                self.populable_outputs[key] = pop_output_path
-                output_files[key] = pop_output_path
-            else:
-                errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
-                logger.error(errstr)
-                raise Exception(errstr)
+            logger.debug("Init execution of the CWL Workflow")
+            self.execute_cwl_workflow()
 
-        logger.debug("Init execution of the CWL Workflow")
-        results = self.execute_cwl_workflow(input_files, self.configuration)
-        results = compss_wait_on(results)  # TODO JM ???
+            output_metadata = dict()
+            for key in output_files.keys():
+                if os.path.isfile(output_files[key]):
+                    meta = Metadata()
+                    meta.file_path = output_files[key]  # Set file_path for output files
 
-        results = True  # TODO temporarily. forced to not stop the execution. it should be deleted
-        if results is False:
-            logger.fatal("VRE CWL RUNNER pipeline failed. See logs")
-            raise Exception("VRE CWL RUNNER pipeline failed. See logs")
+                    # Set sources for output files
+                    meta_sources_list = list()
+                    for input_name in input_metadata.keys():
+                        meta_sources_list.append(input_metadata[input_name].file_path)
+                    meta.sources = meta_sources_list
 
-        logger.debug("Creating output metadata")
-        output_metadata = dict()
-        for key in output_files.keys():
-            if os.path.isfile(output_files[key]):
-                meta = Metadata()
-                # Set file_path for output files
-                meta.file_path = output_files[key]
-                # Set sources for output files
-                meta_sources_list = list()
-                for input_name in input_metadata.keys():
-                    meta_sources_list.append(input_metadata[input_name].file_path)
-                meta.sources = meta_sources_list
-                # Append new element in output metadata
-                output_metadata.update({key: meta})
+                    # Append new element in output metadata
+                    output_metadata.update({key: meta})
 
-            else:
-                logger.warning("Output {} not found. Path {} not exists".format(key, output_files[key]))
+                else:
+                    logger.warning("Output {} not found. Path {} not exists".format(key, output_files[key]))
 
-        logger.debug("Output metadata created")
+            logger.debug("Output metadata created")
 
-        return output_files, output_metadata
+            return output_files, output_metadata
+
+        except:
+            errstr = "VRE CWL RUNNER pipeline failed. See logs"
+            logger.fatal(errstr)
+            raise Exception(errstr)
