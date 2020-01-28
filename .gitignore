@@ -14,3 +14,4 @@ env/*
 *.fa
 *.bam
 /venv
+/VRE_CWL_RUNNER.log
