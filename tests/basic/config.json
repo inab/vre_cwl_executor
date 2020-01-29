@@ -16,7 +16,7 @@
     "arguments": [
         {
             "name": "execution",
-            "value": "/home/laura/PycharmProjects/vre_cwl_executor/tests/basic/run000"
+            "value": "/home/${USER}/vre_sample_tool/tests/basic/run000"
         },
         {
             "name": "project",
@@ -45,7 +45,7 @@
             "required": true,
             "allow_multiple": false,
             "file": {
-                "file_path": "/home/laura/PycharmProjects/vre_cwl_executor/tests/basic/run000/A.bam",
+                "file_path": "/home/${USER}/vre_sample_tool/tests/basic/run000/A.bam",
                 "file_type": "BAM",
                 "data_type": "data_chip_seq",
                 "meta_data": {
