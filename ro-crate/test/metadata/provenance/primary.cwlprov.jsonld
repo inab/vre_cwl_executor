@@ -1,0 +1,750 @@
+[
+  {
+    "@id": "urn:uuid:5f485889-5325-40c2-b59a-e1473c755e1a",
+    "@type": [
+      "http://www.w3.org/ns/prov#SoftwareAgent",
+      "http://www.w3.org/ns/prov#Agent",
+      "http://purl.org/wf4ever/wfprov#WorkflowEngine"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@value": "cwltool 2.0.20200126090152"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedStart": [
+      {
+        "@id": "_:N96ca7e245e304a25bc5937ee71d904e0"
+      }
+    ]
+  },
+  {
+    "@id": "_:N96ca7e245e304a25bc5937ee71d904e0",
+    "@type": [
+      "http://www.w3.org/ns/prov#Start"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:37.577285"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadActivity": [
+      {
+        "@id": "urn:uuid:fa69b63b-11ab-4e4b-a044-9e207ca64611"
+      }
+    ]
+  },
+  {
+    "@id": "urn:uuid:135d5e3b-9601-4168-9eeb-6055816c18cc",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://purl.org/wf4ever/wf4ever#File",
+      "http://www.w3.org/ns/prov#Entity"
+    ],
+    "http://www.w3.org/ns/prov#specializationOf": [
+      {
+        "@id": "urn:hash::sha1:e5492d012959a31661539336f928b0d152a73d42"
+      }
+    ],
+    "https://w3id.org/cwl/prov#basename": [
+      {
+        "@value": "A.bam"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameext": [
+      {
+        "@value": ".bam"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameroot": [
+      {
+        "@value": "A"
+      }
+    ]
+  },
+  {
+    "@id": "urn:uuid:11fb6df6-f829-4227-a3d7-cdc4f3a6d9be",
+    "@type": [
+      "http://purl.org/wf4ever/wf4ever#File",
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://www.w3.org/ns/prov#Entity"
+    ],
+    "http://www.w3.org/ns/prov#specializationOf": [
+      {
+        "@id": "urn:hash::sha1:17aba9a637c7a6507ba289efa449416580781ab4"
+      }
+    ],
+    "https://w3id.org/cwl/prov#basename": [
+      {
+        "@value": "hg38.fa"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameext": [
+      {
+        "@value": ".fa"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameroot": [
+      {
+        "@value": "hg38"
+      }
+    ]
+  },
+  {
+    "@id": "urn:hash::sha1:17aba9a637c7a6507ba289efa449416580781ab4",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://www.w3.org/ns/prov#Entity"
+    ]
+  },
+  {
+    "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/samtools_split",
+    "@type": [
+      "http://purl.org/wf4ever/wfdesc#Process",
+      "http://www.w3.org/ns/prov#Plan",
+      "http://www.w3.org/ns/prov#Entity"
+    ]
+  },
+  {
+    "@id": "urn:hash::sha1:7df368a55f9f0594452561c24c12dc65545a54a7",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://www.w3.org/ns/prov#Entity"
+    ],
+    "http://www.w3.org/ns/prov#value": [
+      {
+        "@value": "hg38"
+      }
+    ]
+  },
+  {
+    "@id": "urn:hash::sha1:e5492d012959a31661539336f928b0d152a73d42",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://www.w3.org/ns/prov#Entity"
+    ]
+  },
+  {
+    "@id": "urn:hash::sha1:f826f42bf9ec875a314656dbb33df865ec5f28d2",
+    "@type": [
+      "http://www.w3.org/ns/prov#Entity",
+      "http://purl.org/wf4ever/wfprov#Artifact"
+    ]
+  },
+  {
+    "@id": "urn:uuid:dea5d794-0a87-472f-92a7-65a30cb9279a",
+    "@type": [
+      "http://www.w3.org/ns/prov#Entity",
+      "http://www.w3.org/ns/prov#Collection",
+      "http://purl.org/wf4ever/wfprov#Artifact"
+    ],
+    "http://www.w3.org/ns/prov#hadMember": [
+      {
+        "@id": "urn:uuid:135d5e3b-9601-4168-9eeb-6055816c18cc"
+      },
+      {
+        "@id": "urn:uuid:8a60e24f-4378-487f-a44d-949fb0c93de1"
+      },
+      {
+        "@id": "urn:uuid:0a39342a-f2f2-43f2-9d24-96f02cef6805"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedGeneration": [
+      {
+        "@id": "_:N33c7dac99dc34c61ba079049c8ec6530"
+      }
+    ]
+  },
+  {
+    "@id": "_:N33c7dac99dc34c61ba079049c8ec6530",
+    "@type": [
+      "http://www.w3.org/ns/prov#Generation"
+    ],
+    "http://www.w3.org/ns/prov#activity": [
+      {
+        "@id": "urn:uuid:1a3adadf-87de-4119-a44f-7a748457dad7"
+      }
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:40.483781"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadRole": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/primary/test"
+      }
+    ]
+  },
+  {
+    "@id": "urn:uuid:8a60e24f-4378-487f-a44d-949fb0c93de1",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://purl.org/wf4ever/wf4ever#File",
+      "http://www.w3.org/ns/prov#Entity"
+    ],
+    "http://www.w3.org/ns/prov#specializationOf": [
+      {
+        "@id": "urn:hash::sha1:0a67bad5eb898992420e3581954ebe8d29d32d72"
+      }
+    ],
+    "https://w3id.org/cwl/prov#basename": [
+      {
+        "@value": "B.bam"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameext": [
+      {
+        "@value": ".bam"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameroot": [
+      {
+        "@value": "B"
+      }
+    ]
+  },
+  {
+    "@id": "urn:uuid:b8ea6eed-e221-4afb-a49a-aaa1ecdd5495",
+    "@type": [
+      "http://www.w3.org/ns/prov#Entity",
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://purl.org/wf4ever/wf4ever#File"
+    ],
+    "http://www.w3.org/ns/prov#specializationOf": [
+      {
+        "@id": "urn:hash::sha1:f826f42bf9ec875a314656dbb33df865ec5f28d2"
+      }
+    ],
+    "https://w3id.org/cwl/prov#basename": [
+      {
+        "@value": "NA12878.bam"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameext": [
+      {
+        "@value": ".bam"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameroot": [
+      {
+        "@value": "NA12878"
+      }
+    ]
+  },
+  {
+    "@id": "urn:uuid:f4c53708-474a-476c-a77b-1137d0ae6b91",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#ProcessRun",
+      "http://www.w3.org/ns/prov#Activity"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@value": "Run of workflow/packed.cwl#main/samtools_split"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedAssociation": [
+      {
+        "@id": "_:N54ca427933bd47d7ac9ea2d8d7509cf6"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedEnd": [
+      {
+        "@id": "_:N9f43e4e161a64fa0b1a0f2edebf42e99"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedStart": [
+      {
+        "@id": "_:N95aaa4dec85949b9a89936011ecd244e"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedUsage": [
+      {
+        "@id": "_:N69120b07c6ce42899a0185ca291fcd64"
+      },
+      {
+        "@id": "_:Ncae9536580d14fc4b2c25d01443c6aa1"
+      }
+    ],
+    "http://www.w3.org/ns/prov#wasAssociatedWith": [
+      {
+        "@id": "urn:uuid:5f485889-5325-40c2-b59a-e1473c755e1a"
+      },
+      {
+        "@id": "urn:uuid:b5904245-c44a-4f25-a04a-fc98f1989731"
+      }
+    ]
+  },
+  {
+    "@id": "_:N69120b07c6ce42899a0185ca291fcd64",
+    "@type": [
+      "http://www.w3.org/ns/prov#Usage"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:38.882535"
+      }
+    ],
+    "http://www.w3.org/ns/prov#entity": [
+      {
+        "@id": "urn:uuid:11fb6df6-f829-4227-a3d7-cdc4f3a6d9be"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadRole": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/samtools_split/reference"
+      }
+    ]
+  },
+  {
+    "@id": "_:Ncae9536580d14fc4b2c25d01443c6aa1",
+    "@type": [
+      "http://www.w3.org/ns/prov#Usage"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:38.876735"
+      }
+    ],
+    "http://www.w3.org/ns/prov#entity": [
+      {
+        "@id": "urn:uuid:7e3e1824-1422-4152-9ea3-a15f220db0c7"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadRole": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/samtools_split/input_bam"
+      }
+    ]
+  },
+  {
+    "@id": "_:N54ca427933bd47d7ac9ea2d8d7509cf6",
+    "@type": [
+      "http://www.w3.org/ns/prov#Association"
+    ],
+    "http://www.w3.org/ns/prov#hadPlan": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/samtools_split"
+      }
+    ]
+  },
+  {
+    "@id": "_:N9f43e4e161a64fa0b1a0f2edebf42e99",
+    "@type": [
+      "http://www.w3.org/ns/prov#End"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:40.475908"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadActivity": [
+      {
+        "@id": "urn:uuid:1a3adadf-87de-4119-a44f-7a748457dad7"
+      }
+    ]
+  },
+  {
+    "@id": "_:N95aaa4dec85949b9a89936011ecd244e",
+    "@type": [
+      "http://www.w3.org/ns/prov#Start"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:38.838530"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadActivity": [
+      {
+        "@id": "urn:uuid:1a3adadf-87de-4119-a44f-7a748457dad7"
+      }
+    ]
+  },
+  {
+    "@id": "urn:uuid:b5904245-c44a-4f25-a04a-fc98f1989731",
+    "@type": [
+      "http://www.w3.org/ns/prov#SoftwareAgent",
+      "http://www.w3.org/ns/prov#Agent"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@value": "Container execution of image kfdrc/samtools:1.8-dev"
+      }
+    ],
+    "https://w3id.org/cwl/prov#image": [
+      {
+        "@value": "kfdrc/samtools:1.8-dev"
+      }
+    ]
+  },
+  {
+    "@id": "urn:hash::sha1:f5f7305bf097af39c68b790d817d7889f788f222",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://www.w3.org/ns/prov#Entity"
+    ],
+    "http://www.w3.org/ns/prov#value": [
+      {
+        "@value": "mytest"
+      }
+    ]
+  },
+  {
+    "@id": "urn:hash::sha1:0a67bad5eb898992420e3581954ebe8d29d32d72",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://www.w3.org/ns/prov#Entity"
+    ]
+  },
+  {
+    "@id": "urn:uuid:1a3adadf-87de-4119-a44f-7a748457dad7",
+    "@type": [
+      "http://www.w3.org/ns/prov#Activity",
+      "http://purl.org/wf4ever/wfprov#WorkflowRun"
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@value": "Run of workflow/packed.cwl#main"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedAssociation": [
+      {
+        "@id": "_:N209edf129a2e43a9ba8c49c861982345"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedEnd": [
+      {
+        "@id": "_:N198d0c89fb804c7dbc97bec2a4ed2827"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedStart": [
+      {
+        "@id": "_:N95b4bbf50dcf4c6cbe9882ac6d91213f"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedUsage": [
+      {
+        "@id": "_:Nf21114c24d704c6bba259044e09ca8d9"
+      },
+      {
+        "@id": "_:N833cbb20254b4522a787de4a9522ff1f"
+      },
+      {
+        "@id": "_:Nd2a8b62a35fb44f29c8cdb74e4011313"
+      },
+      {
+        "@id": "_:Nc7303593814c4b25918ddab3eeac40a2"
+      }
+    ],
+    "http://www.w3.org/ns/prov#startedAtTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:37.577313"
+      }
+    ],
+    "http://www.w3.org/ns/prov#wasAssociatedWith": [
+      {
+        "@id": "urn:uuid:5f485889-5325-40c2-b59a-e1473c755e1a"
+      }
+    ]
+  },
+  {
+    "@id": "_:Nf21114c24d704c6bba259044e09ca8d9",
+    "@type": [
+      "http://www.w3.org/ns/prov#Usage"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:38.830425"
+      }
+    ],
+    "http://www.w3.org/ns/prov#entity": [
+      {
+        "@id": "urn:uuid:f50d2141-8a3e-4f4c-a6c9-481bd94a925d"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadRole": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/indexed_reference_fasta"
+      }
+    ]
+  },
+  {
+    "@id": "_:N833cbb20254b4522a787de4a9522ff1f",
+    "@type": [
+      "http://www.w3.org/ns/prov#Usage"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:38.833561"
+      }
+    ],
+    "http://www.w3.org/ns/prov#entity": [
+      {
+        "@id": "urn:uuid:b8ea6eed-e221-4afb-a49a-aaa1ecdd5495"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadRole": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/input_reads"
+      }
+    ]
+  },
+  {
+    "@id": "_:Nd2a8b62a35fb44f29c8cdb74e4011313",
+    "@type": [
+      "http://www.w3.org/ns/prov#Usage"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:38.824579"
+      }
+    ],
+    "http://www.w3.org/ns/prov#entity": [
+      {
+        "@id": "urn:hash::sha1:7df368a55f9f0594452561c24c12dc65545a54a7"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadRole": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/biospecimen_name"
+      }
+    ]
+  },
+  {
+    "@id": "_:Nc7303593814c4b25918ddab3eeac40a2",
+    "@type": [
+      "http://www.w3.org/ns/prov#Usage"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:38.834142"
+      }
+    ],
+    "http://www.w3.org/ns/prov#entity": [
+      {
+        "@id": "urn:hash::sha1:f5f7305bf097af39c68b790d817d7889f788f222"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadRole": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/output_basename"
+      }
+    ]
+  },
+  {
+    "@id": "_:N198d0c89fb804c7dbc97bec2a4ed2827",
+    "@type": [
+      "http://www.w3.org/ns/prov#End"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:40.483950"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadActivity": [
+      {
+        "@id": "urn:uuid:5f485889-5325-40c2-b59a-e1473c755e1a"
+      }
+    ]
+  },
+  {
+    "@id": "_:N95b4bbf50dcf4c6cbe9882ac6d91213f",
+    "@type": [
+      "http://www.w3.org/ns/prov#Start"
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:37.577372"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadActivity": [
+      {
+        "@id": "urn:uuid:5f485889-5325-40c2-b59a-e1473c755e1a"
+      }
+    ]
+  },
+  {
+    "@id": "_:N209edf129a2e43a9ba8c49c861982345",
+    "@type": [
+      "http://www.w3.org/ns/prov#Association"
+    ],
+    "http://www.w3.org/ns/prov#hadPlan": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main"
+      }
+    ]
+  },
+  {
+    "@id": "urn:hash::sha1:22836eebbf238f235e4772a8dfba5efe470d38d0",
+    "@type": [
+      "http://www.w3.org/ns/prov#Entity",
+      "http://purl.org/wf4ever/wfprov#Artifact"
+    ]
+  },
+  {
+    "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main",
+    "@type": [
+      "http://www.w3.org/ns/prov#Plan",
+      "http://www.w3.org/ns/prov#Entity",
+      "http://purl.org/wf4ever/wfdesc#Workflow"
+    ],
+    "http://purl.org/wf4ever/wfdesc#hasSubProcess": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/samtools_split"
+      }
+    ],
+    "http://www.w3.org/2000/01/rdf-schema#label": [
+      {
+        "@value": "Prospective provenance"
+      }
+    ]
+  },
+  {
+    "@id": "urn:uuid:fa69b63b-11ab-4e4b-a044-9e207ca64611",
+    "@type": [
+      "http://www.w3.org/ns/prov#Agent"
+    ]
+  },
+  {
+    "@id": "urn:uuid:7e3e1824-1422-4152-9ea3-a15f220db0c7",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://www.w3.org/ns/prov#Entity",
+      "http://purl.org/wf4ever/wf4ever#File"
+    ],
+    "http://www.w3.org/ns/prov#specializationOf": [
+      {
+        "@id": "urn:hash::sha1:f826f42bf9ec875a314656dbb33df865ec5f28d2"
+      }
+    ],
+    "https://w3id.org/cwl/prov#basename": [
+      {
+        "@value": "NA12878.bam"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameext": [
+      {
+        "@value": ".bam"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameroot": [
+      {
+        "@value": "NA12878"
+      }
+    ]
+  },
+  {
+    "@id": "urn:uuid:0a39342a-f2f2-43f2-9d24-96f02cef6805",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://www.w3.org/ns/prov#Entity",
+      "http://purl.org/wf4ever/wf4ever#File"
+    ],
+    "http://www.w3.org/ns/prov#specializationOf": [
+      {
+        "@id": "urn:hash::sha1:22836eebbf238f235e4772a8dfba5efe470d38d0"
+      }
+    ],
+    "https://w3id.org/cwl/prov#basename": [
+      {
+        "@value": "C.bam"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameext": [
+      {
+        "@value": ".bam"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameroot": [
+      {
+        "@value": "C"
+      }
+    ]
+  },
+  {
+    "@id": "urn:uuid:f50d2141-8a3e-4f4c-a6c9-481bd94a925d",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://purl.org/wf4ever/wf4ever#File",
+      "http://www.w3.org/ns/prov#Entity"
+    ],
+    "http://www.w3.org/ns/prov#specializationOf": [
+      {
+        "@id": "urn:hash::sha1:17aba9a637c7a6507ba289efa449416580781ab4"
+      }
+    ],
+    "https://w3id.org/cwl/prov#basename": [
+      {
+        "@value": "hg38.fa"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameext": [
+      {
+        "@value": ".fa"
+      }
+    ],
+    "https://w3id.org/cwl/prov#nameroot": [
+      {
+        "@value": "hg38"
+      }
+    ]
+  },
+  {
+    "@id": "urn:uuid:0d3f13b7-ce37-4b18-be1b-37ef28b89a7b",
+    "@type": [
+      "http://purl.org/wf4ever/wfprov#Artifact",
+      "http://www.w3.org/ns/prov#Entity",
+      "http://www.w3.org/ns/prov#Collection"
+    ],
+    "http://www.w3.org/ns/prov#hadMember": [
+      {
+        "@id": "urn:uuid:0a39342a-f2f2-43f2-9d24-96f02cef6805"
+      },
+      {
+        "@id": "urn:uuid:8a60e24f-4378-487f-a44d-949fb0c93de1"
+      },
+      {
+        "@id": "urn:uuid:135d5e3b-9601-4168-9eeb-6055816c18cc"
+      }
+    ],
+    "http://www.w3.org/ns/prov#qualifiedGeneration": [
+      {
+        "@id": "_:N2c8fc85eef224f60accfc2855308c55c"
+      }
+    ]
+  },
+  {
+    "@id": "_:N2c8fc85eef224f60accfc2855308c55c",
+    "@type": [
+      "http://www.w3.org/ns/prov#Generation"
+    ],
+    "http://www.w3.org/ns/prov#activity": [
+      {
+        "@id": "urn:uuid:f4c53708-474a-476c-a77b-1137d0ae6b91"
+      }
+    ],
+    "http://www.w3.org/ns/prov#atTime": [
+      {
+        "@type": "http://www.w3.org/2001/XMLSchema#dateTime",
+        "@value": "2020-01-30T15:50:40.475915"
+      }
+    ],
+    "http://www.w3.org/ns/prov#hadRole": [
+      {
+        "@id": "arcp://uuid,1a3adadf-87de-4119-a44f-7a748457dad7/workflow/packed.cwl#main/samtools_split/bam_files"
+      }
+    ]
+  }
+]

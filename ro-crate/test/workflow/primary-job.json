@@ -1,0 +1,22 @@
+{
+    "biospecimen_name": "hg38",
+    "indexed_reference_fasta": {
+        "class": "File",
+        "location": "../data/17/17aba9a637c7a6507ba289efa449416580781ab4",
+        "size": 4804461,
+        "basename": "hg38.fa",
+        "nameroot": "hg38",
+        "nameext": ".fa",
+        "checksum": "sha1$17aba9a637c7a6507ba289efa449416580781ab4"
+    },
+    "input_reads": {
+        "class": "File",
+        "location": "../data/f8/f826f42bf9ec875a314656dbb33df865ec5f28d2",
+        "size": 2320156,
+        "basename": "NA12878.bam",
+        "nameroot": "NA12878",
+        "nameext": ".bam",
+        "checksum": "sha1$f826f42bf9ec875a314656dbb33df865ec5f28d2"
+    },
+    "output_basename": "mytest"
+}
