@@ -1,0 +1,4 @@
+a4bd2879ed021d8adcf0d6e6667daa8a94aaac1d  workflow/packed.cwl
+3a198af0028b844bbfd7297e8659e80c1ab36641  snapshot/packed.cwl
+56d7449ed2644726034d25786bb3a4964bfc7624  metadata/manifest.json
+549ff94f4072186cabf95070d9781d0fb0259e60  bag-info.txt

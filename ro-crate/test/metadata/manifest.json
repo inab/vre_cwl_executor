@@ -1,0 +1,80 @@
+{
+    "@context": [
+        {
+            "@base": "arcp://uuid,47a665e3-54a1-49dd-95ad-76f2921c5f09/metadata/"
+        },
+        "https://w3id.org/bundle/context"
+    ],
+    "id": "/",
+    "conformsTo": "https://w3id.org/cwl/prov/0.6.0",
+    "manifest": "manifest.json",
+    "createdOn": "2020-01-30T13:03:10.866896",
+    "createdBy": {
+        "uri": "urn:uuid:1bfbb157-ae39-4531-8a7a-e84b2fb2dfd9",
+        "name": "cwltool 2.0.20200126090152"
+    },
+    "aggregates": [
+        {
+            "uri": "../snapshot/packed.cwl",
+            "mediatype": "text/x+yaml; charset=\"UTF-8\"",
+            "conformsTo": "https://w3id.org/cwl/",
+            "createdOn": "2020-01-30T13:02:45.248754"
+        },
+        {
+            "uri": "../workflow/packed.cwl",
+            "mediatype": "text/x+yaml; charset=\"UTF-8\"",
+            "conformsTo": "https://w3id.org/cwl/",
+            "createdOn": "2020-01-30T13:03:10.866980",
+            "createdBy": {
+                "uri": "urn:uuid:1bfbb157-ae39-4531-8a7a-e84b2fb2dfd9",
+                "name": "cwltool 2.0.20200126090152"
+            }
+        }
+    ],
+    "annotations": [
+        {
+            "uri": "urn:uuid:a0b27fa1-89d6-410f-9b2c-20ccf11f6ffd",
+            "about": "urn:uuid:47a665e3-54a1-49dd-95ad-76f2921c5f09",
+            "content": "/",
+            "oa:motivatedBy": {
+                "@id": "oa:describing"
+            }
+        },
+        {
+            "uri": "urn:uuid:eda24881-50b3-467b-a122-09d3bd46ca77",
+            "about": "urn:uuid:47a665e3-54a1-49dd-95ad-76f2921c5f09",
+            "content": [],
+            "oa:motivatedBy": {
+                "@id": "http://www.w3.org/ns/prov#has_provenance"
+            }
+        },
+        {
+            "uri": "urn:uuid:f4616a6e-3f8d-4a59-906b-7693db8e2c24",
+            "about": "../workflow/packed.cwl",
+            "oa:motivatedBy": {
+                "@id": "oa:highlighting"
+            }
+        },
+        {
+            "uri": "urn:uuid:21250802-32da-40c9-95e4-f003959e39e6",
+            "about": "urn:uuid:47a665e3-54a1-49dd-95ad-76f2921c5f09",
+            "content": [
+                "../workflow/packed.cwl",
+                "../workflow/primary-job.json"
+            ],
+            "oa:motivatedBy": {
+                "@id": "oa:linking"
+            }
+        },
+        {
+            "uri": "urn:uuid:df9a06b7-340c-4a0f-9787-cec02108515a",
+            "about": "urn:uuid:1bfbb157-ae39-4531-8a7a-e84b2fb2dfd9",
+            "content": [
+                "metadata/logs/engine.1bfbb157-ae39-4531-8a7a-e84b2fb2dfd9.txt"
+            ],
+            "oa:motivatedBy": {
+                "@id": "https://w3id.org/cwl/prov#log"
+            }
+        }
+    ]
+}

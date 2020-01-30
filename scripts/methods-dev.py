@@ -189,6 +189,6 @@ if __name__ == '__main__':
     #     ignore_subdirs=True)
     # print(files)
     #
-    import_cwl("https://raw.githubusercontent.com/lrodrin/vre_cwl_executor/master/cwl_wrapper_test/tests/data/workflows/basic_example.cwl", "basic_example")
+    import_cwl("https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example.cwl", "basic_example")
     # import_cwl("https://raw.githubusercontent.com/CompEpigen/ATACseq_workflows/1.2.0/CWL/workflows/ATACseq.cwl", "test")
 
