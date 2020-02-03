@@ -1,86 +1,105 @@
-# import subprocess
-#
-# retval = subprocess.run(["cwltool", "basic_example.cwl", "input_basic_example.yml"])
-# print(retval)
-
 import json
 import os
-from re import match
-from shutil import copyfile
 
 from distutils.version import StrictVersion
 from pkg_resources import get_distribution
 
+# TODO change print to logger
 
-def pack_cwl(cwl_path):
-    """
-    cwltool needs to be imported on demand since repeatedly calling functions on a document named with same name
-    caused errors.
 
-    :param cwl_path:
-    :type cwl_path: str
+def pack_cwl(cwl_url):
     """
+
+    :param cwl_url:
+    :type cwl_url: str
+    :return:
+    :rtype: Workflow
+    """
+
+    print("CWL URL: {}".format(cwl_url))
+
     from cwltool.load_tool import fetch_document
     from cwltool.main import print_pack
+
     cwltool_version = get_distribution("cwltool").version
-    if StrictVersion(cwltool_version) > StrictVersion("1.0.20181201184214"):
-        from cwltool.load_tool import resolve_and_validate_document
-        loadingContext, workflowobj, uri = fetch_document(cwl_path)
-        loadingContext.do_update = False
-        loadingContext, uri = resolve_and_validate_document(loadingContext, workflowobj, uri)
-        processobj = loadingContext.loader.resolve_ref(uri)[0]
-        packed_cwl = json.loads(print_pack(loadingContext.loader, processobj, uri, loadingContext.metadata))
-    else:
-        from cwltool.load_tool import validate_document
-        document_loader, workflowobj, uri = fetch_document(cwl_path)
-        document_loader, _, processobj, metadata, uri = validate_document(document_loader, workflowobj, uri, [], {})
-        packed_cwl = json.loads(print_pack(document_loader, processobj, uri, metadata))
-    return packed_cwl
-
-
-def import_cwl(wf_path, name):
-    cwl_filename = "{}.{}".format(name, "cwl")
-
-    cwl_file_path = os.path.join(os.path.curdir, cwl_filename)
-    if not os.path.exists(cwl_file_path):
-        try:
-            os.makedirs(cwl_file_path)
-        except IOError as error:
-            errstr = "ERROR: Unable to create intermediate directories. Error: {}".format(error)
-            raise Exception(errstr)
+    print("cwltool version: {}".format(cwltool_version))
 
     try:
-        packed_cwl = pack_cwl(wf_path)
 
-    except Exception as e:
-        raise Exception("The loaded CWL document is not valid. Error: {}".format(str(e)))
+        if StrictVersion(cwltool_version) > StrictVersion("1.0.20181201184214"):
+            from cwltool.load_tool import resolve_and_validate_document
 
-    # temp_dir = make_temp_dir()
-    packed_cwl_path = os.path.join(cwl_file_path, "packed.cwl")
+            loadingContext, workflowobj, uri = fetch_document(cwl_url)
+            print("workflow: {}".format(workflowobj))
+            loadingContext.do_update = False
+
+            # validate CWL
+            loadingContext, uri = resolve_and_validate_document(loadingContext, workflowobj, uri)
+
+            processobj = loadingContext.loader.resolve_ref(uri)[0]
+            print("process object: {}".format(processobj))
+
+            # create packed cwl
+            packed_cwl = json.loads(print_pack(loadingContext.loader, processobj, uri, loadingContext.metadata))
+
+        else:   # TODO the condition needs to be tested
+            from cwltool.load_tool import validate_document
+            document_loader, workflowobj, uri = fetch_document(cwl_url)
+
+            # validate CWL
+            document_loader, _, processobj, metadata, uri = validate_document(document_loader, workflowobj, uri, [], {})
+
+            # create packed cwl
+            packed_cwl = json.loads(print_pack(document_loader, processobj, uri, metadata))
+
+        return packed_cwl
+
+    except Exception as error:
+        errstr = "Unable to pack the CWL: {}. Error: {}".format(cwl_url, error)
+        raise Exception(errstr)
+
+
+def create_pack_cwl(cwl_url):
+    """
+
+    :param cwl_url:
+    :type cwl_url: str
+    :return:
+    :rtype: Workflow
+    """
+    # create directory for packed.cwl
+    # cwl_filename = cwl_url.replace(".cwl", "").split('/')[-1]
+    # cwl_file_path = os.path.join(os.path.curdir, cwl_filename)
+    # if not os.path.exists(cwl_file_path):
+    #     try:
+    #         os.makedirs(cwl_file_path)
+    #     except IOError as error:
+    #         errstr = "Unable to create intermediate directory. Error: {}".format(error)
+    #         raise Exception(errstr)
+    #
     try:
-        with open(packed_cwl_path, 'w') as cwl_file:
-            json.dump(packed_cwl, cwl_file)
-    except Exception as e:
-        raise AssertionError("Could not write CWL file. Error: %s" % e)
-    # job_templ_path = os.path.join(temp_dir, "job_templ.xlsx")
-    # generate_job_template_from_cwl(
-    #     workflow_file=wf_temp_path,
-    #     wf_type="CWL",
-    #     output_file=job_templ_path,
-    #     show_please_fill=True
-    # )
-    cwl_document = read_config_from_cwl_file(packed_cwl_path)
-    print(cwl_document)
-    #copyfile(wf_temp_path, wf_target_path)
-    # job_templ_target_path = get_path("job_templ", wf_target=cwl_filename)
-    # copyfile(job_templ_path, job_templ_target_path)
-    # rmtree(temp_dir)
+
+        # pack CWL
+        packed_cwl = pack_cwl(cwl_url)
+        print("CWL packed")
+
+        # write packed.cwl
+        # packed_cwl_path = os.path.join(cwl_file_path, "packed.cwl")
+        packed_cwl_file = open("packed.cwl", 'w')
+        json.dump(packed_cwl, packed_cwl_file, indent=4, sort_keys=True)
+        print("packed CWL created")
+
+    except Exception as error:
+        errstr = "Unable to create the packed CWL: {}. Error: {}".format(cwl_url, error)
+        raise Exception(errstr)
+
+    # cwl_document = read_config_from_cwl_file(packed_cwl_path)
+    # print(cwl_document)
 
 
 def read_config_from_cwl_file(cwl_file):
     print(cwl_file)
     print_pref = "[read_cwl_file]:"
-    configs = {}
     metadata = {
         "doc": "",
         "workflow_name": os.path.basename(cwl_file),
@@ -178,17 +197,11 @@ def read_config_from_cwl_file(cwl_file):
 
 
 if __name__ == '__main__':
-    # pack = pack_cwl("/home/laura/PycharmProjects/vre_cwl_executor/cwl_wrapper_test/tests/data"
-    #                 "/samtools_split.cwl")
-    #
-    # print(pack)
-    #
-    # files = fetch_files_in_dir(
-    #     dir_path="/home/laura/PycharmProjects/vre_cwl_executor/cwl_wrapper_test/tests/data",
-    #     file_exts=["cwl"],
-    #     ignore_subdirs=True)
-    # print(files)
-    #
-    import_cwl("https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example.cwl", "basic_example")
-    # import_cwl("https://raw.githubusercontent.com/CompEpigen/ATACseq_workflows/1.2.0/CWL/workflows/ATACseq.cwl", "test")
+    cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example.cwl"
+    # packed_cwl = pack_cwl(cwl_url)
+    # print("CWL packed: {}".format(packed_cwl))
 
+    create_pack_cwl(cwl_url)
+
+    # import_cwl("https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example.cwl")
+    # import_cwl("https://raw.githubusercontent.com/CompEpigen/ATACseq_workflows/1.2.0/CWL/workflows/ATACseq.cwl")
