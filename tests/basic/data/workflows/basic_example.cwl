@@ -9,7 +9,6 @@ requirements:
 inputs:
   input_reads: File
   biospecimen_name: string
-  output_basename: string
   indexed_reference_fasta: File
 
 outputs:
