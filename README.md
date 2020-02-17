@@ -23,7 +23,7 @@ Remember to add your username to the `docker` group.
 * Install the Wrapper dependencies.
 
     - Python 3.6 or +
-    - Python3.6-dev and Python3.6-venv or +
+    - Python3.6-pip, Python3.6-dev and Python3.6-venv or +
     - mg-tool-api: https://github.com/Multiscale-Genomics/mg-tool-api.git
     - cwltool: https://github.com/common-workflow-language/cwltool.git
 
@@ -32,17 +32,17 @@ Remember to add your username to the `docker` group.
 Directly from GitHub:
 
 ```bash
-cd ${HOME}/user
+cd ${HOME}
 
-git clone https://github.com/lrodrin/vre-process_cwl-executor.git
+git clone https://github.com/inab/vre_cwl_executor.git
 
-cd vre-process_cwl-executor
+cd vre_cwl_executor
 ```
 
 Create the Python environment
 
 ```bash
-python3 -m venv ${HOME}/user/vre_sample_tool/venv
+python3 -m venv ${HOME}/vre_cwl_executor/venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```
