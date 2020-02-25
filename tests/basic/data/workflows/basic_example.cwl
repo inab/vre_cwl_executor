@@ -21,6 +21,3 @@ steps:
       input_bam: input_reads
       reference: indexed_reference_fasta
     out: [bam_files]
-
-$namespaces: { s: "http://schema.org/" }
-s:license: "https://www.apache.org/licenses/LICENSE-2.0"
