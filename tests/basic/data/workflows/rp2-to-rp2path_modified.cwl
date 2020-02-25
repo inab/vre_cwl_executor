@@ -42,9 +42,9 @@ steps:
 hints:
   dep:Dependencies:
     dependencies:
-    - upstream: https://raw.githubusercontent.com/ibisba/RetroPath2-cwl/0.0.1/tools/RetroPath2.cwl
+    - upstream: https://github.com/ibisba/test-cwl/blob/master/tools/RetroPath2/RetroPath2.cwl
       installTo: ../tools/RetroPath2
-    - upstream: https://raw.githubusercontent.com/ibisba/rp2paths-cwl/1.0.2-1/tools/rp2paths.cwl
+    - upstream: https://github.com/ibisba/test-cwl/blob/master/tools/rp2paths/rp2paths.cwl
       installTo: ../tools/rp2paths
 $namespaces:
   dep: http://commonwl.org/cwldep#
