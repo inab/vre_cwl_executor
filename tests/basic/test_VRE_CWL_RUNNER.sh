@@ -8,14 +8,11 @@
 ###
 
 # Local installation - EDIT IF REQUIRED
-
-WORKING_DIR=/home/$USER/PycharmProjects/vre_cwl_executor/tests/basic/run000
-TOOL_EXECUTABLE=/home/$USER/PycharmProjects/vre_cwl_executor/VRE_CWL_RUNNER
-
-# Test input files
-
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 TEST_DATA_DIR=$CWD
+WORKING_DIR=$TEST_DATA_DIR/run000
+TOOL_EXECUTABLE=$TEST_DATA_DIR/../../VRE_CWL_RUNNER
 
 # Running cwl_wrapper_test tool
 
