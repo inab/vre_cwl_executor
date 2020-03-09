@@ -1,8 +1,0 @@
-  input_reads: 
-    class: File
-    location: /home/laura/PycharmProjects/vre_cwl_executor/tests/basic/NA12878.bam
-  biospecimen_name: "hg38"
-  output_basename: "mytest"
-  indexed_reference_fasta:
-    class: File 
-    location: /home/laura/PycharmProjects/vre_cwl_executor/tests/basic/hg38.fa

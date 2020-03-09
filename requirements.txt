@@ -1,2 +1,6 @@
+PyYAML
+wheel
 pylint
 pytest
+cwltool
+git+https://github.com/inab/openvre-tool-api.git

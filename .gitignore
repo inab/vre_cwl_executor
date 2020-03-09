@@ -15,3 +15,4 @@ env/*
 *.bam
 /venv
 /VRE_CWL_RUNNER.log
+.idea

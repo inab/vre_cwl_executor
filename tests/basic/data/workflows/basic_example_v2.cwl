@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_optimized_wf
+label: kf_alignment_optimized_wf
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
@@ -12,7 +12,9 @@ inputs:
   indexed_reference_fasta: File
 
 outputs:
-  test: {type: 'File[]', outputSource: samtools_split/bam_files}
+  test:
+    type: 'File[]'
+    outputSource: samtools_split/bam_files
 
 steps:
   samtools_split:
