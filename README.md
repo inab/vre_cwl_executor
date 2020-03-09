@@ -24,25 +24,22 @@ Remember to add your username to the `docker` group.
 
     - Python 3.6 or +
     - Python3.6-pip, Python3.6-dev and Python3.6-venv or +
-    - mg-tool-api: https://github.com/Multiscale-Genomics/mg-tool-api.git
-    - cwltool: https://github.com/common-workflow-language/cwltool.git
-
 ## Installation
 
 Directly from GitHub:
 
 ```bash
-cd ${HOME}
+cd $HOME
 
 git clone https://github.com/inab/vre_cwl_executor.git
 
 cd vre_cwl_executor
 ```
 
-Create the Python environment
+Create the Python environment:
 
 ```bash
-python3 -m venv ${HOME}/vre_cwl_executor/venv
+python3 -m venv $HOME/vre_cwl_executor/venv
 source venv/bin/activate
 pip install -r requirements.txt
 ```

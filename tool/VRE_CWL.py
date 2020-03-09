@@ -17,25 +17,26 @@
    limitations under the License.
 """
 import os
-import subprocess
 import time
 
 from basic_modules.metadata import Metadata
-from utils import logger
 from basic_modules.tool import Tool
+from utils import logger
+
+from lib.cwl import CWL
 
 
 class WF_RUNNER(Tool):
     """
     Tool for writing to a file
     """
-    MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url', 'cwl_wf_tag'}  # arguments from config.json
+    MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
 
     def __init__(self, configuration=None):
         """
         Init function
         """
-        logger.info("VRE CWL Workflow runner")
+        logger.debug("VRE CWL Workflow runner")
         Tool.__init__(self)
 
         if configuration is None:
@@ -50,16 +51,23 @@ class WF_RUNNER(Tool):
 
         self.populable_outputs = {}
 
-    def execute_cwl_workflow(self):  # pylint: disable=no-self-use
+    def execute_cwl_workflow(self, input_metadata, arguments, working_directory):  # pylint: disable=no-self-use
         """
         The main function to run the remote CWL workflow
+
+        :param input_metadata: Matching metadata for each of the files, plus any additional data.
+        :type input_metadata: dict
+        :param arguments: dict containing tool arguments
+        :type arguments: dict
+        :param working_directory: Execution working path directory
+        :type working_directory: str
         """
         try:
             logger.debug("Getting the CWL workflow file")
             cwl_wf_url = self.configuration.get('cwl_wf_url')
-            cwl_wf_tag = self.configuration.get('cwl_wf_tag')
-            if (cwl_wf_url is None) or (cwl_wf_tag is None):
-                errstr = "Both 'cwl_wf_url' and 'cwl_wf_tag' parameters must be defined"
+
+            if cwl_wf_url is None:
+                errstr = "cwl_wf_url parameter must be defined"
                 logger.fatal(errstr)
                 raise Exception(errstr)
 
@@ -69,12 +77,11 @@ class WF_RUNNER(Tool):
                 if conf_key not in self.MASKED_KEYS:
                     variable_params.append((conf_key, self.configuration[conf_key]))
 
-            logger.info("3) Pack information to YAML or JSON")
-            cwl_wf_input_yml_path = "{}/PycharmProjects/vre_cwl_executor/tests/basic/input_basic_example.yml".format(os.environ['HOME'])
+            logger.info("3) Pack information to YAML")
+            cwl_wf_input_yml_path = working_directory + "/inputs_cwl.yml"
+            CWL.create_input_cwl(input_metadata, arguments, cwl_wf_input_yml_path)
 
-            logger.debug("Starting cwltool execution")
-            process = subprocess.Popen(["cwltool", cwl_wf_url, cwl_wf_input_yml_path], stdout=subprocess.PIPE,
-                                       stderr=subprocess.PIPE)
+            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url)
 
             # Sending the stdout to the log file
             for line in iter(process.stderr.readline, b''):
@@ -112,6 +119,8 @@ class WF_RUNNER(Tool):
         try:
             # Set and check execution directory. If not exists the directory will be created.
             execution_path = os.path.abspath(self.configuration.get('execution', '.'))
+            if not os.path.isdir(execution_path):
+                os.makedirs(execution_path)
             execution_parent_dir = os.path.dirname(execution_path)
             if not os.path.isdir(execution_parent_dir):
                 os.makedirs(execution_parent_dir)
@@ -121,6 +130,9 @@ class WF_RUNNER(Tool):
             logger.debug("Execution path: {}".format(execution_path))
 
             # Set file names for output files (with random name if not predefined)
+
+            print(output_files)
+
             for key in output_files.keys():
                 if output_files[key] is not None:
                     pop_output_path = os.path.abspath(output_files[key])
@@ -132,13 +144,17 @@ class WF_RUNNER(Tool):
                     raise Exception(errstr)
 
             logger.debug("Init execution of the CWL Workflow")
-            self.execute_cwl_workflow()
+            self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
 
             output_metadata = dict()
             for key in output_files.keys():
                 if os.path.isfile(output_files[key]):
                     meta = Metadata()
                     meta.file_path = output_files[key]  # Set file_path for output files
+
+                    # set data_type and file_type
+                    meta.data_type = "sequence_dna"
+                    meta.file_type = "BAM"
 
                     # Set sources for output files
                     meta_sources_list = list()
@@ -153,7 +169,6 @@ class WF_RUNNER(Tool):
                     logger.warning("Output {} not found. Path {} not exists".format(key, output_files[key]))
 
             logger.debug("Output metadata created")
-
             return output_files, output_metadata
 
         except:

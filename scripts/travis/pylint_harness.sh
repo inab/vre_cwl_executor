@@ -17,14 +17,12 @@
 
 disabled="--disable=similarities,invalid-name,too-many-statements,too-many-arguments,too-many-locals,too-few-public-methods,relative-import,no-self-use"
 
-pylint ${disabled} --rcfile pylintrc vre_cwl_executor/ > output.err
+pylint ${disabled} --rcfile pylintrc vre_cwl_executor/ >output.err
 
-grep -v "\-\-\-\-\-\-\-\-\-" output.err | grep -v "Your code has been rated" | grep -v "\n\n" | sed '/^$/d' > pylint.err
+grep -v "\-\-\-\-\-\-\-\-\-" output.err | grep -v "Your code has been rated" | grep -v "\n\n" | sed '/^$/d' >pylint.err
 
-
-if [ -s pylint.err ]
-then
-    cat pylint.err
-    rm pylint.err
-    exit 1
+if [ -s pylint.err ]; then
+  cat pylint.err
+  rm pylint.err
+  exit 1
 fi
