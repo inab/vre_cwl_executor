@@ -4,3 +4,4 @@ pylint
 pytest
 cwltool
 git+https://github.com/inab/openvre-tool-api.git
+git+https://github.com/common-workflow-language/cwl-utils.git
