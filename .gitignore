@@ -10,7 +10,7 @@ env/*
 .cache
 .pytest_cache
 /tests/basic/data/tmp
-/tests/basic/run000
+/tests/basic/run00*
 *.fa
 *.bam
 /venv
