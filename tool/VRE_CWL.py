@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 """
 .. See the NOTICE file distributed with this work for additional information
@@ -129,10 +129,15 @@ class WF_RUNNER(Tool):
             os.chdir(execution_path)
             logger.debug("Execution path: {}".format(execution_path))
 
+            logger.debug("Init execution of the CWL Workflow")
+            self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
+
             # Set file names for output files (with random name if not predefined)
 
-            print(output_files)
+            # discover list of outs
+            # aixo es output_files !!!!!
 
+            # outs list read from config: from basename to absolute path
             for key in output_files.keys():
                 if output_files[key] is not None:
                     pop_output_path = os.path.abspath(output_files[key])
@@ -143,9 +148,7 @@ class WF_RUNNER(Tool):
                     logger.error(errstr)
                     raise Exception(errstr)
 
-            logger.debug("Init execution of the CWL Workflow")
-            self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
-
+            # annotate list of outs
             output_metadata = dict()
             for key in output_files.keys():
                 if os.path.isfile(output_files[key]):
@@ -169,6 +172,7 @@ class WF_RUNNER(Tool):
                     logger.warning("Output {} not found. Path {} not exists".format(key, output_files[key]))
 
             logger.debug("Output metadata created")
+
             return output_files, output_metadata
 
         except:

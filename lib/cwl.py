@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
 """
 .. See the NOTICE file distributed with this work for additional information
@@ -66,6 +66,9 @@ class CWL:
 
     @staticmethod
     def execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url):
+        """
+
+        """
         logger.debug("Starting cwltool execution")
         process = subprocess.Popen(["cwltool", cwl_wf_url, cwl_wf_input_yml_path], stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
