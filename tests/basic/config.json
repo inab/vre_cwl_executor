@@ -27,10 +27,6 @@
             "value": "hg38"
         },
         {
-            "name": "output_basename",
-            "value": "mytest"
-        },
-        {
             "name": "cwl_wf_url",
             "value": "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example.cwl"
         },
