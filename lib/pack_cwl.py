@@ -148,7 +148,7 @@ def read_config_from_cwl_file(cwl_file):
 
 
 if __name__ == '__main__':
-    basic_cwl_path = "/home/laura/PycharmProjects/vre_cwl_executor/tests/basic/data/workflows/basic_example_v2.cwl"
+    basic_cwl_path = "/home/laura/PycharmProjects/vre_cwl_executor/tests/basic/data/workflows/basic_example_test.cwl"
     cwl_path = "/home/laura/PycharmProjects/vre_cwl_executor/tests/basic/data/workflows/rp2-to-rp2path_modified.cwl"
     # resolve_and_validate(basic_cwl_path)
     pack_cwl(basic_cwl_path)
