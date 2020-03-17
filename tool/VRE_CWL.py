@@ -102,7 +102,7 @@ class WF_RUNNER(Tool):
             logger.error(errstr)
             raise Exception(errstr)
 
-    def run(self, input_files, input_metadata, output_files):
+    def run(self, input_files, input_metadata, output_files, output_metadata):
         """
         The main function to run the compute_metrics tool.
 
@@ -132,11 +132,6 @@ class WF_RUNNER(Tool):
             logger.debug("Init execution of the CWL Workflow")
             self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
 
-            # Set file names for output files (with random name if not predefined)
-
-            # discover list of outs
-            # aixo es output_files !!!!!
-
             # outs list read from config: from basename to absolute path
             for key in output_files.keys():
                 if output_files[key] is not None:
@@ -148,32 +143,58 @@ class WF_RUNNER(Tool):
                     logger.error(errstr)
                     raise Exception(errstr)
 
+            # Create output metadata
+            # TODO create method
+            output_metadata_tmp = dict()
+            for output in output_metadata:
+                name = output["name"]
+                meta = Metadata()
+
+                # if os.path.isfile(output_files[name]):
+                # else:
+                #     logger.warning("Output {} not found. Path {} not exists".format(key, output_files[key]))
+                meta.file_path = output["file"].get("file_path", None)  # Set file_path for output files
+                # if multiple files is True or False conditions
+
+                meta.data_type = output["file"].get("data_type", None)
+                meta.file_type = output["file"].get("file_type", None)
+
+                # Set sources for output files
+                meta_sources_list = list()
+                for input_name in input_metadata.keys():
+                    meta_sources_list.append(input_metadata[input_name].file_path)
+                meta.sources = meta_sources_list
+                meta.meta_data = output["file"].get("meta_data", None)
+
+                # Append new element in output metadata
+                output_metadata_tmp.update({name: meta})
+
             # annotate list of outs
-            output_metadata = dict()
-            for key in output_files.keys():
-                if os.path.isfile(output_files[key]):
-                    meta = Metadata()
-                    meta.file_path = output_files[key]  # Set file_path for output files
+            # output_metadata_tmp = dict()
+            # for key in output_files.keys():
+            #     if os.path.isfile(output_files[key]):
+            #         meta = Metadata()
+            #         meta.file_path = output_files[key]  # Set file_path for output files
+            #
+            #         # set data_type and file_type
+            #         meta.data_type = "sequence_dna"
+            #         meta.file_type = "BAM"
+            #
+            #         # Set sources for output files
+            #         meta_sources_list = list()
+            #         for input_name in input_metadata.keys():
+            #             meta_sources_list.append(input_metadata[input_name].file_path)
+            #         meta.sources = meta_sources_list
+            #
+            #         # Append new element in output metadata
+            #         output_metadata_tmp.update({key: meta})
+            #
+            #     else:
+            #         logger.warning("Output {} not found. Path {} not exists".format(key, output_files[key]))
+            #
+            # logger.debug("Output metadata created")
 
-                    # set data_type and file_type
-                    meta.data_type = "sequence_dna"
-                    meta.file_type = "BAM"
-
-                    # Set sources for output files
-                    meta_sources_list = list()
-                    for input_name in input_metadata.keys():
-                        meta_sources_list.append(input_metadata[input_name].file_path)
-                    meta.sources = meta_sources_list
-
-                    # Append new element in output metadata
-                    output_metadata.update({key: meta})
-
-                else:
-                    logger.warning("Output {} not found. Path {} not exists".format(key, output_files[key]))
-
-            logger.debug("Output metadata created")
-
-            return output_files, output_metadata
+            return output_files, output_metadata_tmp
 
         except:
             errstr = "VRE CWL RUNNER pipeline failed. See logs"

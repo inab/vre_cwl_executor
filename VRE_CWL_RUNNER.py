@@ -31,6 +31,7 @@ class process_WF_RUNNER(Workflow):
     """
 
     configuration = {}
+    output = {}
 
     def __init__(self, configuration=None):
         """
@@ -46,7 +47,7 @@ class process_WF_RUNNER(Workflow):
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, metadata, output_files):
+    def run(self, input_files, metadata, output_files, output_metadata):
         """
         Main run function for processing a test file.
 
@@ -62,7 +63,7 @@ class process_WF_RUNNER(Workflow):
         try:
             logger.debug("Initialise the CWL Test Tool")
             tt_handle = WF_RUNNER(self.configuration)
-            tt_files, tt_meta = tt_handle.run(input_files, metadata, output_files)
+            tt_files, tt_meta = tt_handle.run(input_files, metadata, output_files, output_metadata)
             return tt_files, tt_meta
 
         except Exception as error:
