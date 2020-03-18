@@ -10,7 +10,6 @@
             "sec": 1578413024,
             "usec": 0
         },
-        "taxon_id": "9606",
         "meta_data": {
             "type": "file",
             "size": 0,
@@ -24,7 +23,6 @@
                 "sec": 1578413024,
                 "usec": 0
             },
-            "taxon_id": "9606",
             "assembly": "hg38",
             "paired": "paired",
             "sorted": "sorted"
@@ -42,7 +40,6 @@
             "sec": 1578413024,
             "usec": 0
         },
-        "taxon_id": "9606",
         "meta_data": {
             "type": "file",
             "size": 0,
