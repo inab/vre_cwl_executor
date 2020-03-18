@@ -174,34 +174,27 @@ class WF_RUNNER(Tool):
             output_metadata = dict()
             for output_file in metadata:
                 output_filename = output_file["name"]
-                if output_filename not in output_file.keys():
-                    meta = Metadata()
+                meta = Metadata()
 
-                    if output_file["allow_multiple"]:
-                        pass
+                # Set file_path for output files
+                meta.file_path = output_file["file"].get("file_path", None) + "hehe"
 
-                    else:
-                        # if os.path.isfile(output_files[name]):
-                        # else:
-                        #     logger.warning("Output {} not found. Path {} not exists".format(key, output_files[key]))
-                        meta.file_path = output_file["file"].get("file_path", None)  # Set file_path for output files
+                # Set data and file types of output_file
+                meta.data_type = output_file["file"].get("data_type", None)
+                meta.file_type = output_file["file"].get("file_type", None)
 
-                        # Set data and file types of output_file
-                        meta.data_type = output_file["file"].get("data_type", None)
-                        meta.file_type = output_file["file"].get("file_type", None)
+                # Set sources for output file from input_metadata
+                meta_sources_list = list()
+                for input_name in input_metadata.keys():
+                    meta_sources_list.append(input_metadata[input_name].file_path)
 
-                        # Set sources for output file from input_metadata
-                        meta_sources_list = list()
-                        for input_name in input_metadata.keys():
-                            meta_sources_list.append(input_metadata[input_name].file_path)
+                meta.sources = meta_sources_list
 
-                        meta.sources = meta_sources_list
+                # Set output file metadata
+                meta.meta_data = output_file["file"].get("meta_data", None)
 
-                        # Set output file metadata
-                        meta.meta_data = output_file["file"].get("meta_data", None)
-
-                        # Add new element in output_metadata
-                        output_metadata.update({output_filename: meta})
+                # Add new element in output_metadata
+                output_metadata.update({output_filename: meta})
 
             return output_metadata
 
