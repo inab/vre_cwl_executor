@@ -22,7 +22,6 @@ import time
 from basic_modules.metadata import Metadata
 from basic_modules.tool import Tool
 from utils import logger
-
 from lib.cwl import CWL
 
 
@@ -103,7 +102,7 @@ class WF_RUNNER(Tool):
             logger.error(errstr)
             raise Exception(errstr)
 
-    def run(self, input_files, input_metadata, output_files, metadata):
+    def run(self, input_files, input_metadata, output_files, output_metadata):
         """
         The main function to run the compute_metrics tool.
 
@@ -113,8 +112,8 @@ class WF_RUNNER(Tool):
         :type input_metadata: dict
         :param output_files: List of the output files that are to be generated.
         :type output_files: dict
-        :param metadata: List of matching metadata for the output files
-        :type metadata: list
+        :param output_metadata: List of matching metadata for the output files
+        :type output_metadata: list
         :return: List of files with a single entry (output_files), List of matching metadata for the returned files
         (output_metadata).
         :rtype: dict, dict
@@ -149,7 +148,7 @@ class WF_RUNNER(Tool):
                     raise Exception(errstr)
 
             # Create output metadata
-            output_metadata = self.create_output_metadata(input_metadata, metadata)
+            output_metadata = self.create_output_metadata(input_metadata, output_metadata)
 
             return output_files, output_metadata
 
@@ -159,25 +158,25 @@ class WF_RUNNER(Tool):
             raise Exception(errstr)
 
     @staticmethod
-    def create_output_metadata(input_metadata, metadata):
+    def create_output_metadata(input_metadata, output_metadata):
         """
         Create returned output metadata from input metadata and output metadata from output files.
 
         :param input_metadata: Matching metadata for each of the files, plus any additional data.
         :type input_metadata: dict
-        :param metadata: List of matching metadata for the output files
-        :type metadata: list
-        :return: List of matching metadata for the returned files (output_metadata).
+        :param output_metadata: List of matching metadata for the output files
+        :type output_metadata: list
+        :return: List of matching metadata for the returned files (result).
         :rtype: dict
         """
         try:
-            output_metadata = dict()
-            for output_file in metadata:
+            result = dict()
+            for output_file in output_metadata:  # for each output file
                 output_filename = output_file["name"]
                 meta = Metadata()
 
                 # Set file_path for output files
-                meta.file_path = output_file["file"].get("file_path", None) + "hehe"
+                meta.file_path = output_file["file"].get("file_path", None)
 
                 # Set data and file types of output_file
                 meta.data_type = output_file["file"].get("data_type", None)
@@ -194,9 +193,10 @@ class WF_RUNNER(Tool):
                 meta.meta_data = output_file["file"].get("meta_data", None)
 
                 # Add new element in output_metadata
-                output_metadata.update({output_filename: meta})
+                result.update({output_filename: meta})
 
-            return output_metadata
+            logger.debug("Output metadata created.")
+            return result
 
         except:
             errstr = "Output metadata not created. See logs"
