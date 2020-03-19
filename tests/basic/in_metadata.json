@@ -53,7 +53,6 @@
                 "sec": 1578413024,
                 "usec": 0
             },
-            "taxon_id": "9606",
             "assembly": "hg38",
             "paired": "paired",
             "sorted": "sorted"
