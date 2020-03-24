@@ -26,7 +26,7 @@ import tool.VRE_CWL
 
 class CWL:
     """
-
+    Create YAML file from config.json and input_metadata.json
     """
 
     @staticmethod
@@ -41,16 +41,20 @@ class CWL:
         :param filename_path: Working YAML file path directory
         :type filename_path: str
         """
+        # {'input_reads': ['file', < basic_modules.metadata.Metadata object at
+        #  0x10cd7b3c8 >], 'indexed_reference_fasta': ['file', < basic_modules.metadata.Metadata
+        # object
+        # at
+        # 0x10cd7b390 >]})
         try:
             input_cwl = {}
-            for item in input_metadata.items():  # add metadata inputs
-                name = str(item[0])
-                data_type = str(item[1].meta_data["type"])
+            for key, value in input_metadata.items():  # add metadata inputs
+                data_type = value[0]
                 if data_type == "file":  # mapping
                     data_type = data_type.replace("f", "F")
 
-                file_path = str(item[1].file_path)
-                input_cwl.update({name: {"class": data_type, "location": file_path}})
+                file_path = str(value[1].file_path)
+                input_cwl.update({key: {"class": data_type, "location": file_path}})
 
             for key, value in arguments.items():  # add arguments
                 if key not in tool.VRE_CWL.WF_RUNNER.MASKED_KEYS:
@@ -67,7 +71,13 @@ class CWL:
     @staticmethod
     def execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url):
         """
+        cwltool execution process with the workflow specified by cwl_wf_url and YAML file path cwl_wf_input_yml_path
+        specified by cwl_wf_input_yml_path, created from config.json and input_metadata.json
 
+        :param cwl_wf_input_yml_path: CWL workflow in YAML format
+        :type cwl_wf_input_yml_path: str
+        :param cwl_wf_url: URL for the location of the workflow
+        :type cwl_wf_url: str
         """
         logger.debug("Starting cwltool execution")
         process = subprocess.Popen(["cwltool", cwl_wf_url, cwl_wf_input_yml_path], stdout=subprocess.PIPE,

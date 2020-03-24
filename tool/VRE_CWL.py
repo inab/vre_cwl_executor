@@ -185,7 +185,7 @@ class WF_RUNNER(Tool):
                 # Set sources for output file from input_metadata
                 meta_sources_list = list()
                 for input_name in input_metadata.keys():
-                    meta_sources_list.append(input_metadata[input_name].file_path)
+                    meta_sources_list.append(input_metadata[input_name][1].file_path)
 
                 meta.sources = meta_sources_list
 
