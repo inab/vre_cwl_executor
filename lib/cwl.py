@@ -41,11 +41,6 @@ class CWL:
         :param filename_path: Working YAML file path directory
         :type filename_path: str
         """
-        # {'input_reads': ['file', < basic_modules.metadata.Metadata object at
-        #  0x10cd7b3c8 >], 'indexed_reference_fasta': ['file', < basic_modules.metadata.Metadata
-        # object
-        # at
-        # 0x10cd7b390 >]})
         try:
             input_cwl = {}
             for key, value in input_metadata.items():  # add metadata inputs
