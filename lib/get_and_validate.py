@@ -18,17 +18,16 @@
 """
 from __future__ import absolute_import
 
-import json
 import os
 import ssl
 
+# change only for OSX
 ssl._create_default_https_context = ssl._create_unverified_context
 
 from urllib import request
 from shutil import copyfileobj
 from cwltool.load_tool import fetch_document
 from cwltool.load_tool import resolve_and_validate_document
-from cwltool.main import print_pack
 
 
 def fetch_and_validate_cwl(cwl_wf):
@@ -46,33 +45,11 @@ def fetch_and_validate_cwl(cwl_wf):
         # validate CWL workflow
         loadingContext, uri = resolve_and_validate_document(loadingContext, workflowobj, uri)
         processobj = loadingContext.loader.resolve_ref(uri)[0]
+        print("{} is valid CWL.".format(cwl_wf))
         return loadingContext, uri, processobj
 
     except Exception as error:
         errstr = "Unable to fetch and validate the CWL workflow. ERROR: {}".format(error)
-        raise Exception(errstr)
-
-
-def pack_cwl(cwl_wf):
-    """
-    Combine a workflow specified by cwl_wf made up of multiple files into single compound CWL workflow. This method
-    takes all the CWL workflow files referenced by a workflow and builds a new CWL workflow with all Process objects
-    (CommandLineTool and Workflow) in a list in the $graph field. Cross references (such as "run:" and "source:" fields)
-
-    :param cwl_wf: CWL workflow
-    :type cwl_wf: str
-    :return: CWL serialization of the CWL workflow in JSON
-    """
-    try:
-        # fetch and validate the CWL workflow
-        loadingContext, uri, processobj = fetch_and_validate_cwl(cwl_wf)
-
-        # CWL serialization of the CWL workflow in JSON
-        packed_cwl = json.loads(print_pack(loadingContext.loader, processobj, uri, loadingContext.metadata))
-        return json.dumps(packed_cwl, indent=4)
-
-    except Exception as error:
-        errstr = "Unable to pack the CWL workflow. ERROR: {}".format(error)
         raise Exception(errstr)
 
 
@@ -114,9 +91,9 @@ if __name__ == '__main__':
 
     # file
     cwl_path = workflows_path + "basic_example.cwl"
-    print(pack_cwl(cwl_path))
+    print(fetch_and_validate_cwl(cwl_path))
 
     # url
-    cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example.cwl"
+    cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example_v2.cwl"
     cwl_path = download_cwl(cwl_url, workflows_path)
-    print(pack_cwl(cwl_path))
+    print(fetch_and_validate_cwl(cwl_path))
