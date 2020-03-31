@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-label: kf_alignment_optimized_wf
+id: kf_alignment_optimized_wf
 requirements:
   - class: ScatterFeatureRequirement
   - class: MultipleInputFeatureRequirement
