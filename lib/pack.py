@@ -89,13 +89,14 @@ def download_cwl(url, path):
 
 
 if __name__ == '__main__':
-    workflows_path = "/Users/laurarodrigueznavas/BSC/vre_cwl_executor/tests/basic/data/workflows/"
+    abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    filepath = abspath + "/tests/basic/data/workflows/"
 
     # file
-    cwl_path = workflows_path + "basic_example.cwl"
+    cwl_path = filepath + "basic_example.cwl"
     print(pack_cwl(cwl_path))
 
     # url
     cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example_v2.cwl"
-    cwl_path = download_cwl(cwl_url, workflows_path)
+    cwl_path = download_cwl(cwl_url, filepath)
     print(pack_cwl(cwl_path))
