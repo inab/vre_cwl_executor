@@ -1,0 +1,101 @@
+{
+  "@context": "https://w3id.org/ro/crate/1.0/context",
+  "@graph": [
+    {
+      "@id": "ro-crate-metadata.jsonld",
+      "@type": "CreativeWork",
+      "about": {
+        "@id": "./"
+      }
+    },
+    {
+      "@id": "ro-crate-preview.html",
+      "@type": "CreativeWork",
+      "about": {
+        "@id": "./"
+      }
+    },
+    {
+      "@id": "./",
+      "@type": "Dataset",
+      "name": "TransDecoder-v5-wf-2steps",
+      "description": "TransDecoder 2 step workflow, running TransDecoder.LongOrfs (step 1) followed by TransDecoder.Predict (step2)",
+      "license": "https://www.apache.org/licenses/LICENSE-2.0",
+      "author": "Maxim Scheremetjew",
+      "publisher": "EMBL - European Bioinformatics Institute, 2018",
+      "url": "https://github.com/EBI-Metagenomics/workflow-is-cwl/blob/master/workflows/TransDecoder-v5-wf-2steps.cwl",
+      "mainEntity": {
+        "@id": "workflows/TransDecoder-v5-wf-2steps.cwl"
+      },
+      "hasPart": [
+        {
+          "@id": "workflows/TransDecoder-v5-wf-2steps.cwl"
+        },
+        {
+          "@id": "diagram.svg"
+        },
+        {
+          "@id": "tools/TransDecoder/TransDecoder.LongOrfs-v5.cwl"
+        },
+        {
+          "@id": "tools/TransDecoder/TransDecoder-v5-genetic_codes.yaml"
+        },
+        {
+          "@id": "tools/TransDecoder/TransDecoder.Predict-v5.cwl"
+        }
+      ]
+    },
+    {
+      "@id": "workflows/TransDecoder-v5-wf-2steps.cwl",
+      "@type": [
+        "File",
+        "SoftwareSourceCode",
+        "Workflow"
+      ],
+      "programmingLanguage": {
+        "@id": "#cwl"
+      },
+      "name": "TransDecoder-v5-wf-2steps",
+      "contentSize": 1547,
+      "image": {
+        "@id": "diagram.svg"
+      }
+    },
+    {
+      "@id": "diagram.svg",
+      "@type": [
+        "File",
+        "ImageObject",
+        "WorkflowSketch"
+      ],
+      "contentSize": 7863
+    },
+    {
+      "@id": "tools/TransDecoder/TransDecoder.LongOrfs-v5.cwl",
+      "@type": "File",
+      "contentSize": 3920
+    },
+    {
+      "@id": "tools/TransDecoder/TransDecoder-v5-genetic_codes.yaml",
+      "@type": "File",
+      "contentSize": 415
+    },
+    {
+      "@id": "tools/TransDecoder/TransDecoder.Predict-v5.cwl",
+      "@type": "File",
+      "contentSize": 5722
+    },
+    {
+      "@id": "#cwl",
+      "@type": "ComputerLanguage",
+      "name": "Common Workflow Language",
+      "alternateName": "CWL",
+      "identifier": {
+        "@id": "https://w3id.org/cwl/v1.0/"
+      },
+      "url": {
+        "@id": "https://www.commonwl.org/"
+      }
+    }
+  ]
+}
