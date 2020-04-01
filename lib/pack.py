@@ -96,7 +96,10 @@ if __name__ == '__main__':
     cwl_path = filepath + "basic_example.cwl"
     print(pack_cwl(cwl_path))
 
-    # url
+    # validate url
     cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example_v2.cwl"
+    print(pack_cwl(cwl_url))
+
+    # validate file downloaded from url
     cwl_path = download_cwl(cwl_url, filepath)
     print(pack_cwl(cwl_path))
