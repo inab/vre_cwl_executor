@@ -22,35 +22,14 @@ import json
 import os
 import ssl
 
+from lib.get_and_validate import fetch_and_validate_cwl
+
+# change only for OSX
 ssl._create_default_https_context = ssl._create_unverified_context
 
 from urllib import request
 from shutil import copyfileobj
-from cwltool.load_tool import fetch_document
-from cwltool.load_tool import resolve_and_validate_document
 from cwltool.main import print_pack
-
-
-def fetch_and_validate_cwl(cwl_wf):
-    """
-    Retrieve and validate a CWL workflow specified by cwl_wf
-
-    :param cwl_wf: CWL workflow
-    :type cwl_wf: str
-    """
-    try:
-        # fetch CWL workflow
-        loadingContext, workflowobj, uri = fetch_document(cwl_wf)
-        loadingContext.do_update = False
-
-        # validate CWL workflow
-        loadingContext, uri = resolve_and_validate_document(loadingContext, workflowobj, uri)
-        processobj = loadingContext.loader.resolve_ref(uri)[0]
-        return loadingContext, uri, processobj
-
-    except Exception as error:
-        errstr = "Unable to fetch and validate the CWL workflow. ERROR: {}".format(error)
-        raise Exception(errstr)
 
 
 def pack_cwl(cwl_wf):
@@ -110,13 +89,17 @@ def download_cwl(url, path):
 
 
 if __name__ == '__main__':
-    workflows_path = "/Users/laurarodrigueznavas/BSC/vre_cwl_executor/tests/basic/data/workflows/"
+    abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    filepath = abspath + "/tests/basic/data/workflows/"
 
     # file
-    cwl_path = workflows_path + "basic_example.cwl"
+    cwl_path = filepath + "basic_example.cwl"
     print(pack_cwl(cwl_path))
 
-    # url
-    cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example.cwl"
-    cwl_path = download_cwl(cwl_url, workflows_path)
+    # validate url
+    cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example_v2.cwl"
+    print(pack_cwl(cwl_url))
+
+    # validate file downloaded from url
+    cwl_path = download_cwl(cwl_url, filepath)
     print(pack_cwl(cwl_path))
