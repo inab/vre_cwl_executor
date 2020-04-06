@@ -19,14 +19,11 @@
 from __future__ import absolute_import
 
 import os
-import ssl
-
-# change only for OSX
-ssl._create_default_https_context = ssl._create_unverified_context
 
 from cwltool.load_tool import fetch_document
 from cwltool.load_tool import resolve_and_validate_document
 from lib.dataset import urls
+from urllib import request
 
 
 def fetch_and_validate_cwl(cwl_wf):
@@ -58,6 +55,7 @@ if __name__ == '__main__':
 
     # validate local cwl
     cwl_path = localpath + "basic_example_v2.cwl"
+    print(cwl_path)
     print(fetch_and_validate_cwl(cwl_path))
 
     # validate remote cwl

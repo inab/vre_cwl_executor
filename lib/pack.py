@@ -20,13 +20,8 @@ from __future__ import absolute_import
 
 import json
 import os
-import ssl
 
 from lib.fetch_and_validate import fetch_and_validate_cwl
-
-# change only for OSX
-ssl._create_default_https_context = ssl._create_unverified_context
-
 from cwltool.main import print_pack
 from lib.dataset import urls
 
