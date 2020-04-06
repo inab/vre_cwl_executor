@@ -26,37 +26,37 @@ import shutil
 from cwltool.load_tool import make_tool
 from cwltool.workflow import default_make_tool
 
-from lib.get_and_validate import fetch_and_validate_cwl, download_cwl
+from lib.fetch_and_validate import fetch_and_validate_cwl, download_cwl
 
 
-def extract_data_from_cwl(cwl_url):
+def extract_data_from_cwl(cwlUrl):
     """
     Get inputs, outputs and list of tools from CWL.
 
-    :param cwl_url: URL of CWL document
-    :type cwl_url: str
+    :param cwlUrl: URL of CWL document
+    :type cwlUrl: str
     :return: inputs, outputs and list of CWL workflow dependencies
     :rtype: list, list, list
     """
     try:
-        tools = list()
-        loadingContext, uri, processobj = fetch_and_validate_cwl(cwl_url)
+        tools_list = list()
+        loadingContext, uri, processobj = fetch_and_validate_cwl(cwlUrl)
         cwl_document = make_tool(uri, loadingContext)
 
         inputs_list = json.dumps(cwl_document.inputs_record_schema["fields"], indent=4)
         outputs_list = json.dumps(cwl_document.outputs_record_schema["fields"], indent=4)
 
         for item in cwl_document.metadata["steps"]:
-            [tools.append(item[key]) for key in item.keys() if key == "run"]
+            [tools_list.append(item[key]) for key in item.keys() if key == "run"]
 
-        return inputs_list, outputs_list, tools
+        return inputs_list, outputs_list, tools_list
 
     except Exception as error:
         errstr = "Unable to extract inputs, outputs and the CWL workflow dependencies. ERROR: {}".format(error)
         raise Exception(errstr)
 
 
-def save_data(path, files):
+def save_cwl_data(path, files):
     """
     Download CWL workflow dependencies.
 
@@ -69,17 +69,22 @@ def save_data(path, files):
         if not os.path.isdir(path):
             os.makedirs(path)
 
-        # download dependencies
+        # download CWL workflow dependencies
         for cwl in files:
             download_cwl(cwl, path)
 
-        # zip downloaded dependencies
-        zipf = zipfile.ZipFile("bundle.zip", "w")
-        zipf.write(filepath, compress_type=zipfile.ZIP_DEFLATED)
-        zipf.close()
+        # create zip file of path
+        with zipfile.ZipFile("bundle.zip", "w") as zipf:
+            # iterate over all the files in the directory path
+            for foldername, subfolders, files in os.walk(path):
+                for file in files:
+                    # create complete filepath of file in files
+                    file_path = os.path.join(foldername, file)
+                    # add filename to zip
+                    zipf.write(file_path)
 
-        # remove temporal dir
-        shutil.rmtree(filepath)
+        # remove tmp directory
+        shutil.rmtree(path)
 
     except Exception as error:
         errstr = "Unable to save the CWL workflow dependencies. ERROR: {}".format(error)
@@ -91,8 +96,10 @@ if __name__ == '__main__':
     cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/trans_decoder/data/workflows/TransDecoder-v5-wf-2steps.cwl"
     cwl_demo = "https://raw.githubusercontent.com/inab/Wetlab2Variations/eosc-life/cwl-workflows/demonstrator/workflow_localfiles.cwl"
 
+    # extract data from CWL
     inputs, outputs, tools = extract_data_from_cwl(cwl_demo)
     print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n TOOLS:\n{2}".format(inputs, outputs, json.dumps(tools, indent=4)))
 
+    # compress data into zip file
     filepath = "/tmp/workflows/"
-    save_data(filepath, tools)
+    save_cwl_data(filepath, tools)

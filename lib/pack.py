@@ -22,7 +22,7 @@ import json
 import os
 import ssl
 
-from lib.get_and_validate import fetch_and_validate_cwl
+from lib.fetch_and_validate import fetch_and_validate_cwl
 
 # change only for OSX
 ssl._create_default_https_context = ssl._create_unverified_context
