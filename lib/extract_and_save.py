@@ -27,6 +27,7 @@ from cwltool.load_tool import make_tool
 from cwltool.workflow import default_make_tool
 
 from lib.fetch_and_validate import fetch_and_validate_cwl, download_cwl
+from lib.dataset import urls
 
 
 def extract_data_from_cwl(cwlUrl):
@@ -56,7 +57,7 @@ def extract_data_from_cwl(cwlUrl):
         raise Exception(errstr)
 
 
-def save_cwl_data(path, files):
+def save_data(path, files):
     """
     Download CWL workflow dependencies.
 
@@ -92,14 +93,10 @@ def save_cwl_data(path, files):
 
 
 if __name__ == '__main__':
-    basic_cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example_v2.cwl"
-    cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/trans_decoder/data/workflows/TransDecoder-v5-wf-2steps.cwl"
-    cwl_demo = "https://raw.githubusercontent.com/inab/Wetlab2Variations/eosc-life/cwl-workflows/demonstrator/workflow_localfiles.cwl"
-
     # extract data from CWL
-    inputs, outputs, tools = extract_data_from_cwl(cwl_demo)
+    inputs, outputs, tools = extract_data_from_cwl(urls["workflow_localfiles"])
     print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n TOOLS:\n{2}".format(inputs, outputs, json.dumps(tools, indent=4)))
 
     # compress data into zip file
     filepath = "/tmp/workflows/"
-    save_cwl_data(filepath, tools)
+    save_data(filepath, tools)

@@ -29,6 +29,8 @@ from shutil import copyfileobj
 from cwltool.load_tool import fetch_document
 from cwltool.load_tool import resolve_and_validate_document
 
+from lib.dataset import urls
+
 
 def fetch_and_validate_cwl(cwl_wf):
     """
@@ -95,7 +97,7 @@ if __name__ == '__main__':
     print(fetch_and_validate_cwl(cwl_path))
 
     # validate url
-    cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example_v2.cwl"
+    cwl_url = urls["basic_example_v2"]
     print(fetch_and_validate_cwl(cwl_url))
 
     # validate file downloaded from url

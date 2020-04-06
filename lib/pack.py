@@ -31,6 +31,8 @@ from urllib import request
 from shutil import copyfileobj
 from cwltool.main import print_pack
 
+from lib.dataset import urls
+
 
 def pack_cwl(cwl_wf):
     """
@@ -97,7 +99,7 @@ if __name__ == '__main__':
     print(pack_cwl(cwl_path))
 
     # validate url
-    cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example_v2.cwl"
+    cwl_url = urls["basic_example_v2"]
     print(pack_cwl(cwl_url))
 
     # validate file downloaded from url

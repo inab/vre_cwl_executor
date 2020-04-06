@@ -26,7 +26,7 @@ import tool.VRE_CWL
 
 class CWL:
     """
-    Create YAML file from config.json and input_metadata.json
+
     """
 
     @staticmethod
