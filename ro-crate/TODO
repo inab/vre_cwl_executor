@@ -1,4 +1,0 @@
-# To create packed.cwl
-
-cwltool --pack ../tests/basic/data/workflows/basic_example.cwl > packed.cwl
-cwltool --debug --provenance test packed.cwl#main --biospecimen_name "hg38" --indexed_reference_fasta ../tests/basic/hg38.fa --input_reads ../tests/basic/NA12878.bam --output_basename "mytest"
