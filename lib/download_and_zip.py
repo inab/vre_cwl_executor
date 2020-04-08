@@ -61,7 +61,7 @@ def zip_dir(path):
         raise Exception(errstr)
 
 
-def download_cwl(url, dependencies, path):
+def download_cwl(url, path, dependencies):
     """
     Download CWL workflow from URL specified by url and their dependencies
 
@@ -72,28 +72,33 @@ def download_cwl(url, dependencies, path):
     :param path: temporal directory path
     :type path: str
     """
-    dependencies.insert(0, cwl_url)  # insert cwl workflow first position in dependencies to download.
     try:
 
         if not os.path.exists(path):
             os.makedirs(path)
 
-        for item in dependencies:
-            validate_url(item)
-            cwl_name = item.rsplit('/', 1)[-1]
+        if url not in dependencies:
+            dependencies.insert(0, url)  # insert cwl workflow first position in dependencies to download
 
-            strts = "tools/"
-            if strts in item:   # add another directory if it is needed
-                new_path = os.path.join(path, strts)
-                if not os.path.exists(new_path):
-                    os.makedirs(new_path)
-                cwl_path = new_path + cwl_name
+        else:
 
-            else:
-                cwl_path = path + cwl_name
+            for item in dependencies:
+                validate_url(item)
+                cwl_name = item.rsplit('/', 1)[-1]
 
-            with request.urlopen(url) as url_response, open(cwl_path, 'wb') as download_file:
-                copyfileobj(url_response, download_file)
+                strts = "tools/"
+                if strts in item:   # add another directory if it is needed
+                    new_path = os.path.join(path, strts)
+                    if not os.path.exists(new_path):
+                        os.makedirs(new_path)
+
+                else:
+                    new_path = os.path.join(path, "workflows/")
+                    if not os.path.exists(new_path):
+                        os.makedirs(new_path)
+
+                with request.urlopen(item) as url_response, open(new_path + cwl_name, 'wb') as download_file:
+                    copyfileobj(url_response, download_file)
 
         print("Downloaded CWL workflow dependencies in {}.".format(path))
 
@@ -117,8 +122,8 @@ if __name__ == '__main__':
     print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=4)))
 
     # download cwl and dependencies
-    tmppath = "/tmp/workflows/"
-    download_cwl(cwl_url, tools, tmppath)
+    tmppath = "/tmp/data/"
+    download_cwl(cwl_url, tmppath, tools)
 
     # zip tmppath
     zip_dir(tmppath)

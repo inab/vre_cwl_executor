@@ -55,7 +55,6 @@ if __name__ == '__main__':
 
     # validate local cwl
     cwl_path = localpath + "basic_example_v2.cwl"
-    print(cwl_path)
     print(fetch_and_validate_cwl(cwl_path))
 
     # validate remote cwl
