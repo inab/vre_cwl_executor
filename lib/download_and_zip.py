@@ -19,6 +19,7 @@
 from __future__ import absolute_import
 
 import os
+import re
 import zipfile
 import shutil
 import ssl
@@ -53,8 +54,8 @@ def zip_dir(path, zipn):
 
         print("Created zip file {} of {}.".format(zipn, path))
 
-        print("Removed temporal dir {}.".format(path))
         shutil.rmtree(path)
+        print("Removed temporal dir {}.".format(path))
 
     except Exception as error:
         errstr = "Unable to zip the CWL workflow and their dependencies. ERROR: {}".format(error)
@@ -74,36 +75,51 @@ def download_cwl(url, path, dependencies):
     """
     try:
 
-        if not os.path.exists(path):
-            os.makedirs(path)
-
         if url not in dependencies:  # if main CWL workflow not in dependencies to download
             dependencies.insert(0, url)  # insert cwl workflow first position in dependencies to download
 
-        else:
+        for d in dependencies:  # for each dependency to download
+            validate_url(d)
 
-            for d in dependencies:  # for each dependency to download
-                validate_url(d)
-                cwl_name = d.rsplit('/', 1)[-1]
+            sub_path, sub_path_dir = create_path(d)
+            if not os.path.exists(path + sub_path_dir):  # create new path
+                os.makedirs(path + sub_path_dir)
 
-                global new_path
-                if "tools/" in d:  # add tools directory
-                    new_path = os.path.join(path, "tools/")
+            with request.urlopen(d) as url_response, open(path + sub_path, 'wb') as download_file:
+                shutil.copyfileobj(url_response, download_file)
 
-                elif "workflows/" in d:  # add workflow directory
-                    new_path = os.path.join(path, "workflows/")
-
-                if not os.path.exists(new_path):
-                    os.makedirs(new_path)
-
-                with request.urlopen(d) as url_response, open(new_path + cwl_name, 'wb') as download_file:
-                    shutil.copyfileobj(url_response, download_file)
-
-                print("Downloaded CWL workflow dependencies in {}.".format(path))
+            # print(path + sub_path)
+        print("Downloaded CWL workflow and their dependencies in {}.".format(path))
 
     except Exception as error:
-        errstr = "Unable to download the CWL workflow. ERROR: {}".format(error)
+        errstr = "Unable to download the CWL workflow and their dependencies. ERROR: {}".format(error)
         raise Exception(errstr)
+
+
+def create_path(dependency):
+    """
+    Create paths to save CWL dependencies
+
+    :param dependency: CWL dependency
+    :type: dependency: str
+    """
+    try:
+        global index
+        if "tools/" in dependency:  # folder tools
+            rule = re.search(r"\b(tools/)\b", dependency)
+            index = rule.start()
+
+        elif "workflows/" in dependency:  # folder workflow
+            rule = re.search(r"\b(workflows/)\b", dependency)
+            index = rule.start()
+
+        sub_path = dependency[index:]
+        sub_path_dir = os.path.dirname(dependency[index:])
+
+        return sub_path, sub_path_dir
+
+    except Exception:
+        raise AssertionError("Cannot create path for the provided dependency: {}".format(dependency))
 
 
 def validate_url(url):
@@ -114,7 +130,7 @@ def validate_url(url):
 
 
 if __name__ == '__main__':
-    cwl_url = urls["TransDecoder-v5-wf-2steps"]
+    cwl_url = urls["basic_example_v2"]
 
     # extract inputs, outputs, dependencies
     inputs, outputs, tools = extract_data_from_cwl(cwl_url)
