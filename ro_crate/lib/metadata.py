@@ -21,16 +21,13 @@ from __future__ import absolute_import
 import json
 import os
 import re
-
-# change only for OSX
+import requests
 import ssl
 
+# change only for OSX
 ssl._create_default_https_context = ssl._create_unverified_context
 
-from urllib import request
-from shutil import copyfileobj
 from lib.download_and_zip import download_cwl
-from lib.extract_data import extract_data_from_cwl
 
 ro_path = "/Users/laurarodrigueznavas/BSC/vre_cwl_executor/ro_crate/test/basic/data/ro-crate-metadata.jsonld"
 schema_path = "/Users/laurarodrigueznavas/BSC/vre_cwl_executor/ro_crate/test/basic/data/schema.jsonld"
@@ -49,38 +46,37 @@ class Metadata:
     def find_entity(identifier):
         for item in ro_crate["@graph"]:
             if item.get("@id", None) == identifier:
-                return item
+                return item  # CWL workflow
 
 
-meta = Metadata("./")
-url = meta.find_entity(meta.id)["url"]
-name = os.path.basename(meta.find_entity(meta.id)["mainEntity"]["@id"])
-print(name)
-elements = meta.find_entity(meta.id)["hasPart"]
-a = re.search(r"\b(workflows)\b", url)
-index = a.start()
+if __name__ == '__main__':
+    meta = Metadata("./")
+    url = meta.find_entity(meta.id)["url"]
+    elements = meta.find_entity(meta.id)["hasPart"]
 
-dependencies = list()
-for elem in elements:
-    if "workflows" in elem["@id"] or "tools" in elem["@id"]:
-        dependencies.append(url[:index] + elem["@id"])
-# print(dependencies)
+    rule = re.search(r"\b(workflows/)\b", url)
+    index = rule.start()
+    abs_path = url[:index]
+    sub_path = url[index:]
 
-print("https://raw.githubusercontent.com/EBI-Metagenomics/workflow-is-cwl/master/workflows/TransDecoder-v5-wf-2steps.cwl")
+    dependencies = list()
+    for elem in elements:
+        if "workflows" in elem["@id"] or "tools" in elem["@id"]:
+            path = abs_path + elem["@id"]
+            user = path.split("/")[3]
+            project = path.split("/")[4]
 
-import requests
+            url_raw = 'https://api.github.com/repos/{}/{}/contents/{}'.format(user, project, elem["@id"])
+            print(url_raw)
+            req = requests.get(url_raw)
+            if req.status_code == requests.codes.ok:
+                req = req.json()
+                dependencies.append(req["download_url"])
+            else:
+                print('Content was not found.')
 
-
-url = 'https://api.github.com/repos/EBI-Metagenomics/workflow-is-cwl/contents/workflows/TransDecoder-v5-wf-2steps.cwl'
-req = requests.get(url)
-if req.status_code == requests.codes.ok:
-    req = req.json()  # the response is a JSON
-    print(req["download_url"])
-else:
-    print('Content was not found.')
-
-
-
-
+    # download cwl and their dependencies
+    tmppath = "/tmp/data/"
+    download_cwl(dependencies[0], tmppath, dependencies)
 
 
