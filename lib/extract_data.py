@@ -19,12 +19,12 @@
 from __future__ import absolute_import
 
 import json
-import os
 
-from lib.fetch_and_validate import fetch_and_validate_cwl
-from lib.dataset import urls
 from cwltool.load_tool import make_tool
 from cwltool.workflow import default_make_tool
+
+from lib.dataset import urls
+from lib.fetch_and_validate import fetch_and_validate_cwl
 
 
 def extract_data_from_cwl(cwl_wf):
@@ -58,13 +58,13 @@ def extract_data_from_cwl(cwl_wf):
 
 
 if __name__ == '__main__':
-    abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    localpath = abspath + "/tests/basic/data/workflows/"
+    # abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    # localpath = abspath + "/tests/basic/data/workflows/"
 
     # local cwl
-    cwl_path = localpath + "basic_example_v2.cwl"
-    inputs, outputs, tools = extract_data_from_cwl(cwl_path)
-    print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=4)))
+    # cwl_path = localpath + "basic_example_v2.cwl"
+    # inputs, outputs, tools = extract_data_from_cwl(cwl_path)
+    # print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=4)))
 
     # remote cwl
     inputs, outputs, tools = extract_data_from_cwl(urls["workflow_localfiles"])

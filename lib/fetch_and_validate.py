@@ -18,12 +18,10 @@
 """
 from __future__ import absolute_import
 
-import os
-
 from cwltool.load_tool import fetch_document
 from cwltool.load_tool import resolve_and_validate_document
+
 from lib.dataset import urls
-from urllib import request
 
 
 def fetch_and_validate_cwl(cwl_wf):
@@ -50,12 +48,12 @@ def fetch_and_validate_cwl(cwl_wf):
 
 
 if __name__ == '__main__':
-    abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    localpath = abspath + "/tests/basic/data/workflows/"
+    # abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    # localpath = abspath + "/tests/basic/data/workflows/"
 
     # validate local cwl
-    cwl_path = localpath + "basic_example_v2.cwl"
-    print(fetch_and_validate_cwl(cwl_path))
+    # cwl_path = localpath + "basic_example_v2.cwl"
+    # print(fetch_and_validate_cwl(cwl_path))
 
     # validate remote cwl
     cwl_url = urls["basic_example_v2"]

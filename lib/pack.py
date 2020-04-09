@@ -19,11 +19,11 @@
 from __future__ import absolute_import
 
 import json
-import os
 
-from lib.fetch_and_validate import fetch_and_validate_cwl
 from cwltool.main import print_pack
+
 from lib.dataset import urls
+from lib.fetch_and_validate import fetch_and_validate_cwl
 
 
 def pack_cwl(cwl_wf):
@@ -51,12 +51,12 @@ def pack_cwl(cwl_wf):
 
 
 if __name__ == '__main__':
-    abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    localpath = abspath + "/tests/basic/data/workflows/"
+    # abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    # localpath = abspath + "/tests/basic/data/workflows/"
 
     # pack local cwl
-    cwl_path = localpath + "basic_example_v2.cwl"
-    print(pack_cwl(cwl_path))
+    # cwl_path = localpath + "basic_example_v2.cwl"
+    # print(pack_cwl(cwl_path))
 
     # pack remote cwl
     cwl_url = urls["basic_example_v2"]
