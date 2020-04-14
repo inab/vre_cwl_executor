@@ -16,7 +16,7 @@
   "arguments": [
     {
       "name": "execution",
-      "value": "/home/${USER}/vre_cwl_executor/tests/basic/run000"
+      "value": "/home/user/vre_cwl_executor/tests/basic/run000"
     },
     {
       "name": "project",

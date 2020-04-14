@@ -2,9 +2,9 @@
   {
     "_id": "unique_file_id_5e14abe0a37012.29503907",
     "type": "file",
-    "file_path": "/home/${USER}/vre_cwl_executor/tests/basic/NA12878.bam",
+    "file_path": "/home/user/vre_cwl_executor/tests/basic/NA12878.bam",
     "file_type": "BAM",
-    "data_type": "data_chip_seq",
+    "data_type": "sequence_dna",
     "compressed": 0,
     "user_id": "user_id",
     "creation_time": {
@@ -32,9 +32,9 @@
   {
     "_id": "unique_file_id_5e14abe0a37012.29503908",
     "type": "file",
-    "file_path": "/home/${USER}/vre_cwl_executor/tests/basic/hg38.fa",
+    "file_path": "/home/user/vre_cwl_executor/tests/basic/hg38.fa",
     "file_type": "FASTA",
-    "data_type": "data_chip_seq",
+    "data_type": "sequence_dna",
     "compressed": 0,
     "user_id": "user_id",
     "creation_time": {
