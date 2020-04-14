@@ -1,50 +1,50 @@
 {
-  "input_files": [
-    {
-      "name": "input_reads",
-      "value": "unique_file_id_5e14abe0a37012.29503907",
-      "required": true,
-      "allow_multiple": false
-    },
-    {
-      "name": "indexed_reference_fasta",
-      "value": "unique_file_id_5e14abe0a37012.29503908",
-      "required": true,
-      "allow_multiple": false
-    }
-  ],
-  "arguments": [
-    {
-      "name": "execution",
-      "value": "/home/user/vre_cwl_executor/tests/basic/run000"
-    },
-    {
-      "name": "project",
-      "value": "my_project_id"
-    },
-    {
-      "name": "biospecimen_name",
-      "value": "hg38"
-    },
-    {
-      "name": "cwl_wf_url",
-      "value": "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example.cwl"
-    }
-  ],
-  "output_files": [
-    {
-      "name": "bam_file",
-      "required": true,
-      "allow_multiple": false,
-      "file": {
-        "file_path": "A.bam",
-        "file_type": "BAM",
-        "data_type": "sequence_dna",
-        "meta_data": {
-          "visible": true,
-          "description": "Splitted BAM file (first item)"
+    "input_files": [
+        {
+            "name": "input_reads",
+            "value": "unique_file_id_5e14abe0a37012.29503907",
+            "required": true,
+            "allow_multiple": false
+        },
+        {
+            "name": "indexed_reference_fasta",
+            "value": "unique_file_id_5e14abe0a37012.29503908",
+            "required": true,
+            "allow_multiple": false
         }
-      }
-    }
-  ]
+    ],
+    "arguments": [
+        {
+            "name": "execution",
+            "value": "/home/user/vre_sample_tool/tests/basic/run000"
+        },
+        {
+            "name": "project",
+            "value": "test"
+        },
+        {
+            "name": "biospecimen_name",
+            "value": "hg38"
+        },
+        {
+            "name": "cwl_wf_url",
+            "value": "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example.cwl"
+        }
+    ],
+    "output_files": [
+        {
+            "name": "bam_file",
+            "required": true,
+            "allow_multiple": false,
+            "file": {
+                "file_path": "/home/user/vre_sample_tool/tests/basic/run000/A.bam",
+                "file_type": "BAM",
+                "data_type": "sequence_dna",
+                "meta_data": {
+                    "visible": true,
+                    "description": "Splitted BAM file (first item)"
+                }
+            }
+        }
+    ]
 }
