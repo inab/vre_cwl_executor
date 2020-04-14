@@ -16,3 +16,5 @@ env/*
 /venv
 /VRE_CWL_RUNNER.log
 .idea
+/tests/basic/config.json
+/tests/basic/in_metadata.json
