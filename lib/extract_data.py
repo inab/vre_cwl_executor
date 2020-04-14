@@ -20,11 +20,12 @@ from __future__ import absolute_import
 
 import json
 
+from cwltool.load_tool import fetch_document
+from cwltool.load_tool import resolve_and_validate_document
 from cwltool.load_tool import make_tool
 from cwltool.workflow import default_make_tool
 
 from lib.dataset import urls
-from lib.fetch_and_validate import fetch_and_validate_cwl
 
 
 def extract_data_from_cwl(cwl_wf):
@@ -54,6 +55,29 @@ def extract_data_from_cwl(cwl_wf):
 
     except Exception as error:
         errstr = "Unable to extract inputs, outputs and the CWL workflow dependencies. ERROR: {}".format(error)
+        raise Exception(errstr)
+
+
+def fetch_and_validate_cwl(cwl_wf):
+    """
+    Retrieve and validate a CWL workflow specified by cwl_wf
+
+    :param cwl_wf: CWL workflow
+    :type cwl_wf: str
+    """
+    try:
+        # fetch CWL workflow
+        loadingContext, workflowobj, uri = fetch_document(cwl_wf)
+        loadingContext.do_update = False
+
+        # validate CWL workflow
+        loadingContext, uri = resolve_and_validate_document(loadingContext, workflowobj, uri)
+        processobj = loadingContext.loader.resolve_ref(uri)[0]
+        print("{} is valid CWL.".format(cwl_wf))
+        return loadingContext, uri, processobj  # need to pack
+
+    except Exception as error:
+        errstr = "Unable to fetch and validate the CWL workflow. ERROR: {}".format(error)
         raise Exception(errstr)
 
 

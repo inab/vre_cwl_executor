@@ -26,7 +26,7 @@ import tool.VRE_CWL
 
 class CWL:
     """
-    This is a class for CWL workflow module.
+    This is a class for CWL workflow VRE module.
     """
 
     @staticmethod
