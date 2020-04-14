@@ -17,8 +17,8 @@
    limitations under the License.
 """
 import subprocess
-import yaml
 
+from ruamel import yaml
 from utils import logger
 
 import tool.VRE_CWL
@@ -26,7 +26,7 @@ import tool.VRE_CWL
 
 class CWL:
     """
-
+    This is a class for CWL workflow module.
     """
 
     @staticmethod

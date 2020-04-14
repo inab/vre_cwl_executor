@@ -157,8 +157,7 @@ class WF_RUNNER(Tool):
             logger.fatal(errstr)
             raise Exception(errstr)
 
-    @staticmethod
-    def create_output_metadata(input_metadata, output_metadata):
+    def create_output_metadata(self, input_metadata, output_metadata):
         """
         Create returned output metadata from input metadata and output metadata from output files.
 
@@ -176,7 +175,10 @@ class WF_RUNNER(Tool):
                 meta = Metadata()
 
                 # Set file_path for output files
-                meta.file_path = output_file["file"].get("file_path", None)
+                file_path = output_file["file"].get("file_path", None)
+                if os.path.isfile(file_path):  # if file_path is a file
+                    execution_path = os.path.abspath(self.configuration.get('execution', '.'))
+                    meta.file_path = os.path.join(execution_path, file_path)
 
                 # Set data and file types of output_file
                 meta.data_type = output_file["file"].get("data_type", None)
