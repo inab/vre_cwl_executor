@@ -23,7 +23,7 @@ import json
 from cwltool.main import print_pack
 
 from lib.dataset import urls
-from lib.fetch_and_validate import fetch_and_validate_cwl
+from lib.extract_data import fetch_and_validate_cwl
 
 
 def pack_cwl(cwl_wf):
@@ -43,7 +43,9 @@ def pack_cwl(cwl_wf):
         # CWL serialization of the CWL workflow in JSON format
         packed_cwl = json.loads(print_pack(loadingContext.loader, processobj, uri, loadingContext.metadata))
 
-        return json.dumps(packed_cwl, indent=4)
+        # save CWL packed
+        with open("pack.cwl", 'w') as cwl_file:
+            json.dump(packed_cwl, cwl_file, indent=4)
 
     except Exception as error:
         errstr = "Unable to pack the CWL workflow. ERROR: {}".format(error)
@@ -60,4 +62,4 @@ if __name__ == '__main__':
 
     # pack remote cwl
     cwl_url = urls["basic_example_v2"]
-    print(pack_cwl(cwl_url))
+    pack_cwl(cwl_url)
