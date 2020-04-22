@@ -16,6 +16,8 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import itertools
+import json
 import os
 import time
 
@@ -95,7 +97,10 @@ class WF_RUNNER(Tool):
             if rc is not None and rc != 0:
                 logger.progress("Something went wrong inside the cwltool execution. See logs", status="WARNING")
             else:
+                # outputs CWL execution
+                outputs = process.stdout.read().decode("utf-8")
                 logger.progress("cwltool execution finished successfully", status="FINISHED")
+                return outputs
 
         except:
             errstr = "The CWL execution failed. See logs"
@@ -134,21 +139,42 @@ class WF_RUNNER(Tool):
             logger.debug("Execution path: {}".format(execution_path))
 
             logger.debug("Init execution of the CWL Workflow")
-            self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
+            outputs_exec = self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
 
-            # Save and validate the output files list
-            for key in output_files.keys():
-                if output_files[key] is not None:
-                    pop_output_path = os.path.abspath(output_files[key])
-                    self.populable_outputs[key] = pop_output_path
-                    output_files[key] = pop_output_path
-                else:
-                    errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
-                    logger.error(errstr)
-                    raise Exception(errstr)
+            # Create output files list
+            outputs_exec = json.loads(outputs_exec)
+            print(outputs_exec)
+            print(output_files)
+
+            # Create, save and validate the output files list
+            for output_file in output_metadata:
+                id = output_file["name"]
+                for key in output_files.keys():
+                    if output_files[key] is not None:
+                        if id == key:
+                            pop_output_path = list()
+                            if not output_file["allow_multiple"]:   # allow multiple false
+                                pop_output_path.append(os.path.abspath(output_files[key]))
+                                # pop_output_path = outputs[next(iter(outputs))][0]["path"]
+                                output_files[key] = pop_output_path
+                                self.populable_outputs[key] = pop_output_path
+                            else:   # TODO regex case
+                                if key in outputs_exec.keys():
+                                    for key_exec in outputs_exec[key]:
+                                        pop_output_path.append(key_exec["path"])
+                                    output_files[key] = pop_output_path
+                                    print(output_files)
+                    else:
+                        errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
+                        logger.error(errstr)
+                        raise Exception(errstr)
+
+            # TODO testing
+            # output_files = {'bam_files': '/Users/laurarodrigueznavas/BSC/vre_cwl_executor/tests/basic/run000/A.bam'}
+            # print(output_files)
 
             # Create output metadata
-            output_metadata = self.create_output_metadata(input_metadata, output_metadata)
+            # output_metadata = self.create_output_metadata(input_metadata, output_files, output_metadata)
 
             return output_files, output_metadata
 
@@ -158,7 +184,7 @@ class WF_RUNNER(Tool):
             raise Exception(errstr)
 
     @staticmethod
-    def create_output_metadata(input_metadata, output_metadata):
+    def create_output_metadata(input_metadata, output_files, output_metadata):
         """
         Create returned output metadata from input metadata and output metadata from output files.
 
@@ -169,31 +195,56 @@ class WF_RUNNER(Tool):
         :return: List of matching metadata for the returned files (result).
         :rtype: dict
         """
+        print(output_metadata)
+        print(output_files)
         try:
             result = dict()
-            for output_file in output_metadata:  # for each output file
-                output_filename = output_file["name"]
-                meta = Metadata()
 
-                # Set file_path for output files
-                meta.file_path = output_file["file"].get("file_path", None)
+            results = []
 
-                # Set data and file types of output_file
-                meta.data_type = output_file["file"].get("data_type", None)
-                meta.file_type = output_file["file"].get("file_type", None)
+            def _newresult(role, path, metadata):
+                return {
+                    "name": role,
+                    "file_path": path,
+                    "data_type": metadata.data_type,
+                    "file_type": metadata.file_type,
+                    "sources": metadata.sources,
+                    "meta_data": metadata.meta_data
+                }
 
-                # Set sources for output file from input_metadata
-                meta_sources_list = list()
-                for input_name in input_metadata.keys():
-                    meta_sources_list.append(input_metadata[input_name][1].file_path)
+            for role, path in (
+                    itertools.chain.from_iterable(
+                        [itertools.product((k,), v) for k, v in output_files.items()])):
+                print(role, path)
+                for output_file in output_metadata:  # for each output file
+                    id = output_file["name"]
+                    if id == role:
+                        meta = Metadata()
 
-                meta.sources = meta_sources_list
+                        # Set file_path for output files
+                        # meta.file_path = output_files[next(iter(output_files))]
+                        meta.file_path = path
 
-                # Set output file metadata
-                meta.meta_data = output_file["file"].get("meta_data", None)
+                        # Set data and file types of output_file
+                        meta.data_type = output_file["file"].get("data_type", None)
+                        meta.file_type = output_file["file"].get("file_type", None)
 
-                # Add new element in output_metadata
-                result.update({output_filename: meta})
+                        # Set sources for output file from input_metadata
+                        meta_sources_list = list()
+                        for input_name in input_metadata.keys():
+                            meta_sources_list.append(input_metadata[input_name][1].file_path)
+
+                        meta.sources = meta_sources_list
+
+                        # Set output file metadata
+                        meta.meta_data = output_file["file"].get("meta_data", None)
+
+                        # Add new element in output_metadata
+                        result.update({id: meta})
+                        results.append(
+                            _newresult(id, path, meta))
+
+            print(json.dumps({"output_files": results}, indent=4))
 
             logger.debug("Output metadata created.")
             return result

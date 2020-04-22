@@ -19,6 +19,7 @@
 from __future__ import absolute_import
 
 import json
+import os
 
 from cwltool.load_tool import fetch_document
 from cwltool.load_tool import resolve_and_validate_document
@@ -42,6 +43,8 @@ def extract_data_from_cwl(cwl_wf):
         # fetch and validate CWL workflow
         loadingContext, uri, processobj = fetch_and_validate_cwl(cwl_wf)
         cwl_document = make_tool(uri, loadingContext)
+
+        print(loadingContext.prov_obj)
 
         # get inputs and outputs
         inputs_list = json.dumps(cwl_document.inputs_record_schema["fields"], indent=4)
@@ -91,5 +94,5 @@ if __name__ == '__main__':
     # print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=4)))
 
     # remote cwl
-    inputs, outputs, tools = extract_data_from_cwl(urls["workflow_localfiles"])
+    inputs, outputs, tools = extract_data_from_cwl(urls["basic_example_v2"])
     print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=4)))
