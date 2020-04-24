@@ -16,7 +16,7 @@
     "arguments": [
         {
             "name": "execution",
-            "value": "/home/user/vre_cwl_executor/tests/basic/run000"
+            "value": "/Users/laurarodrigueznavas/BSC/vre_cwl_executor/tests/basic/run000"
         },
         {
             "name": "project",
@@ -35,7 +35,7 @@
         {
             "name": "bam_files",
             "required": true,
-            "allow_multiple": true,
+            "allow_multiple": false,
             "file": {
                 "file_type": "BAM",
                 "data_type": "sequence_dna",

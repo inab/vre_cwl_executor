@@ -144,24 +144,30 @@ class WF_RUNNER(Tool):
             outputs_exec = json.loads(outputs_exec)  # formatting the stdout
 
             # Create and validate the output files list
-            for metadata in output_metadata: # for each output files in output_metadata
+            for metadata in output_metadata:  # for each output files in output_metadata
                 out_id = metadata["name"]
-                if out_id in outputs_exec.keys():   # output id in metadata in output id outputs_exec
-                    pop_output_path = list()  # TODO list of tuple, add class File or Dir
+                if out_id in outputs_exec.keys():  # output id in metadata in output id outputs_exec
+                    pop_output_path = list()  # list of tuples, file or dir
                     if not metadata["allow_multiple"]:  # allow multiple false
                         # pop_output_path.append(os.path.abspath(outputs_exec[key]))
-                        pop_output_path.append(outputs_exec[next(iter(outputs_exec))][0]["path"])
+                        file_path = outputs_exec[next(iter(outputs_exec))][0]["path"]
+                        file_type = outputs_exec[next(iter(outputs_exec))][0]["class"].lower()
+                        pop_output_path.append((file_path, file_type))
                         output_files[out_id] = pop_output_path
                         self.populable_outputs[out_id] = pop_output_path
                     else:  # allow multiple true
                         for key_exec in outputs_exec[out_id]:
-                            pop_output_path.append(key_exec["path"])
+                            file_path = key_exec["path"]
+                            file_type = key_exec["class"].lower()
+                            pop_output_path.append((file_path, file_type))
                         output_files[out_id] = pop_output_path
                         self.populable_outputs[out_id] = pop_output_path
             # else:
             #     errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
             #     logger.error(errstr)
             #     raise Exception(errstr)
+
+            print(output_files)
 
             # TODO create a function
             logger.debug("Output files and output metadata created.")
