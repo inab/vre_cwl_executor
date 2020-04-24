@@ -12,7 +12,7 @@ inputs:
   indexed_reference_fasta: File
 
 outputs:
-  test: {type: 'File[]', outputSource: samtools_split/bam_files}
+  bam_files: {type: 'File[]', outputSource: samtools_split/bam_files}
 
 steps:
   samtools_split:
