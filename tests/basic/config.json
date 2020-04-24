@@ -33,16 +33,16 @@
     ],
     "output_files": [
         {
-            "name": "bam_file",
+            "name": "bam_files",
             "required": true,
             "allow_multiple": false,
             "file": {
-                "file_path": "/home/user/vre_cwl_executor/tests/basic/run000/A.bam",
+                "file_path": "A.bam",
                 "file_type": "BAM",
                 "data_type": "sequence_dna",
                 "meta_data": {
                     "visible": true,
-                    "description": "Splitted BAM file (first item)"
+                    "description": "Splitted BAM files"
                 }
             }
         }
