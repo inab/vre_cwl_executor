@@ -143,6 +143,10 @@ class WF_RUNNER(Tool):
             outputs_exec = self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
             outputs_exec = json.loads(outputs_exec)  # formatting the stdout
 
+            print(json.dumps(output_files, indent=2))
+            print(json.dumps(outputs_exec, indent=2))
+            print(json.dumps(output_metadata, indent=2))
+
             # Create and validate the output files list
             for metadata in output_metadata:  # for each element in output_metadata
                 name = metadata["name"]
@@ -157,6 +161,7 @@ class WF_RUNNER(Tool):
                                 output_files[key] = pop_output_path
                                 self.populable_outputs[key] = pop_output_path
                             else:  # allow multiple true
+                                # TODO link output_files with outputs_exec
                                 if key in outputs_exec.keys():  # link output_files with outputs_exec
                                     for key_exec in outputs_exec[key]:
                                         pop_output_path.append(key_exec["path"])
@@ -226,6 +231,7 @@ class WF_RUNNER(Tool):
                         meta_sources_list = list()
                         for input_name in input_metadata.keys():
                             meta_sources_list.append(input_metadata[input_name][1].file_path)
+
                         meta.sources = meta_sources_list
 
                         # Set output file metadata
