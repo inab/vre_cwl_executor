@@ -143,34 +143,25 @@ class WF_RUNNER(Tool):
             outputs_exec = self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
             outputs_exec = json.loads(outputs_exec)  # formatting the stdout
 
-            print(json.dumps(output_files, indent=2))
-            print(json.dumps(outputs_exec, indent=2))
-            print(json.dumps(output_metadata, indent=2))
-
             # Create and validate the output files list
-            for metadata in output_metadata:  # for each element in output_metadata
-                name = metadata["name"]
-                for key in output_files.keys():  # for each element in output_files
-                    if output_files[key] is not None:
-                        if name == key:  # link output_files with output_metadata
-                            pop_output_path = list()  # TODO str and list ?
-                            if not metadata["allow_multiple"]:  # allow multiple false
-                                pop_output_path.append(os.path.abspath(output_files[key]))
-                                # pop_output_path = outputs[next(iter(outputs))][0]["path"]
-                                # first element of the list ?
-                                output_files[key] = pop_output_path
-                                self.populable_outputs[key] = pop_output_path
-                            else:  # allow multiple true
-                                # TODO link output_files with outputs_exec
-                                if key in outputs_exec.keys():  # link output_files with outputs_exec
-                                    for key_exec in outputs_exec[key]:
-                                        pop_output_path.append(key_exec["path"])
-                                    output_files[key] = pop_output_path
-                                    self.populable_outputs[key] = pop_output_path
-                    else:
-                        errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
-                        logger.error(errstr)
-                        raise Exception(errstr)
+            for metadata in output_metadata: # for each output files in output_metadata
+                out_id = metadata["name"]
+                if out_id in outputs_exec.keys():   # output id in metadata in output id outputs_exec
+                    pop_output_path = list()  # TODO list of tuple, add class File or Dir
+                    if not metadata["allow_multiple"]:  # allow multiple false
+                        # pop_output_path.append(os.path.abspath(outputs_exec[key]))
+                        pop_output_path.append(outputs_exec[next(iter(outputs_exec))][0]["path"])
+                        output_files[out_id] = pop_output_path
+                        self.populable_outputs[out_id] = pop_output_path
+                    else:  # allow multiple true
+                        for key_exec in outputs_exec[out_id]:
+                            pop_output_path.append(key_exec["path"])
+                        output_files[out_id] = pop_output_path
+                        self.populable_outputs[out_id] = pop_output_path
+            # else:
+            #     errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
+            #     logger.error(errstr)
+            #     raise Exception(errstr)
 
             # TODO create a function
             logger.debug("Output files and output metadata created.")
