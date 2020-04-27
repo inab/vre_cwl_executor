@@ -187,7 +187,7 @@ class WF_RUNNER(Tool):
             for metadata in output_metadata:  # for each output file in output_metadata
                 out_id = metadata["name"]
                 if out_id in outputs_execution.keys():  # output id in metadata in output id outputs_exec
-                    pop_output_path = list()  # list of tuples
+                    pop_output_path = list()  # list of tuples (path, type of output)
                     if not metadata["allow_multiple"]:  # allow multiple false
                         # pop_output_path.append(os.path.abspath(outputs_exec[key]))
                         file_path = outputs_execution[next(iter(outputs_execution))][0]["path"]
