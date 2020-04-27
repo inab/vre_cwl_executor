@@ -29,10 +29,10 @@ import tool.VRE_CWL
 
 class CWL:
     """
-    This is a class for CWL workflow VRE module.
+    CWL workflow class.
     """
-
     def __init__(self):
+
         self.input_cwl = {}
 
     def create_input_yml(self, input_metadata, arguments, filename_path):
