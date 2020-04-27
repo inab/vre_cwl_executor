@@ -32,8 +32,10 @@ class CWL:
     This is a class for CWL workflow VRE module.
     """
 
-    @staticmethod
-    def create_input_cwl(input_metadata, arguments, filename_path):
+    def __init__(self):
+        self.input_cwl = {}
+
+    def create_input_yml(self, input_metadata, arguments, filename_path):
         """
         Create a YAML file containing the information of inputs from CWL workflow
 
@@ -45,21 +47,20 @@ class CWL:
         :type filename_path: str
         """
         try:
-            input_cwl = {}
             for key, value in input_metadata.items():  # add metadata inputs
                 data_type = value[0]
                 if data_type == "file":  # mapping
                     data_type = data_type.replace("f", "F")
 
                 file_path = str(value[1].file_path)
-                input_cwl.update({key: {"class": data_type, "location": file_path}})
+                self.input_cwl.update({key: {"class": data_type, "location": file_path}})
 
             for key, value in arguments.items():  # add arguments
                 if key not in tool.VRE_CWL.WF_RUNNER.MASKED_KEYS:
-                    input_cwl[str(key)] = str(value)
+                    self.input_cwl[str(key)] = str(value)
 
             with open(filename_path, 'w+') as f:
-                yaml.dump(input_cwl, f, allow_unicode=True, default_flow_style=False)
+                yaml.dump(self.input_cwl, f, allow_unicode=True, default_flow_style=False)
 
         except:
             errstr = "The YAML file creation failed. See logs"
@@ -70,8 +71,7 @@ class CWL:
     def execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, tmp_dir):
         """
         cwltool execution process with the workflow specified by cwl_wf_url and YAML file path cwl_wf_input_yml_path
-        specified by cwl_wf_input_yml_path, created from config.json and input_metadata.json. data provenance it is also
-        created.
+        specified by cwl_wf_input_yml_path, created from config.json and input_metadata.json.
 
         :param cwl_wf_input_yml_path: CWL workflow in YAML format
         :type cwl_wf_input_yml_path: str
@@ -80,6 +80,7 @@ class CWL:
         :param tmp_dir: directory to save temporally the provenance data
         :type tmp_dir: str
         """
+        # TODO try and except
         logger.debug("Starting cwltool execution")
         process = subprocess.Popen(["cwltool", "--provenance", tmp_dir, cwl_wf_url, cwl_wf_input_yml_path],
                                    stdout=subprocess.PIPE,
@@ -89,28 +90,29 @@ class CWL:
     @staticmethod
     def zip_dir(path, zipn):
         """
-        Create zip file with CWL workflow dependencies
+        Create zip file from provenance data
 
-        :param path: path that contains CWL workflow dependencies
+        :param path: path that contains provenance data
         :type path: str
         :param zipn: zip file name
         :type zipn: str
         """
+        # TODO move method to utils.py
         try:
             with zipfile.ZipFile(zipn, "w") as zipf:
                 # iterate over all the files in the directory path
                 for foldername, subfolders, files in os.walk(path):
                     for file in files:
-                        # create complete filepath of file in files
-                        file_path = os.path.join(foldername, file)
-                        # add filename to zip
-                        zipf.write(file_path)
+                        file_path = os.path.join(foldername, file)  # create complete file path of file in files
+                        zipf.write(file_path)  # add filename to zip
 
             logger.debug("Created zip file {} of {}.".format(zipn, path))
 
+            # remove path of provenance data
             shutil.rmtree(path)
-            logger.debug("Removed temporal dir {}.".format(path))
+            logger.debug("Removed temporal directory {}.".format(path))
 
         except Exception as error:
             errstr = "Unable to zip the CWL workflow and their dependencies. ERROR: {}".format(error)
+            logger.error(errstr)
             raise Exception(errstr)
