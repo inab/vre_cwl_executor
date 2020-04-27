@@ -47,14 +47,14 @@ class process_WF_RUNNER(Workflow):
 
         self.configuration.update(configuration)
 
-    def run(self, input_files, metadata, output_files, output_metadata):
+    def run(self, input_files, input_metadata, output_files, output_metadata):
         """
         Main run function for processing a test file.
 
         :param input_files: Dictionary of file locations.
         :type input_files: dict
-        :param metadata: Required meta data.
-        :type metadata: dict
+        :param input_metadata: Required meta data.
+        :type input_metadata: dict
         :param output_files: Locations of the output files to be returned by the pipeline.
         :type output_files: dict
         :param output_metadata:
@@ -65,7 +65,7 @@ class process_WF_RUNNER(Workflow):
         try:
             logger.debug("Initialise the CWL Test Tool")
             tt_handle = WF_RUNNER(self.configuration)
-            tt_files, tt_meta = tt_handle.run(input_files, metadata, output_files, output_metadata)
+            tt_files, tt_meta = tt_handle.run(input_files, input_metadata, output_files, output_metadata)
             return tt_files, tt_meta
 
         except Exception as error:
