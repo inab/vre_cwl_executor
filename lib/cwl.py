@@ -29,11 +29,14 @@ import tool.VRE_CWL
 
 class CWL:
     """
-    CWL workflow class.
+    VRE CWL workflow class.
     """
     def __init__(self):
-
-        self.input_cwl = {}
+        """
+        Init function
+        """
+        logger.debug("VRE CWL Workflow class")
+        self.input_cwl = dict()
 
     def create_input_yml(self, input_metadata, arguments, filename_path):
         """
@@ -113,6 +116,6 @@ class CWL:
             logger.debug("Removed temporal directory {}.".format(path))
 
         except Exception as error:
-            errstr = "Unable to zip the CWL workflow and their dependencies. ERROR: {}".format(error)
+            errstr = "Unable to zip the path {}. ERROR: {}".format(path, error)
             logger.error(errstr)
             raise Exception(errstr)

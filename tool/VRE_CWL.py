@@ -16,12 +16,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-import itertools
 import json
 import os
 import time
 
-from basic_modules.metadata import Metadata
 from basic_modules.tool import Tool
 from utils import logger
 from lib.cwl import CWL
@@ -32,6 +30,9 @@ class WF_RUNNER(Tool):
     Tool for writing to a file
     """
     MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
+    YAML_FILENAME = "inputs_cwl.yml"
+    ZIP_METADATA_FILENAME = "cwl_metadata.zip"
+    TMP_DIR = "/tmp/cwl_metadata/"  # TODO change temporal directory
 
     def __init__(self, configuration=None):
         """
@@ -50,7 +51,9 @@ class WF_RUNNER(Tool):
             if isinstance(v, list):
                 self.configuration[k] = ' '.join(v)
 
-        self.populable_outputs = {}
+        self.cwl = CWL()  # CWL workflow class
+        self.arguments = list()
+        self.populable_outputs = dict()
 
     def execute_cwl_workflow(self, input_metadata, arguments, working_directory):  # pylint: disable=no-self-use
         """
@@ -65,32 +68,29 @@ class WF_RUNNER(Tool):
         """
         try:
             logger.debug("Getting the CWL workflow file")
-            cwl_wf_url = self.configuration.get('cwl_wf_url')
-
+            cwl_wf_url = self.configuration.get('cwl_wf_url')  # TODO add tag
             if cwl_wf_url is None:
                 errstr = "cwl_wf_url parameter must be defined"
                 logger.fatal(errstr)
                 raise Exception(errstr)
 
-            logger.debug("Adding parameters which are not input or output files are in the configuration")
-            variable_params = []
-            for conf_key in self.configuration.keys():
-                if conf_key not in self.MASKED_KEYS:
-                    variable_params.append((conf_key, self.configuration[conf_key]))
+            logger.debug("Save arguments from the configuration file")
+            for params in self.configuration.keys():
+                if params not in self.MASKED_KEYS:
+                    self.arguments.append((params, self.configuration[params]))
 
             logger.info("3) Pack information to YAML")
-            cwl_wf_input_yml_path = working_directory + "/inputs_cwl.yml"
-            CWL.create_input_cwl(input_metadata, arguments, cwl_wf_input_yml_path)
+            cwl_wf_input_yml_path = working_directory + "/" + self.YAML_FILENAME
+            self.cwl.create_input_yml(input_metadata, arguments, cwl_wf_input_yml_path)
 
-            # CWL execution
-            tmp_dir = "/tmp/cwl_metadata/"
-            # TODO change temporal dir
-            if not os.path.isdir(tmp_dir):
-                os.makedirs(tmp_dir)
+            # Create temporal directory to add provenance data. If not exists the directory will be created
+            if not os.path.isdir(self.TMP_DIR):
+                os.makedirs(self.TMP_DIR)
 
-            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, tmp_dir)
+            # cwltool execution
+            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.TMP_DIR)
 
-            # Sending the stdout to the log file
+            # Sending the cwltool execution stdout to the log file
             for line in iter(process.stderr.readline, b''):
                 print(line.rstrip().decode("utf-8").replace("", " "))
 
@@ -101,14 +101,15 @@ class WF_RUNNER(Tool):
 
             if rc is not None and rc != 0:
                 logger.progress("Something went wrong inside the cwltool execution. See logs", status="WARNING")
+
             else:
-                # outputs CWL execution
-                outputs = process.stdout.read().decode("utf-8")
+                # output files from cwltool execution
+                output_files = process.stdout.read().decode("utf-8")
                 logger.progress("cwltool execution finished successfully", status="FINISHED")
-                return outputs
+                return output_files
 
         except:
-            errstr = "The CWL execution failed. See logs"
+            errstr = "The cwltool execution failed. See logs"
             logger.error(errstr)
             raise Exception(errstr)
 
@@ -129,130 +130,59 @@ class WF_RUNNER(Tool):
         :rtype: dict, dict
         """
         try:
-            # Set and validate execution directory. If not exists the directory will be created.
+            # Set and validate execution path. If not exists the directory will be created
             execution_path = os.path.abspath(self.configuration.get('execution', '.'))
             if not os.path.isdir(execution_path):
                 os.makedirs(execution_path)
 
+            # Set and validate execution parent path. If not exists the directory will be created
             execution_parent_dir = os.path.dirname(execution_path)
-
             if not os.path.isdir(execution_parent_dir):
                 os.makedirs(execution_parent_dir)
 
-            # Update working directory to execution path
+            # Update working directory
             os.chdir(execution_path)
             logger.debug("Execution path: {}".format(execution_path))
 
-            # CWL execution
-            logger.debug("Init execution of the CWL Workflow")
-            outputs_exec = self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
-            outputs_exec = json.loads(outputs_exec)  # formatting the stdout
+            # cwltool execution
+            logger.debug("Init CWL Workflow execution")
+            outputs_execution = self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
+            outputs_execution = json.loads(outputs_execution)  # formatting the stdout
 
             # Compress provenance data
-            tmp_dir = "/tmp/cwl_metadata/"
-            # TODO change temporal dir
-            if os.path.isdir(tmp_dir):
-                CWL.zip_dir(tmp_dir, "cwl_metadata.zip")
+            if os.path.isdir(self.TMP_DIR):
+                self.cwl.zip_dir(self.TMP_DIR, self.ZIP_METADATA_FILENAME)
+            else:
+                logger.debug("{} not created")
+                # TODO change to logger fatal ?
+
+            # Remove YAML
+            os.remove(self.YAML_FILENAME)
 
             # Create and validate the output files list
             for metadata in output_metadata:  # for each output files in output_metadata
                 out_id = metadata["name"]
-                if out_id in outputs_exec.keys():  # output id in metadata in output id outputs_exec
+                if out_id in outputs_execution.keys():  # output id in metadata in output id outputs_exec
                     pop_output_path = list()  # list of tuples, file or dir
                     if not metadata["allow_multiple"]:  # allow multiple false
                         # pop_output_path.append(os.path.abspath(outputs_exec[key]))
-                        file_path = outputs_exec[next(iter(outputs_exec))][0]["path"]
-                        file_type = outputs_exec[next(iter(outputs_exec))][0]["class"].lower()
+                        file_path = outputs_execution[next(iter(outputs_execution))][0]["path"]
+                        file_type = outputs_execution[next(iter(outputs_execution))][0]["class"].lower()
                         pop_output_path.append((file_path, file_type))
                         output_files[out_id] = pop_output_path
                         self.populable_outputs[out_id] = pop_output_path
                     else:  # allow multiple true
-                        for key_exec in outputs_exec[out_id]:
+                        for key_exec in outputs_execution[out_id]:
                             file_path = key_exec["path"]
                             file_type = key_exec["class"].lower()
                             pop_output_path.append((file_path, file_type))
                         output_files[out_id] = pop_output_path
                         self.populable_outputs[out_id] = pop_output_path
-            # else:
-            #     errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
-            #     logger.error(errstr)
-            #     raise Exception(errstr)
 
-            # TODO create a function
             logger.debug("Output files and output metadata created.")
-            # Create output metadata
-            # output_metadata = self.create_output_metadata(input_metadata, output_files, output_metadata)
             return output_files, output_metadata
 
         except:
             errstr = "VRE CWL RUNNER pipeline failed. See logs"
             logger.fatal(errstr)
-            raise Exception(errstr)
-
-    @staticmethod
-    def create_output_metadata(input_metadata, output_files, output_metadata):
-        """
-        Create returned output metadata from input metadata and output metadata from output files.
-
-        :param input_metadata: Matching metadata for each of the files, plus any additional data.
-        :type input_metadata: dict
-        :param output_files: List of the output files that are to be generated.
-        :type output_files: dict
-        :param output_metadata: List of matching metadata for the output files
-        :type output_metadata: list
-        :return: List of matching metadata for the returned files (result).
-        :rtype: dict
-        """
-        try:
-            result = dict()
-            result_test = []
-
-            def _newresult(role, path, metadata):
-                return {
-                    "name": role,
-                    "file_path": path,
-                    "data_type": metadata.data_type,
-                    "file_type": metadata.file_type,
-                    "sources": metadata.sources,
-                    "meta_data": metadata.meta_data
-                }
-
-            for role, path in (
-                    itertools.chain.from_iterable([itertools.product((k,), v) for k, v in output_files.items()])):
-
-                for metadata in output_metadata:  # for each output file
-                    name = metadata["name"]
-                    if name == role:
-                        meta = Metadata()
-
-                        # Set file_path
-                        # meta.file_path = output_files[next(iter(output_files))]
-                        meta.file_path = path
-
-                        # Set data and file types of output_file
-                        meta.data_type = metadata["file"].get("data_type", None)
-                        meta.file_type = metadata["file"].get("file_type", None)
-
-                        # Set sources for output file from input_metadata
-                        meta_sources_list = list()
-                        for input_name in input_metadata.keys():
-                            meta_sources_list.append(input_metadata[input_name][1].file_path)
-
-                        meta.sources = meta_sources_list
-
-                        # Set output file metadata
-                        meta.meta_data = metadata["file"].get("meta_data", None)
-
-                        # Add new element in output_metadata
-                        result.update({name: meta})
-                        result_test.append(
-                            _newresult(name, path, meta))
-
-            # print(json.dumps({"output_files": result_test}, indent=4))
-            logger.debug("Output metadata created.")
-            return result
-
-        except:
-            errstr = "Output metadata not created. See logs"
-            logger.error(errstr)
             raise Exception(errstr)
