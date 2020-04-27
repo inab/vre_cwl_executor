@@ -16,7 +16,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import os
+import shutil
 import subprocess
+import zipfile
 
 from ruamel import yaml
 from utils import logger
@@ -64,17 +67,50 @@ class CWL:
             raise Exception(errstr)
 
     @staticmethod
-    def execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url):
+    def execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, tmp_dir):
         """
         cwltool execution process with the workflow specified by cwl_wf_url and YAML file path cwl_wf_input_yml_path
-        specified by cwl_wf_input_yml_path, created from config.json and input_metadata.json
+        specified by cwl_wf_input_yml_path, created from config.json and input_metadata.json. data provenance it is also
+        created.
 
         :param cwl_wf_input_yml_path: CWL workflow in YAML format
         :type cwl_wf_input_yml_path: str
         :param cwl_wf_url: URL for the location of the workflow
         :type cwl_wf_url: str
+        :param tmp_dir: directory to save temporally the provenance data
+        :type tmp_dir: str
         """
         logger.debug("Starting cwltool execution")
-        process = subprocess.Popen(["cwltool", cwl_wf_url, cwl_wf_input_yml_path], stdout=subprocess.PIPE,
+        process = subprocess.Popen(["cwltool", "--provenance", tmp_dir, cwl_wf_url, cwl_wf_input_yml_path],
+                                   stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
         return process
+
+    @staticmethod
+    def zip_dir(path, zipn):
+        """
+        Create zip file with CWL workflow dependencies
+
+        :param path: path that contains CWL workflow dependencies
+        :type path: str
+        :param zipn: zip file name
+        :type zipn: str
+        """
+        try:
+            with zipfile.ZipFile(zipn, "w") as zipf:
+                # iterate over all the files in the directory path
+                for foldername, subfolders, files in os.walk(path):
+                    for file in files:
+                        # create complete filepath of file in files
+                        file_path = os.path.join(foldername, file)
+                        # add filename to zip
+                        zipf.write(file_path)
+
+            logger.debug("Created zip file {} of {}.".format(zipn, path))
+
+            shutil.rmtree(path)
+            logger.debug("Removed temporal dir {}.".format(path))
+
+        except Exception as error:
+            errstr = "Unable to zip the CWL workflow and their dependencies. ERROR: {}".format(error)
+            raise Exception(errstr)

@@ -83,7 +83,12 @@ class WF_RUNNER(Tool):
             CWL.create_input_cwl(input_metadata, arguments, cwl_wf_input_yml_path)
 
             # CWL execution
-            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url)
+            tmp_dir = "/tmp/cwl_metadata/"
+            # TODO change temporal dir
+            if not os.path.isdir(tmp_dir):
+                os.makedirs(tmp_dir)
+
+            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, tmp_dir)
 
             # Sending the stdout to the log file
             for line in iter(process.stderr.readline, b''):
@@ -143,6 +148,12 @@ class WF_RUNNER(Tool):
             outputs_exec = self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
             outputs_exec = json.loads(outputs_exec)  # formatting the stdout
 
+            # Compress provenance data
+            tmp_dir = "/tmp/cwl_metadata/"
+            # TODO change temporal dir
+            if os.path.isdir(tmp_dir):
+                CWL.zip_dir(tmp_dir, "cwl_metadata.zip")
+
             # Create and validate the output files list
             for metadata in output_metadata:  # for each output files in output_metadata
                 out_id = metadata["name"]
@@ -166,8 +177,6 @@ class WF_RUNNER(Tool):
             #     errstr = "The output_file[{}] can not be located. Please specify its expected path.".format(key)
             #     logger.error(errstr)
             #     raise Exception(errstr)
-
-            print(output_files)
 
             # TODO create a function
             logger.debug("Output files and output metadata created.")
