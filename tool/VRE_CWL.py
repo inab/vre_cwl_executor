@@ -18,6 +18,8 @@
 """
 import json
 import os
+import shutil
+import tarfile
 import time
 
 from basic_modules.tool import Tool
@@ -31,7 +33,8 @@ class WF_RUNNER(Tool):
     """
     MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
     YAML_FILENAME = "inputs_cwl.yml"
-    ZIP_METADATA_FILENAME = "cwl_metadata.zip"
+    # ZIP_METADATA_FILENAME = "cwl_metadata.zip"
+    TAR_FILENAME = "cwl_metadata.tar.gz"
     TMP_DIR = "/tmp/cwl_metadata/"  # TODO change temporal directory
 
     def __init__(self, configuration=None):
@@ -152,12 +155,18 @@ class WF_RUNNER(Tool):
 
             # Compress provenance data
             if os.path.isdir(self.TMP_DIR):
-                self.cwl.zip_dir(self.TMP_DIR, self.ZIP_METADATA_FILENAME)
+                # self.cwl.zip_dir(self.TMP_DIR, self.ZIP_METADATA_FILENAME)
+                with tarfile.open(self.TAR_FILENAME, "w:gz") as tar:
+                    tar.add(self.TMP_DIR, arcname=os.path.basename(self.TMP_DIR))
+
+                # Remove path of provenance data
+                shutil.rmtree(self.TMP_DIR)
+
             else:
                 logger.debug("{} not created")
                 # TODO change to logger fatal ?
 
-            # Remove YAML
+            # Remove YAML file
             os.remove(self.YAML_FILENAME)
 
             # Create and validate the output files
@@ -203,7 +212,7 @@ class WF_RUNNER(Tool):
 
                 else:  # provenance data
                     if out_id == "cwl_metadata":
-                        file_path = self.execution_path + "/" + self.ZIP_METADATA_FILENAME
+                        file_path = self.execution_path + "/" + self.TAR_FILENAME
                         file_type = "file"  # TODO always a file ?
                         pop_output_path.append((file_path, file_type))
 
