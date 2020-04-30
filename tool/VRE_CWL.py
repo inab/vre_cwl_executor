@@ -53,6 +53,7 @@ class WF_RUNNER(Tool):
 
         self.cwl = CWL()  # CWL workflow class
         self.arguments = list()
+        self.execution_path = str()
         self.populable_outputs = dict()
 
     def execute_cwl_workflow(self, input_metadata, arguments, working_directory):  # pylint: disable=no-self-use
@@ -74,8 +75,7 @@ class WF_RUNNER(Tool):
                 logger.fatal(errstr)
                 raise Exception(errstr)
 
-            logger.debug("Save arguments from the configuration file")
-            for params in self.configuration.keys():
+            for params in self.configuration.keys():    # save arguments
                 if params not in self.MASKED_KEYS:
                     self.arguments.append((params, self.configuration[params]))
 
@@ -132,6 +132,7 @@ class WF_RUNNER(Tool):
         try:
             # Set and validate execution path. If not exists the directory will be created
             execution_path = os.path.abspath(self.configuration.get('execution', '.'))
+            self.execution_path = execution_path    # save execution path
             if not os.path.isdir(execution_path):
                 os.makedirs(execution_path)
 
@@ -186,8 +187,8 @@ class WF_RUNNER(Tool):
         try:
             for metadata in output_metadata:  # for each output file in output_metadata
                 out_id = metadata["name"]
+                pop_output_path = list()  # list of tuples (path, type of output)
                 if out_id in outputs_execution.keys():  # output id in metadata in output id outputs_exec
-                    pop_output_path = list()  # list of tuples (path, type of output)
                     if not metadata["allow_multiple"]:  # allow multiple false
                         # pop_output_path.append(os.path.abspath(outputs_exec[key]))
                         file_path = outputs_execution[next(iter(outputs_execution))][0]["path"]
@@ -200,8 +201,14 @@ class WF_RUNNER(Tool):
                             file_type = key_exec["class"].lower()
                             pop_output_path.append((file_path, file_type))
 
-                    output_files[out_id] = pop_output_path  # create output files
-                    self.populable_outputs[out_id] = pop_output_path    # save output files
+                else:  # provenance data
+                    if out_id == "cwl_metadata":
+                        file_path = self.execution_path + "/" + self.ZIP_METADATA_FILENAME
+                        file_type = "file"  # TODO always a file ?
+                        pop_output_path.append((file_path, file_type))
+
+                output_files[out_id] = pop_output_path  # create output files
+                self.populable_outputs[out_id] = pop_output_path  # save output files
 
             logger.debug("Output files created.")
 

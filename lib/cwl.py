@@ -109,11 +109,10 @@ class CWL:
                         file_path = os.path.join(foldername, file)  # create complete file path of file in files
                         zipf.write(file_path)  # add filename to zip
 
-            logger.debug("Created zip file {} of {}.".format(zipn, path))
+            logger.debug("Created provenance {} from {}.".format(zipn, path))
 
             # remove path of provenance data
             shutil.rmtree(path)
-            logger.debug("Removed temporal directory {}.".format(path))
 
         except Exception as error:
             errstr = "Unable to zip the path {}. ERROR: {}".format(path, error)
