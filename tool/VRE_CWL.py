@@ -156,6 +156,9 @@ class WF_RUNNER(Tool):
             # Compress provenance data
             if os.path.isdir(self.TMP_DIR):
                 # self.cwl.zip_dir(self.TMP_DIR, self.ZIP_METADATA_FILENAME)
+                # move YAML to cwl_metadata
+                shutil.move(self.YAML_FILENAME, self.TMP_DIR)
+
                 with tarfile.open(self.TAR_FILENAME, "w:gz") as tar:
                     tar.add(self.TMP_DIR, arcname=os.path.basename(self.TMP_DIR))
 
@@ -167,7 +170,7 @@ class WF_RUNNER(Tool):
                 # TODO change to logger fatal ?
 
             # Remove YAML file
-            os.remove(self.YAML_FILENAME)
+            # os.remove(self.YAML_FILENAME)
 
             # Create and validate the output files
             self.create_output_files(output_files, output_metadata, outputs_execution)
