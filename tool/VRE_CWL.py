@@ -16,11 +16,10 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
-import glob
 import json
 import os
 import shutil
-import tarfile
+import subprocess
 import time
 
 from basic_modules.tool import Tool
@@ -164,10 +163,7 @@ class WF_RUNNER(Tool):
                 # move YAML to cwl_metadata
                 shutil.move(self.YAML_FILENAME, tmp_dir)
 
-                tar = tarfile.open(self.TAR_FILENAME, "w:gz")
-                for file_name in glob.glob(os.path.join(tmp_dir, "*")):
-                    tar.add(file_name, os.path.basename(file_name))
-                tar.close()
+                subprocess.run(['tar', '-czvf', self.TAR_FILENAME, tmp_dir], shell=False)
 
                 logger.debug("Provenance data: {}".format(self.TAR_FILENAME))
 
