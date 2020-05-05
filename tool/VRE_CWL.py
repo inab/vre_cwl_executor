@@ -19,7 +19,7 @@
 import json
 import os
 import shutil
-import subprocess
+import tarfile
 import time
 
 from basic_modules.tool import Tool
@@ -34,7 +34,7 @@ class WF_RUNNER(Tool):
     """
     MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
     YAML_FILENAME = "inputs_cwl.yml"
-    ZIP_METADATA_FILENAME = "cwl_metadata.zip"
+    # ZIP_METADATA_FILENAME = "cwl_metadata.zip"
     TAR_FILENAME = "cwl_metadata.tar.gz"
     TMP_DIR = "/cwl_metadata/"
 
@@ -163,12 +163,15 @@ class WF_RUNNER(Tool):
                 # move YAML to cwl_metadata
                 shutil.move(self.YAML_FILENAME, tmp_dir)
 
-                subprocess.run(['tar', '-czvf', self.TAR_FILENAME, tmp_dir], shell=False)
+                with tarfile.open(self.TAR_FILENAME, "w:gz") as tar_handle:
+                    for root, dirs, files in os.walk(tmp_dir):
+                        for file in files:
+                            tar_handle.add(os.path.join(root, file))
 
                 logger.debug("Provenance data: {}".format(self.TAR_FILENAME))
 
                 # Remove path of provenance data
-                shutil.rmtree(tmp_dir)
+                # shutil.rmtree(tmp_dir)
 
             else:
                 logger.debug("{} not created")
