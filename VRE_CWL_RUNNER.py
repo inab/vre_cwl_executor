@@ -41,7 +41,7 @@ class process_WF_RUNNER(Workflow):
         which are specific to each Tool.
         :type configuration: dict
         """
-        logger.debug("Processing CWL Tool")
+        logger.debug("Processing CWL Test")
         if configuration is None:
             configuration = {}
 
@@ -63,7 +63,7 @@ class process_WF_RUNNER(Workflow):
         :rtype: dict, dict
         """
         try:
-            logger.debug("Initialise the CWL Tool")
+            logger.debug("Initialise the CWL Test Tool")
             tt_handle = WF_RUNNER(self.configuration)
             tt_files, tt_meta = tt_handle.run(input_files, input_metadata, output_files, output_metadata)
             return tt_files, tt_meta
