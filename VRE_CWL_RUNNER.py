@@ -123,6 +123,6 @@ if __name__ == "__main__":
     OUT_METADATA = ARGS.out_metadata
 
     if ARGS.log_file:
-        sys.stderr = sys.stdout = open(ARGS.log_file, "w")
+        sys.stderr = sys.stdout = open(ARGS.log_file, "w+")
 
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)
