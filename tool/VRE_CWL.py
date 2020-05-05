@@ -36,7 +36,7 @@ class WF_RUNNER(Tool):
     YAML_FILENAME = "inputs_cwl.yml"
     # ZIP_METADATA_FILENAME = "cwl_metadata.zip"
     TAR_FILENAME = "cwl_metadata.tar.gz"
-    TMP_DIR = "/tmp/cwl_metadata/"
+    TMP_DIR = "/cwl_metadata/"
 
     def __init__(self, configuration=None):
         """
@@ -89,11 +89,12 @@ class WF_RUNNER(Tool):
             logger.info("3) Packed information to YAML: {}".format(cwl_wf_input_yml_path))
 
             # Create temporal directory to add provenance data. If not exists the directory will be created
-            if not os.path.isdir(self.TMP_DIR):
-                os.makedirs(self.TMP_DIR)
+            tmp_dir = working_directory + self.TMP_DIR
+            if not os.path.isdir(tmp_dir):
+                os.makedirs(tmp_dir)
 
             # cwltool execution
-            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.TMP_DIR)
+            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, tmp_dir)
 
             # Sending the cwltool execution stdout to the log file
             for line in iter(process.stderr.readline, b''):
@@ -156,13 +157,14 @@ class WF_RUNNER(Tool):
             outputs_execution = json.loads(outputs_execution)  # formatting the stdout
 
             # Compress provenance data
-            if os.path.isdir(self.TMP_DIR):
+            tmp_dir = execution_path + self.TMP_DIR
+            if os.path.isdir(tmp_dir):
                 # self.cwl.zip_dir(self.TMP_DIR, self.ZIP_METADATA_FILENAME)
                 # move YAML to cwl_metadata
-                shutil.move(self.YAML_FILENAME, self.TMP_DIR)
+                shutil.move(self.YAML_FILENAME, tmp_dir)
 
                 with tarfile.open(self.TAR_FILENAME, "w:gz") as tar:
-                    tar.add(self.TMP_DIR, arcname=os.path.basename(self.TMP_DIR))
+                    tar.add(tmp_dir, arcname=os.path.basename(tmp_dir))
 
                 if not os.path.isfile(self.TAR_FILENAME):
                     sys.exit("{} not created; See logs".format(self.TAR_FILENAME))
@@ -170,7 +172,7 @@ class WF_RUNNER(Tool):
                 logger.debug("Provenance data: {}".format(self.TAR_FILENAME))
 
                 # Remove path of provenance data
-                shutil.rmtree(self.TMP_DIR)
+                shutil.rmtree(tmp_dir)
 
             else:
                 logger.debug("{} not created")
