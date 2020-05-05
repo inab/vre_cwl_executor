@@ -16,15 +16,16 @@
    See the License for the specific language governing permissions and
    limitations under the License.
 """
+import glob
 import json
 import os
 import shutil
-import sys
 import tarfile
 import time
 
 from basic_modules.tool import Tool
 from utils import logger
+
 from lib.cwl import CWL
 
 
@@ -34,7 +35,7 @@ class WF_RUNNER(Tool):
     """
     MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
     YAML_FILENAME = "inputs_cwl.yml"
-    # ZIP_METADATA_FILENAME = "cwl_metadata.zip"
+    ZIP_METADATA_FILENAME = "cwl_metadata.zip"
     TAR_FILENAME = "cwl_metadata.tar.gz"
     TMP_DIR = "/cwl_metadata/"
 
@@ -78,7 +79,7 @@ class WF_RUNNER(Tool):
                 logger.fatal(errstr)
                 raise Exception(errstr)
 
-            logger.debug("CWL workflow file: {}". format(cwl_wf_url))
+            logger.debug("CWL workflow file: {}".format(cwl_wf_url))
 
             for params in self.configuration.keys():  # save arguments
                 if params not in self.MASKED_KEYS:
@@ -163,11 +164,10 @@ class WF_RUNNER(Tool):
                 # move YAML to cwl_metadata
                 shutil.move(self.YAML_FILENAME, tmp_dir)
 
-                with tarfile.open(self.TAR_FILENAME, "w:gz") as tar:
-                    tar.add(tmp_dir, arcname=os.path.basename(tmp_dir))
-
-                if not os.path.isfile(self.TAR_FILENAME):
-                    sys.exit("{} not created; See logs".format(self.TAR_FILENAME))
+                tar = tarfile.open(self.TAR_FILENAME, "w:gz")
+                for file_name in glob.glob(os.path.join(tmp_dir, "*")):
+                    tar.add(file_name, os.path.basename(file_name))
+                tar.close()
 
                 logger.debug("Provenance data: {}".format(self.TAR_FILENAME))
 
