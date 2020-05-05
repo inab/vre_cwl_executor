@@ -88,13 +88,8 @@ class WF_RUNNER(Tool):
             self.cwl.create_input_yml(input_metadata, arguments, cwl_wf_input_yml_path)
             logger.info("3) Packed information to YAML: {}".format(cwl_wf_input_yml_path))
 
-            # Create temporal directory to add provenance data. If not exists the directory will be created
-            tmp_dir = working_directory + self.TMP_DIR
-            if not os.path.isdir(tmp_dir):
-                os.makedirs(tmp_dir)
-
             # cwltool execution
-            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, tmp_dir)
+            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, working_directory)
 
             # Sending the cwltool execution stdout to the log file
             for line in iter(process.stderr.readline, b''):
@@ -151,17 +146,21 @@ class WF_RUNNER(Tool):
             os.chdir(execution_path)
             logger.debug("Execution path: {}".format(execution_path))
 
+            # Create temporal directory to add provenance data. If not exists the directory will be created
+            tmp_dir = execution_path + self.TMP_DIR
+            if not os.path.isdir(tmp_dir):
+                os.makedirs(tmp_dir)
+
             # cwltool execution
             logger.debug("Initialise CWL Workflow execution")
-            outputs_execution = self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
+            outputs_execution = self.execute_cwl_workflow(input_metadata, self.configuration, tmp_dir)
             outputs_execution = json.loads(outputs_execution)  # formatting the stdout
 
             # Compress provenance data
-            tmp_dir = execution_path + self.TMP_DIR
             if os.path.isdir(tmp_dir):
                 # self.cwl.zip_dir(self.TMP_DIR, self.ZIP_METADATA_FILENAME)
                 # move YAML to cwl_metadata
-                shutil.move(self.YAML_FILENAME, tmp_dir)
+                # shutil.move(self.YAML_FILENAME, tmp_dir)
 
                 with tarfile.open(self.TAR_FILENAME, "w:gz") as tar:
                     tar.add(tmp_dir, arcname=os.path.basename(tmp_dir))
