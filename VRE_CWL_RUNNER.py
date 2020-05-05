@@ -94,11 +94,8 @@ def main_json(config_path, in_metadata_path, out_metadata_path):
         app = JSONApp()
 
         result = app.launch(process_WF_RUNNER, config_path, in_metadata_path, out_metadata_path)  # launch the app
-        if result:
-            logger.info("2. App successfully launched; See " + out_metadata_path)
-            return result
-        else:
-            sys.exit("output_metadata.json not created; See logs")
+        logger.info("2. App successfully launched; See " + out_metadata_path)
+        return result
 
     except Exception as error:
         errstr = "App wasn't successfully launched. ERROR: {}".format(error)
