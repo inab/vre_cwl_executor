@@ -29,13 +29,13 @@ import tool.VRE_CWL
 
 class CWL:
     """
-    VRE CWL workflow class.
+    CWL workflow class.
     """
+
     def __init__(self):
         """
         Init function
         """
-        logger.debug("VRE CWL Workflow class")
         self.input_cwl = dict()
 
     def create_input_yml(self, input_metadata, arguments, filename_path):
@@ -62,7 +62,7 @@ class CWL:
                 if key not in tool.VRE_CWL.WF_RUNNER.MASKED_KEYS:
                     self.input_cwl[str(key)] = str(value)
 
-            with open(filename_path, 'w+') as f:
+            with open(filename_path, 'w+') as f:  # create YAML file
                 yaml.dump(self.input_cwl, f, allow_unicode=True, default_flow_style=False)
 
         except:
@@ -73,8 +73,8 @@ class CWL:
     @staticmethod
     def execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, tmp_dir):
         """
-        cwltool execution process with the workflow specified by cwl_wf_url and YAML file path cwl_wf_input_yml_path
-        specified by cwl_wf_input_yml_path, created from config.json and input_metadata.json.
+        cwltool provenance execution process with the workflow specified by cwl_wf_url and YAML file path,
+        created from config.json and input_metadata.json. provenance data is created.
 
         :param cwl_wf_input_yml_path: CWL workflow in YAML format
         :type cwl_wf_input_yml_path: str
@@ -83,8 +83,7 @@ class CWL:
         :param tmp_dir: directory to save temporally the provenance data
         :type tmp_dir: str
         """
-        # TODO try and except
-        logger.debug("Starting cwltool execution")
+        logger.debug("Starting CWL Workflow execution")
         process = subprocess.Popen(["cwltool", "--provenance", tmp_dir, cwl_wf_url, cwl_wf_input_yml_path],
                                    stdout=subprocess.PIPE,
                                    stderr=subprocess.PIPE)
@@ -97,10 +96,10 @@ class CWL:
 
         :param path: path that contains provenance data
         :type path: str
-        :param zipn: zip file name
+        :param zipn: zip filename
         :type zipn: str
         """
-        # TODO move method to utils.py
+        # TODO move method to helpers.py
         try:
             with zipfile.ZipFile(zipn, "w") as zipf:
                 # iterate over all the files in the directory path
@@ -111,8 +110,8 @@ class CWL:
 
             logger.debug("Created provenance {} from {}.".format(zipn, path))
 
-            # remove path of provenance data
             shutil.rmtree(path)
+            logger.debug("Removed provenance {} from {}.".format(zipn, path))
 
         except Exception as error:
             errstr = "Unable to zip the path {}. ERROR: {}".format(path, error)

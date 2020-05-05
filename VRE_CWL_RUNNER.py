@@ -41,7 +41,7 @@ class process_WF_RUNNER(Workflow):
         which are specific to each Tool.
         :type configuration: dict
         """
-        logger.debug("Processing CWL Test")
+        logger.debug("Processing CWL Tool")
         if configuration is None:
             configuration = {}
 
@@ -63,7 +63,7 @@ class process_WF_RUNNER(Workflow):
         :rtype: dict, dict
         """
         try:
-            logger.debug("Initialise the CWL Test Tool")
+            logger.debug("Initialise the CWL Tool")
             tt_handle = WF_RUNNER(self.configuration)
             tt_files, tt_meta = tt_handle.run(input_files, input_metadata, output_files, output_metadata)
             return tt_files, tt_meta
@@ -94,8 +94,11 @@ def main_json(config_path, in_metadata_path, out_metadata_path):
         app = JSONApp()
 
         result = app.launch(process_WF_RUNNER, config_path, in_metadata_path, out_metadata_path)  # launch the app
-        logger.info("2. App successfully launched; see " + out_metadata_path)
-        return result
+        if result:
+            logger.info("2. App successfully launched; See " + out_metadata_path)
+            return result
+        else:
+            sys.exit("output_metadata.json not created; See logs")
 
     except Exception as error:
         errstr = "App wasn't successfully launched. ERROR: {}".format(error)

@@ -35,7 +35,7 @@ class WF_RUNNER(Tool):
     YAML_FILENAME = "inputs_cwl.yml"
     # ZIP_METADATA_FILENAME = "cwl_metadata.zip"
     TAR_FILENAME = "cwl_metadata.tar.gz"
-    TMP_DIR = "/tmp/cwl_metadata/"  # TODO change temporal directory
+    TMP_DIR = "/cwl_metadata/"
 
     def __init__(self, configuration=None):
         """
@@ -71,27 +71,29 @@ class WF_RUNNER(Tool):
         :type working_directory: str
         """
         try:
-            logger.debug("Getting the CWL workflow file")
             cwl_wf_url = self.configuration.get('cwl_wf_url')  # TODO add tag
             if cwl_wf_url is None:
                 errstr = "cwl_wf_url parameter must be defined"
                 logger.fatal(errstr)
                 raise Exception(errstr)
 
-            for params in self.configuration.keys():    # save arguments
+            logger.debug("CWL workflow file: {}". format(cwl_wf_url))
+
+            for params in self.configuration.keys():  # save arguments
                 if params not in self.MASKED_KEYS:
                     self.arguments.append((params, self.configuration[params]))
 
-            logger.info("3) Pack information to YAML")
             cwl_wf_input_yml_path = working_directory + "/" + self.YAML_FILENAME
             self.cwl.create_input_yml(input_metadata, arguments, cwl_wf_input_yml_path)
+            logger.info("3) Packed information to YAML: {}".format(cwl_wf_input_yml_path))
 
             # Create temporal directory to add provenance data. If not exists the directory will be created
-            if not os.path.isdir(self.TMP_DIR):
-                os.makedirs(self.TMP_DIR)
+            tmp_dir = working_directory + self.TMP_DIR
+            if not os.path.isdir(tmp_dir):
+                os.makedirs(tmp_dir)
 
             # cwltool execution
-            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.TMP_DIR)
+            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, tmp_dir)
 
             # Sending the cwltool execution stdout to the log file
             for line in iter(process.stderr.readline, b''):
@@ -108,7 +110,7 @@ class WF_RUNNER(Tool):
             else:
                 # output files from cwltool execution
                 output_files = process.stdout.read().decode("utf-8")
-                logger.progress("cwltool execution finished successfully", status="FINISHED")
+                logger.progress("CWL Workflow execution finished successfully", status="FINISHED")
                 return output_files
 
         except:
@@ -135,7 +137,7 @@ class WF_RUNNER(Tool):
         try:
             # Set and validate execution path. If not exists the directory will be created
             execution_path = os.path.abspath(self.configuration.get('execution', '.'))
-            self.execution_path = execution_path    # save execution path
+            self.execution_path = execution_path  # save execution path
             if not os.path.isdir(execution_path):
                 os.makedirs(execution_path)
 
@@ -149,31 +151,30 @@ class WF_RUNNER(Tool):
             logger.debug("Execution path: {}".format(execution_path))
 
             # cwltool execution
-            logger.debug("Init CWL Workflow execution")
+            logger.debug("Initialise CWL Workflow execution")
             outputs_execution = self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
             outputs_execution = json.loads(outputs_execution)  # formatting the stdout
 
             # Compress provenance data
-            if os.path.isdir(self.TMP_DIR):
+            tmp_dir = execution_path + self.TMP_DIR
+            if os.path.isdir(tmp_dir):
                 # self.cwl.zip_dir(self.TMP_DIR, self.ZIP_METADATA_FILENAME)
                 # move YAML to cwl_metadata
-                shutil.move(self.YAML_FILENAME, self.TMP_DIR)
+                shutil.move(self.YAML_FILENAME, tmp_dir)
 
                 with tarfile.open(self.TAR_FILENAME, "w:gz") as tar:
-                    tar.add(self.TMP_DIR, arcname=os.path.basename(self.TMP_DIR))
+                    tar.add(tmp_dir, arcname=os.path.basename(tmp_dir))
 
                 # Remove path of provenance data
-                shutil.rmtree(self.TMP_DIR)
+                shutil.rmtree(tmp_dir)
 
             else:
                 logger.debug("{} not created")
                 # TODO change to logger fatal ?
 
-            # Remove YAML file
-            # os.remove(self.YAML_FILENAME)
-
             # Create and validate the output files
             self.create_output_files(output_files, output_metadata, outputs_execution)
+            logger.debug("Output files and output metadata created")
             return output_files, output_metadata
 
         except:
@@ -221,8 +222,6 @@ class WF_RUNNER(Tool):
 
                 output_files[out_id] = pop_output_path  # create output files
                 self.populable_outputs[out_id] = pop_output_path  # save output files
-
-            logger.debug("Output files created.")
 
         except:
             errstr = "Output files not created. See logs"
