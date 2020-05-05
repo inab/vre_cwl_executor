@@ -19,6 +19,7 @@
 import json
 import os
 import shutil
+import sys
 import tarfile
 import time
 
@@ -164,6 +165,11 @@ class WF_RUNNER(Tool):
 
                 with tarfile.open(self.TAR_FILENAME, "w:gz") as tar:
                     tar.add(tmp_dir, arcname=os.path.basename(tmp_dir))
+
+                if not os.path.isfile(self.TAR_FILENAME):
+                    sys.exit("{} not created; See logs".format(self.TAR_FILENAME))
+
+                logger.debug("Provenance data: {}".format(self.TAR_FILENAME))
 
                 # Remove path of provenance data
                 shutil.rmtree(tmp_dir)
