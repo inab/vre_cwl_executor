@@ -41,7 +41,7 @@ class process_WF_RUNNER(Workflow):
         which are specific to each Tool.
         :type configuration: dict
         """
-        logger.debug("Processing CWL Test")
+        logger.debug("Processing CWL Workflow Tool")
         if configuration is None:
             configuration = {}
 
@@ -63,7 +63,7 @@ class process_WF_RUNNER(Workflow):
         :rtype: dict, dict
         """
         try:
-            logger.debug("Initialise the CWL Test Tool")
+            logger.debug("Initialise CWL Workflow Tool")
             tt_handle = WF_RUNNER(self.configuration)
             tt_files, tt_meta = tt_handle.run(input_files, input_metadata, output_files, output_metadata)
             return tt_files, tt_meta
@@ -90,11 +90,13 @@ def main_json(config_path, in_metadata_path, out_metadata_path):
     :rtype: bool
     """
     try:
-        logger.info("1. Instantiate and launch the App")
+        logger.info("1. Instantiate and launch the Wrapper")
         app = JSONApp()
 
         result = app.launch(process_WF_RUNNER, config_path, in_metadata_path, out_metadata_path)  # launch the app
-        logger.info("2. App successfully launched; See " + out_metadata_path)
+        logger.info("2. Wrapper successfully launched; See " + out_metadata_path)
+        # TODO control result True and False
+        # output_metadata.json is created? no exit status, yes otherwise
         return result
 
     except Exception as error:
@@ -120,6 +122,6 @@ if __name__ == "__main__":
     OUT_METADATA = ARGS.out_metadata
 
     if ARGS.log_file:
-        sys.stderr = sys.stdout = open(ARGS.log_file, "w+")
+        sys.stderr = sys.stdout = open(ARGS.log_file, "w")
 
     RESULTS = main_json(CONFIG, IN_METADATA, OUT_METADATA)

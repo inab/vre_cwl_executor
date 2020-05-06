@@ -29,7 +29,7 @@ import tool.VRE_CWL
 
 class CWL:
     """
-    CWL workflow class.
+    CWL workflow class
     """
 
     def __init__(self):
@@ -80,7 +80,7 @@ class CWL:
         :type cwl_wf_input_yml_path: str
         :param cwl_wf_url: URL for the location of the workflow
         :type cwl_wf_url: str
-        :param tmp_dir: directory to save temporally the provenance data
+        :param tmp_dir: directory to save the provenance data
         :type tmp_dir: str
         """
         logger.debug("Starting CWL Workflow execution")
@@ -90,16 +90,15 @@ class CWL:
         return process
 
     @staticmethod
-    def zip_dir(path, zipn):
+    def zip_provenance(path, zipn):
         """
-        Create zip file from provenance data
+        Create zip file from provenance data folder
 
         :param path: path that contains provenance data
         :type path: str
         :param zipn: zip filename
         :type zipn: str
         """
-        # TODO move method to helpers.py
         try:
             with zipfile.ZipFile(zipn, "w") as zipf:
                 # iterate over all the files in the directory path
@@ -108,10 +107,10 @@ class CWL:
                         file_path = os.path.join(foldername, file)  # create complete file path of file in files
                         zipf.write(file_path)  # add filename to zip
 
-            logger.debug("Created provenance {} from {}.".format(zipn, path))
-
+            # Remove path
             shutil.rmtree(path)
-            logger.debug("Removed provenance {} from {}.".format(zipn, path))
+
+            logger.debug("Provenance data {} created".format(zipn))
 
         except Exception as error:
             errstr = "Unable to zip the path {}. ERROR: {}".format(path, error)

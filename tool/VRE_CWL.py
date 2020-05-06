@@ -19,7 +19,6 @@
 import json
 import os
 import shutil
-import tarfile
 import time
 
 from basic_modules.tool import Tool
@@ -34,8 +33,7 @@ class WF_RUNNER(Tool):
     """
     MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
     YAML_FILENAME = "inputs_cwl.yml"
-    # ZIP_METADATA_FILENAME = "cwl_metadata.zip"
-    TAR_FILENAME = "cwl_metadata.tar.gz"
+    ZIP_FILENAME = "cwl_metadata.zip"
     TMP_DIR = "/cwl_metadata/"
 
     def __init__(self, configuration=None):
@@ -106,16 +104,16 @@ class WF_RUNNER(Tool):
                 time.sleep(0.1)
 
             if rc is not None and rc != 0:
-                logger.progress("Something went wrong inside the cwltool execution. See logs", status="WARNING")
+                logger.progress("Something went wrong inside the CWL workflow execution. See logs", status="WARNING")
 
             else:
                 # output files from cwltool execution
-                output_files = process.stdout.read().decode("utf-8")
+                output_execution = process.stdout.read().decode("utf-8")
                 logger.progress("CWL Workflow execution finished successfully", status="FINISHED")
-                return output_files
+                return output_execution
 
         except:
-            errstr = "The cwltool execution failed. See logs"
+            errstr = "CWL Workflow execution failed. See logs"
             logger.error(errstr)
             raise Exception(errstr)
 
@@ -152,30 +150,26 @@ class WF_RUNNER(Tool):
             logger.debug("Execution path: {}".format(execution_path))
 
             # cwltool execution
-            logger.debug("Initialise CWL Workflow execution")
             outputs_execution = self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
-            outputs_execution = json.loads(outputs_execution)  # formatting the stdout
+            outputs_execution = json.loads(outputs_execution)  # formatting the stdout to JSON format
 
             # Compress provenance data
-            tmp_dir = execution_path + self.TMP_DIR
-            if os.path.isdir(tmp_dir):
-                # self.cwl.zip_dir(self.TMP_DIR, self.ZIP_METADATA_FILENAME)
-                # move YAML to cwl_metadata
-                shutil.move(self.YAML_FILENAME, tmp_dir)
+            provenance_path = execution_path + self.TMP_DIR
+            if os.path.isdir(provenance_path):
+                # move YAML to provenance path
+                shutil.move(self.YAML_FILENAME, provenance_path)
 
-                with tarfile.open(self.TAR_FILENAME, "w:gz") as tar_handle:
-                    for root, dirs, files in os.walk(tmp_dir):
-                        for file in files:
-                            tar_handle.add(os.path.join(root, file))
-
-                logger.debug("Provenance data: {}".format(self.TAR_FILENAME))
-
-                # Remove path of provenance data
-                # shutil.rmtree(tmp_dir)
-
+                # compress and remove provenance data folder
+                self.cwl.zip_provenance(provenance_path, self.ZIP_FILENAME)
+            #
+            #     if not os.path.isfile(self.TAR_FILENAME):
+            #         sys.exit("{} not created; See logs".format(self.TAR_FILENAME))
+            #
+            #
             else:
-                logger.debug("{} not created")
-                # TODO change to logger fatal ?
+                errstr = "Provenance data folder not created"
+                logger.fatal(errstr)
+                raise Exception(errstr)
 
             # Create and validate the output files
             self.create_output_files(output_files, output_metadata, outputs_execution)
@@ -221,7 +215,7 @@ class WF_RUNNER(Tool):
 
                 else:  # provenance data
                     if out_id == "cwl_metadata":
-                        file_path = self.execution_path + "/" + self.TAR_FILENAME
+                        file_path = self.execution_path + "/" + self.ZIP_FILENAME
                         file_type = "file"  # TODO always a file ?
                         pop_output_path.append((file_path, file_type))
 
