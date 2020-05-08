@@ -113,6 +113,6 @@ class CWL:
             logger.debug("Provenance data {} created".format(zipn))
 
         except Exception as error:
-            errstr = "Unable to zip the path {}. ERROR: {}".format(path, error)
+            errstr = "Unable to create provenance data {}. ERROR: {}".format(zipn, error)
             logger.error(errstr)
             raise Exception(errstr)
