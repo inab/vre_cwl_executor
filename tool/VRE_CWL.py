@@ -19,6 +19,7 @@
 import json
 import os
 import shutil
+import sys
 import time
 
 from basic_modules.tool import Tool
@@ -155,21 +156,11 @@ class WF_RUNNER(Tool):
 
             # Compress provenance data
             provenance_path = execution_path + self.TMP_DIR
-            if os.path.isdir(provenance_path):
-                # move YAML to provenance path
-                shutil.move(self.YAML_FILENAME, provenance_path)
+            shutil.move(self.YAML_FILENAME, provenance_path)    # move YAML to provenance path
 
-                # compress and remove provenance data folder
-                self.cwl.zip_provenance(provenance_path, self.ZIP_FILENAME)
-            #
-            #     if not os.path.isfile(self.TAR_FILENAME):
-            #         sys.exit("{} not created; See logs".format(self.TAR_FILENAME))
-            #
-            #
-            else:
-                errstr = "Provenance data folder not created"
-                logger.fatal(errstr)
-                raise Exception(errstr)
+            self.cwl.zip_provenance(provenance_path, self.ZIP_FILENAME)
+            if not os.path.isfile(self.ZIP_FILENAME):  # if zip file is not created the execution stops
+                sys.exit("{} not created; See logs".format(self.ZIP_FILENAME))
 
             # Create and validate the output files
             self.create_output_files(output_files, output_metadata, outputs_execution)
