@@ -19,6 +19,8 @@
 import os
 import shutil
 import subprocess
+import sys
+import tarfile
 import zipfile
 
 from ruamel import yaml
@@ -90,29 +92,37 @@ class CWL:
         return process
 
     @staticmethod
-    def zip_provenance(path, zipn):
+    def compress_provenance(filename, provenance_path):
         """
-        Create zip file from provenance data folder
+        Create TAR file of provenance data folder
 
-        :param path: path that contains provenance data
-        :type path: str
-        :param zipn: zip filename
-        :type zipn: str
+        :param filename: filename
+        :type filename: str
+        :param provenance_path: path that contains provenance data
+        :type provenance_path: str
         """
         try:
-            with zipfile.ZipFile(zipn, "w") as zipf:
-                # iterate over all the files in the directory path
-                for foldername, subfolders, files in os.walk(path):
-                    for file in files:
-                        file_path = os.path.join(foldername, file)  # create complete file path of file in files
-                        zipf.write(file_path)  # add filename to zip
+            with tarfile.open(filename, mode='w:gz', bufsize=1024 * 1024) as tar:
+                tar.add(provenance_path, arcname="data", recursive=True)
 
-            # Remove path
-            shutil.rmtree(path)
+            tar.close()
 
-            logger.debug("Provenance data {} created".format(zipn))
+            if not os.path.isfile(filename):  # if tar file is not created the execution stops
+                sys.exit("{} not created; See logs".format(filename))
+
+            logger.debug("Provenance data {} created".format(filename))
 
         except Exception as error:
-            errstr = "Unable to create provenance data {}. ERROR: {}".format(zipn, error)
+            errstr = "Unable to create provenance data {}. ERROR: {}".format(filename, error)
             logger.error(errstr)
             raise Exception(errstr)
+
+    # os.chdir(execution_path)
+    # if filename.endswith(".zip"):
+    #     with zipfile.ZipFile(filename, "w") as zip:
+    #         # iterate over all the files in the directory path
+    #         for folder_name, sub_folders, files in os.walk(provenance_path):
+    #             for file in files:
+    #                 file_path = os.path.join(folder_name, file)  # create complete file path of file in files
+    #                 zip.write(file_path)  # add filename to zip
+    #     zip.close()

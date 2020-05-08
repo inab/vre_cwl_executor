@@ -19,7 +19,6 @@
 import json
 import os
 import shutil
-import sys
 import time
 
 from basic_modules.tool import Tool
@@ -35,7 +34,8 @@ class WF_RUNNER(Tool):
     MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
     YAML_FILENAME = "inputs_cwl.yml"
     ZIP_FILENAME = "cwl_metadata.zip"
-    TMP_DIR = "/cwl_metadata/"
+    TAR_FILENAME = "cwl_metadata.tar.gz"
+    TMP_DIR = "/tmp/cwl_metadata/"
 
     def __init__(self, configuration=None):
         """
@@ -56,10 +56,11 @@ class WF_RUNNER(Tool):
 
         self.cwl = CWL()  # CWL workflow class
         self.arguments = list()
-        self.execution_path = str()
-        self.populable_outputs = dict()
+        self.execution_path = None
+        self.provenance_path = None
+        self.outputs = dict()
 
-    def execute_cwl_workflow(self, input_metadata, arguments, working_directory):  # pylint: disable=no-self-use
+    def execute_cwl_workflow(self, input_metadata, arguments):  # pylint: disable=no-self-use
         """
         The main function to run the remote CWL workflow
 
@@ -67,8 +68,6 @@ class WF_RUNNER(Tool):
         :type input_metadata: dict
         :param arguments: dict containing tool arguments
         :type arguments: dict
-        :param working_directory: Execution working path directory
-        :type working_directory: str
         """
         try:
             cwl_wf_url = self.configuration.get('cwl_wf_url')  # TODO add tag
@@ -83,17 +82,17 @@ class WF_RUNNER(Tool):
                 if params not in self.MASKED_KEYS:
                     self.arguments.append((params, self.configuration[params]))
 
-            cwl_wf_input_yml_path = working_directory + "/" + self.YAML_FILENAME
+            cwl_wf_input_yml_path = self.execution_path + "/" + self.YAML_FILENAME
             self.cwl.create_input_yml(input_metadata, arguments, cwl_wf_input_yml_path)
             logger.info("3) Packed information to YAML: {}".format(cwl_wf_input_yml_path))
 
             # Create temporal directory to add provenance data. If not exists the directory will be created
-            tmp_dir = working_directory + self.TMP_DIR
-            if not os.path.isdir(tmp_dir):
-                os.makedirs(tmp_dir)
+            self.provenance_path = self.execution_path + "/" + self.TMP_DIR
+            if not os.path.isdir(self.provenance_path):
+                os.makedirs(self.provenance_path)
 
             # cwltool execution
-            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, tmp_dir)
+            process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.provenance_path)
 
             # Sending the cwltool execution stdout to the log file
             for line in iter(process.stderr.readline, b''):
@@ -137,30 +136,27 @@ class WF_RUNNER(Tool):
         try:
             # Set and validate execution path. If not exists the directory will be created
             execution_path = os.path.abspath(self.configuration.get('execution', '.'))
-            self.execution_path = execution_path  # save execution path
-            if not os.path.isdir(execution_path):
-                os.makedirs(execution_path)
+            self.execution_path = execution_path
+            if not os.path.isdir(self.execution_path):
+                os.makedirs(self.execution_path)
 
             # Set and validate execution parent path. If not exists the directory will be created
-            execution_parent_dir = os.path.dirname(execution_path)
+            execution_parent_dir = os.path.dirname(self.execution_path)
             if not os.path.isdir(execution_parent_dir):
                 os.makedirs(execution_parent_dir)
 
             # Update working directory
-            os.chdir(execution_path)
-            logger.debug("Execution path: {}".format(execution_path))
+            os.chdir(self.execution_path)
+            logger.debug("Execution path: {}".format(self.execution_path))
 
             # cwltool execution
-            outputs_execution = self.execute_cwl_workflow(input_metadata, self.configuration, execution_path)
+            outputs_execution = self.execute_cwl_workflow(input_metadata, self.configuration)
             outputs_execution = json.loads(outputs_execution)  # formatting the stdout to JSON format
 
             # Compress provenance data
-            provenance_path = execution_path + self.TMP_DIR
-            shutil.move(self.YAML_FILENAME, provenance_path)    # move YAML to provenance path
-
-            self.cwl.zip_provenance(provenance_path, self.ZIP_FILENAME)
-            if not os.path.isfile(self.ZIP_FILENAME):  # if zip file is not created the execution stops
-                sys.exit("{} not created; See logs".format(self.ZIP_FILENAME))
+            shutil.move(self.YAML_FILENAME, self.provenance_path)  # move YAML to provenance data folder
+            self.cwl.compress_provenance(self.TAR_FILENAME, self.provenance_path)
+            shutil.rmtree(os.path.join(self.execution_path + "/tmp"))  # remove provenance data folder
 
             # Create and validate the output files
             self.create_output_files(output_files, output_metadata, outputs_execution)
@@ -206,12 +202,12 @@ class WF_RUNNER(Tool):
 
                 else:  # provenance data
                     if out_id == "cwl_metadata":
-                        file_path = self.execution_path + "/" + self.ZIP_FILENAME
+                        file_path = self.execution_path + "/" + self.TAR_FILENAME
                         file_type = "file"  # TODO always a file ?
                         pop_output_path.append((file_path, file_type))
 
                 output_files[out_id] = pop_output_path  # create output files
-                self.populable_outputs[out_id] = pop_output_path  # save output files
+                self.outputs[out_id] = pop_output_path  # save output files
 
         except:
             errstr = "Output files not created. See logs"
