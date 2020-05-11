@@ -17,9 +17,10 @@
    limitations under the License.
 """
 import os
+import re
 import subprocess
 import sys
-import tarfile
+import zipfile
 
 from ruamel import yaml
 from utils import logger
@@ -92,7 +93,7 @@ class CWL:
     @staticmethod
     def compress_provenance(filename, provenance_path):
         """
-        Create TAR file of provenance data folder
+        Create ZIP file of provenance data folder
 
         :param filename: filename
         :type filename: str
@@ -100,12 +101,23 @@ class CWL:
         :type provenance_path: str
         """
         try:
-            with tarfile.open(filename, mode='w:gz', bufsize=1024 * 1024) as tar:
-                tar.add(provenance_path, arcname="data", recursive=True)
+            # with tarfile.open(filename, mode='w:gz', bufsize=1024 * 1024) as tar:
+            #     print(provenance_path)
+            #     tar.add(provenance_path)
+            #
+            # tar.close()
+            with zipfile.ZipFile(filename, "w", zipfile.ZIP_DEFLATED) as zip:
+                abs_src = os.path.abspath(provenance_path)  # absolute path from provenance path
+                for folder_name, sub_folders, files in os.walk(provenance_path):
+                    rule = re.search(r"\b(data/)\b", folder_name)
+                    if rule is None:  # if not contains data folder
+                        for file in files:
+                            abs_name = os.path.abspath(os.path.join(folder_name, file))
+                            arc_name = abs_name[len(abs_src) + 1:]
+                            zip.write(abs_name, arc_name)
+            zip.close()
 
-            tar.close()
-
-            if not os.path.isfile(filename):  # if tar file is not created the execution stops
+            if not os.path.isfile(filename):  # if zip file is not created the execution stops
                 sys.exit("{} not created; See logs".format(filename))
 
             logger.debug("Provenance data {} created".format(filename))
@@ -114,11 +126,3 @@ class CWL:
             errstr = "Unable to create provenance data {}. ERROR: {}".format(filename, error)
             logger.error(errstr)
             raise Exception(errstr)
-
-        # with zipfile.ZipFile(filename, "w") as zip:
-        #     # iterate over all the files in the directory path
-        #     for folder_name, sub_folders, files in os.walk(provenance_path):
-        #         for file in files:
-        #             file_path = os.path.join(folder_name, file)  # create complete file path of file in files
-        #             zip.write(file_path)  # add filename to zip
-        # zip.close()

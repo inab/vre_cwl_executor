@@ -34,8 +34,7 @@ class WF_RUNNER(Tool):
     MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
     YAML_FILENAME = "inputs_cwl.yml"
     ZIP_FILENAME = "cwl_metadata.zip"
-    TAR_FILENAME = "cwl_metadata.tar.gz"
-    TMP_DIR = "/tmp/cwl_metadata/"
+    TMP_DIR = "cwl_metadata/"
 
     def __init__(self, configuration=None):
         """
@@ -155,7 +154,7 @@ class WF_RUNNER(Tool):
 
             # Compress provenance data
             shutil.move(self.YAML_FILENAME, self.provenance_path)  # move YAML to provenance data folder
-            self.cwl.compress_provenance(self.TAR_FILENAME, self.provenance_path)
+            self.cwl.compress_provenance(self.ZIP_FILENAME, self.provenance_path)
             shutil.rmtree(os.path.join(self.execution_path + "/tmp"))  # remove provenance data folder
 
             # Create and validate the output files
@@ -202,7 +201,7 @@ class WF_RUNNER(Tool):
 
                 else:  # provenance data
                     if out_id == "cwl_metadata":
-                        file_path = self.execution_path + "/" + self.TAR_FILENAME
+                        file_path = self.execution_path + "/" + self.ZIP_FILENAME
                         file_type = "file"  # TODO always a file ?
                         pop_output_path.append((file_path, file_type))
 
