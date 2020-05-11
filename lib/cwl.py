@@ -17,11 +17,9 @@
    limitations under the License.
 """
 import os
-import shutil
 import subprocess
 import sys
 import tarfile
-import zipfile
 
 from ruamel import yaml
 from utils import logger
@@ -117,12 +115,10 @@ class CWL:
             logger.error(errstr)
             raise Exception(errstr)
 
-    # os.chdir(execution_path)
-    # if filename.endswith(".zip"):
-    #     with zipfile.ZipFile(filename, "w") as zip:
-    #         # iterate over all the files in the directory path
-    #         for folder_name, sub_folders, files in os.walk(provenance_path):
-    #             for file in files:
-    #                 file_path = os.path.join(folder_name, file)  # create complete file path of file in files
-    #                 zip.write(file_path)  # add filename to zip
-    #     zip.close()
+        # with zipfile.ZipFile(filename, "w") as zip:
+        #     # iterate over all the files in the directory path
+        #     for folder_name, sub_folders, files in os.walk(provenance_path):
+        #         for file in files:
+        #             file_path = os.path.join(folder_name, file)  # create complete file path of file in files
+        #             zip.write(file_path)  # add filename to zip
+        # zip.close()

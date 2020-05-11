@@ -33,9 +33,8 @@ class WF_RUNNER(Tool):
     """
     MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
     YAML_FILENAME = "inputs_cwl.yml"
-    ZIP_FILENAME = "cwl_metadata.zip"
     TAR_FILENAME = "cwl_metadata.tar.gz"
-    TMP_DIR = "/tmp/cwl_metadata/"
+    debug = True  # If is True mode debug is active (testing in local machine), False otherwise
 
     def __init__(self, configuration=None):
         """
@@ -57,8 +56,13 @@ class WF_RUNNER(Tool):
         self.cwl = CWL()  # CWL workflow class
         self.arguments = list()
         self.execution_path = None
-        self.provenance_path = None
         self.outputs = dict()
+
+        if self.debug:  # testing
+            self.provenance_path = "/tmp/cwl_metadata/"
+
+        else:
+            self.provenance_path = ".tmp/cwl_metadata/"
 
     def execute_cwl_workflow(self, input_metadata, arguments):  # pylint: disable=no-self-use
         """
@@ -70,7 +74,7 @@ class WF_RUNNER(Tool):
         :type arguments: dict
         """
         try:
-            cwl_wf_url = self.configuration.get('cwl_wf_url')  # TODO add tag
+            cwl_wf_url = self.configuration.get('cwl_wf_url')  # TODO remove URL for local WF
             if cwl_wf_url is None:
                 errstr = "cwl_wf_url parameter must be defined"
                 logger.fatal(errstr)
@@ -87,7 +91,6 @@ class WF_RUNNER(Tool):
             logger.info("3) Packed information to YAML: {}".format(cwl_wf_input_yml_path))
 
             # Create temporal directory to add provenance data. If not exists the directory will be created
-            self.provenance_path = self.execution_path + "/" + self.TMP_DIR
             if not os.path.isdir(self.provenance_path):
                 os.makedirs(self.provenance_path)
 
@@ -156,7 +159,7 @@ class WF_RUNNER(Tool):
             # Compress provenance data
             shutil.move(self.YAML_FILENAME, self.provenance_path)  # move YAML to provenance data folder
             self.cwl.compress_provenance(self.TAR_FILENAME, self.provenance_path)
-            shutil.rmtree(os.path.join(self.execution_path + "/tmp"))  # remove provenance data folder
+            shutil.rmtree(self.provenance_path)  # remove provenance data folder
 
             # Create and validate the output files
             self.create_output_files(output_files, output_metadata, outputs_execution)
@@ -203,7 +206,7 @@ class WF_RUNNER(Tool):
                 else:  # provenance data
                     if out_id == "cwl_metadata":
                         file_path = self.execution_path + "/" + self.TAR_FILENAME
-                        file_type = "file"  # TODO always a file ?
+                        file_type = "file"  # TODO other cases
                         pop_output_path.append((file_path, file_type))
 
                 output_files[out_id] = pop_output_path  # create output files
