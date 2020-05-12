@@ -19,10 +19,10 @@
 from __future__ import absolute_import
 
 import json
+import os
 
 from cwltool.main import print_pack
 
-from lib.dataset import urls
 from lib.extract_data import fetch_and_validate_cwl
 
 
@@ -45,7 +45,7 @@ def pack_cwl(cwl_wf):
 
         # save CWL packed
         with open("pack.cwl", 'w') as cwl_file:
-            json.dump(packed_cwl, cwl_file, indent=4)
+            json.dump(packed_cwl, cwl_file, indent=2)
 
     except Exception as error:
         errstr = "Unable to pack the CWL workflow. ERROR: {}".format(error)
@@ -53,13 +53,9 @@ def pack_cwl(cwl_wf):
 
 
 if __name__ == '__main__':
-    # abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    # localpath = abspath + "/tests/basic/data/workflows/"
+    abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    localpath = abspath + "/tests/basic/data/workflows/"
 
     # pack local cwl
-    # cwl_path = localpath + "basic_example_v2.cwl"
-    # print(pack_cwl(cwl_path))
-
-    # pack remote cwl
-    cwl_url = urls["basic_example_v2"]
-    pack_cwl(cwl_url)
+    cwl_path = localpath + "basic_example_v2.cwl"
+    pack_cwl(cwl_path)
