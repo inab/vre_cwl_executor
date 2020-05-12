@@ -26,8 +26,6 @@ from cwltool.load_tool import resolve_and_validate_document
 from cwltool.load_tool import make_tool
 from cwltool.workflow import default_make_tool
 
-from lib.dataset import urls
-
 
 def extract_data_from_cwl(cwl_wf):
     """
@@ -43,8 +41,6 @@ def extract_data_from_cwl(cwl_wf):
         # fetch and validate CWL workflow
         loadingContext, uri, processobj = fetch_and_validate_cwl(cwl_wf)
         cwl_document = make_tool(uri, loadingContext)
-
-        print(loadingContext.prov_obj)
 
         # get inputs and outputs
         inputs_list = json.dumps(cwl_document.inputs_record_schema["fields"], indent=4)
@@ -85,14 +81,8 @@ def fetch_and_validate_cwl(cwl_wf):
 
 
 if __name__ == '__main__':
-    # abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    # localpath = abspath + "/tests/basic/data/workflows/"
+    abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
+    cwl_path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + "/tests/basic/data/workflows/basic_example_v2.cwl"
 
-    # local cwl
-    # cwl_path = localpath + "basic_example_v2.cwl"
-    # inputs, outputs, tools = extract_data_from_cwl(cwl_path)
-    # print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=4)))
-
-    # remote cwl
-    inputs, outputs, tools = extract_data_from_cwl(urls["basic_example_v2"])
-    print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=4)))
+    inputs, outputs, tools = extract_data_from_cwl(cwl_path)
+    print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=2)))
