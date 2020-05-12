@@ -20,7 +20,6 @@ from __future__ import absolute_import
 
 import os
 import re
-import zipfile
 import shutil
 import ssl
 import json
@@ -29,40 +28,10 @@ import json
 ssl._create_default_https_context = ssl._create_unverified_context
 
 from urllib import request
-from lib.dataset import urls
 from lib.extract_data import extract_data_from_cwl
 
 
-def zip_dir(path, zipn):
-    """
-    Create zip file with CWL workflow dependencies
-
-    :param path: path that contains CWL workflow dependencies
-    :type path: str
-    :param zipn: zip file name
-    :type zipn: str
-    """
-    try:
-        with zipfile.ZipFile(zipn, "w") as zipf:
-            # iterate over all the files in the directory path
-            for foldername, subfolders, files in os.walk(path):
-                for file in files:
-                    # create complete filepath of file in files
-                    file_path = os.path.join(foldername, file)
-                    # add filename to zip
-                    zipf.write(file_path)
-
-        print("Created zip file {} of {}.".format(zipn, path))
-
-        shutil.rmtree(path)
-        print("Removed temporal dir {}.".format(path))
-
-    except Exception as error:
-        errstr = "Unable to zip the CWL workflow and their dependencies. ERROR: {}".format(error)
-        raise Exception(errstr)
-
-
-def download_cwl(url, path, dependencies):
+def download_data(url, path, dependencies):
     """
     Download CWL workflow from URL specified by url and their dependencies
 
@@ -79,14 +48,13 @@ def download_cwl(url, path, dependencies):
             dependencies.insert(0, url)  # insert cwl workflow first position in dependencies to download
 
         for d in dependencies:  # for each dependency to download
-            validate_url(d)
-
-            sub_path, sub_path_dir = create_path(d)
-            if not os.path.exists(path + sub_path_dir):  # create new path
+            validate_url(d)  # validate url
+            sub_path, sub_path_dir = create_path(d)  # create the structure for materialize the content
+            if not os.path.exists(path + sub_path_dir):  # check the structure created
                 os.makedirs(path + sub_path_dir)
 
             with request.urlopen(d) as url_response, open(path + sub_path, 'wb') as download_file:
-                shutil.copyfileobj(url_response, download_file)
+                shutil.copyfileobj(url_response, download_file)  # download files
 
             # print(path + sub_path)
         print("Downloaded CWL workflow and their dependencies in {}.".format(path))
@@ -130,15 +98,12 @@ def validate_url(url):
 
 
 if __name__ == '__main__':
-    cwl_url = urls["basic_example_v2"]
+    cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example_v2.cwl"
 
     # extract inputs, outputs, dependencies
     inputs, outputs, tools = extract_data_from_cwl(cwl_url)
-    print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=4)))
+    print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=2)))
 
     # download cwl and their dependencies
-    tmppath = "/tmp/data/"
-    download_cwl(cwl_url, tmppath, tools)
-
-    # zip tmppath
-    zip_dir(tmppath, "bundle.zip")
+    tmp_path = "/tmp/data/"
+    download_data(cwl_url, tmp_path, tools)
