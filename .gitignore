@@ -1,7 +1,7 @@
 .python-version
 *.pyc
-env
-env/*
+venv
+venv/*
 *~
 *.DS_Store
 *_build*
@@ -9,12 +9,19 @@ env/*
 *.egg-info*
 .cache
 .pytest_cache
-/tests/basic/data/tmp
+
+# openvre
 /tests/basic/run00*
-*.fa
-*.bam
-/venv
 /VRE_CWL_RUNNER.log
-.idea
 /tests/basic/config.json
 /tests/basic/in_metadata.json
+
+# Input files
+*.fa
+*.bam
+
+# CWL lib
+/lib/*.cwl
+
+# PyCharm
+.idea
