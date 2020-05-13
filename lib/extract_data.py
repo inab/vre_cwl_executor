@@ -26,6 +26,8 @@ from cwltool.load_tool import resolve_and_validate_document
 from cwltool.load_tool import make_tool
 from cwltool.workflow import default_make_tool
 
+INDENT = 2
+
 
 def extract_data_from_cwl(cwl_wf):
     """
@@ -43,8 +45,8 @@ def extract_data_from_cwl(cwl_wf):
         cwl_document = make_tool(uri, loadingContext)
 
         # get inputs and outputs
-        inputs_list = json.dumps(cwl_document.inputs_record_schema["fields"], indent=4)
-        outputs_list = json.dumps(cwl_document.outputs_record_schema["fields"], indent=4)
+        inputs_list = json.dumps(cwl_document.inputs_record_schema["fields"], indent=INDENT)
+        outputs_list = json.dumps(cwl_document.outputs_record_schema["fields"], indent=INDENT)
 
         # get CWL workflow dependencies
         for item in cwl_document.metadata["steps"]:
@@ -85,4 +87,4 @@ if __name__ == '__main__':
     cwl_path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + "/tests/basic/data/workflows/basic_example_v2.cwl"
 
     inputs, outputs, tools = extract_data_from_cwl(cwl_path)
-    print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=2)))
+    print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=INDENT)))
