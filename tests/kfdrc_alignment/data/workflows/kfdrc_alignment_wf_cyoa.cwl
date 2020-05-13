@@ -1,6 +1,6 @@
 cwlVersion: v1.0
 class: Workflow
-id: kf_alignment_cyoa_wf
+label: kf_alignment_cyoa_wf
 doc: |-
   # KFDRC Alignment Workflow
   Workflow for the alignment or realignment of input BAMs, PE FASTQ reads, and/or SE FASTQ reads; conditionally generate gVCF and metrics.
