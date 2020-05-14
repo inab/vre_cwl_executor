@@ -19,7 +19,6 @@
 from __future__ import absolute_import
 
 import json
-import os
 import re
 import requests
 import ssl
@@ -27,14 +26,11 @@ import ssl
 # change only for OSX
 ssl._create_default_https_context = ssl._create_unverified_context
 
-from lib.download_and_zip import download_cwl
+from lib.download_data import download_data
 
-ro_path = "/Users/laurarodrigueznavas/BSC/vre_cwl_executor/ro_crate/test/basic/data/ro-crate-metadata.jsonld"
-schema_path = "/Users/laurarodrigueznavas/BSC/vre_cwl_executor/ro_crate/test/basic/data/schema.jsonld"
-
+abs_path = "/Users/laurarodrigueznavas/BSC/vre_cwl_executor/"
+ro_path = abs_path + "tests/trans_decoder/data/ro-crate-metadata.jsonld"
 ro_crate = json.loads(open(ro_path, encoding="utf-8").read())
-schema = json.loads(open(schema_path, encoding="utf-8").read())
-schema_map = dict((e["@id"], e) for e in schema["@graph"])
 
 
 class Metadata:
@@ -68,6 +64,7 @@ if __name__ == '__main__':
 
             url_raw = 'https://api.github.com/repos/{}/{}/contents/{}'.format(user, project, elem["@id"])
             print(url_raw)
+
             req = requests.get(url_raw)
             if req.status_code == requests.codes.ok:
                 req = req.json()
@@ -77,6 +74,6 @@ if __name__ == '__main__':
 
     # download cwl and their dependencies
     tmppath = "/tmp/data/"
-    download_cwl(dependencies[0], tmppath, dependencies)
+    download_data(dependencies[0], tmppath, dependencies)
 
 

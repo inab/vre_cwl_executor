@@ -83,8 +83,10 @@ def fetch_and_validate_cwl(cwl_wf):
 
 
 if __name__ == '__main__':
-    abspath = os.path.abspath(os.path.join(os.getcwd(), os.pardir))
-    cwl_path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + "/tests/basic/data/workflows/basic_example_v2.cwl"
+    cwl_example_1 = "/tests/basic/data/workflows/basic_example_2.cwl"
+    cwl_example_2 = "/tests/trans_decoder/data/workflows/TransDecoder-v5-wf-2steps.cwl"
+
+    cwl_path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + cwl_example_2
 
     inputs, outputs, tools = extract_data_from_cwl(cwl_path)
     print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=INDENT)))

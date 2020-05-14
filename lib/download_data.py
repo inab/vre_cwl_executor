@@ -98,12 +98,15 @@ def validate_url(url):
 
 
 if __name__ == '__main__':
-    cwl_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/workflows/basic_example_v2.cwl"
+    abs_url = "https://raw.githubusercontent.com/inab/vre_cwl_executor/master"
+
+    cwl_example_1 = abs_url + "/tests/basic/data/workflows/basic_example_2.cwl"
+    cwl_example_2 = abs_url + "/tests/trans_decoder/data/workflows/TransDecoder-v5-wf-2steps.cwl"
 
     # extract inputs, outputs, dependencies
-    inputs, outputs, tools = extract_data_from_cwl(cwl_url)
+    inputs, outputs, tools = extract_data_from_cwl(cwl_example_2)
     print("INPUTS:\n{0}\n OUTPUTS:\n{1}\n DEPENDENCIES:\n{2}".format(inputs, outputs, json.dumps(tools, indent=2)))
 
     # download cwl and their dependencies
     tmp_path = "/tmp/data/"
-    download_data(cwl_url, tmp_path, tools)
+    download_data(cwl_example_2, tmp_path, tools)

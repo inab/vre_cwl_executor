@@ -53,7 +53,7 @@ def pack_cwl(cwl_wf):
 
 
 if __name__ == '__main__':
-    cwl_path = "/tests/basic/data/workflows/basic_example_v2.cwl"
+    cwl_path = "/tests/basic/data/workflows/basic_example_2.cwl"
     path = os.path.abspath(os.path.join(os.getcwd(), os.pardir)) + cwl_path
 
     pack_cwl(path)

@@ -23,7 +23,7 @@
       "license": "https://www.apache.org/licenses/LICENSE-2.0",
       "author": "Maxim Scheremetjew",
       "publisher": "EMBL - European Bioinformatics Institute, 2018",
-      "url": "https://github.com/inab/vre_cwl_executor/blob/master/tests/trans_decoder/data/workflows/TransDecoder-v5-wf-2steps.cwl",
+      "url": "https://github.com/EBI-Metagenomics/workflow-is-cwl/blob/master/workflows/TransDecoder-v5-wf-2steps.cwl",
       "mainEntity": {
         "@id": "workflows/TransDecoder-v5-wf-2steps.cwl"
       },
