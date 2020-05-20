@@ -2,6 +2,9 @@ biospecimen_name: hg38
 indexed_reference_fasta:
   class: File
   location: /gpfs/openvre/public/refGenomes/hg38/hg38.fa
+  secondaryFiles:
+    - class: File
+      location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.fasta.fai
 knownsites:
   - class: File
     location: /home/user/kfdrc-workflows/data/1000G_omni2.5.hg38.vcf.gz
