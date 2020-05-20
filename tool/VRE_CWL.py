@@ -32,7 +32,7 @@ class WF_RUNNER(Tool):
     Tool for writing to a file
     """
     MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
-    YAML_FILENAME = "inputs_cwl.yml"
+    YAML_FILENAME = "inputs_cwl.yaml"
     ZIP_FILENAME = "cwl_metadata.zip"
     TMP_DIR = "cwl_metadata/"
 
