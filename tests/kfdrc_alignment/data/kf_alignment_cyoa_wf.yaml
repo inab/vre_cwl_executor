@@ -1,4 +1,7 @@
-biospecimen_name: hg38
+input_bam:
+  class: File
+  location: /home/user/kfdrc-workflows/data/C835.HCC1143.2.converted.realigned.base_recalibrated.bam
+biospecimen_name: HCC1143
 indexed_reference_fasta:
   class: File
   location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.fasta
@@ -24,25 +27,27 @@ knownsites:
     location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.known_indels.vcf.gz
   - class: File
     location: /home/user/kfdrc-workflows/data/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
-output_basename: out
+output_basename: HCC1143
 reference_dict:
   class: File
   location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.dict
-run_bam_processing: False
-run_pe_reads_processing: False
-run_se_reads_processing: True
+run_bam_processing: True
+run_pe_reads_processing: True
+run_se_reads_processing: False
 run_hs_metrics: False
 run_wgs_metrics: False
 run_agg_metrics: False
 run_gvcf_processing: False
-input_se_reads_list:
+input_pe_reads_list:
   - class: File
-    location: /home/user/kfdrc-workflows/data/reads1_R1.fq
+    location: /home/user/kfdrc-workflows/data/C835.HCC1143.2.converted.pe_1.fastq
   - class: File
-    location: /home/user/kfdrc-workflows/data/reads2_R1.fq
+    location: /home/user/kfdrc-workflows/data/C835.HCC1143.2.converted.pe_2.fastq
+input_pe_mates_list:
   - class: File
-    location: /home/user/kfdrc-workflows/data/reads3_R1.fq
+    location: /home/user/kfdrc-workflows/data/C835.HCC1143.2.converted.pe_1.fastq
+  - class: File
+    location: /home/user/kfdrc-workflows/data/C835.HCC1143.2.converted.pe_2.fastq
 input_se_rgs_list:
-  - \tID:reads1_R1.fq\tLB:reads1_R1.fq\tPL:reads1_R1.fq\tSM:reads1_R1.fq
-  - \tID:reads2_R1.fq\tLB:reads2_R1.fq\tPL:reads2_R1.fq\tSM:reads2_R1.fq
-  - \tID:reads3_R1.fq\tLB:reads3_R1.fq\tPL:reads3_R1.fq\tSM:reads3_R1.fq
+  - \tID:C835.HCC1143.2.converted.pe_1.fastq\tLB:C835.HCC1143.2.converted.pe_1.fastq\tPL:C835.HCC1143.2.converted.pe_1.fastq\tSM:C835.HCC1143.2.converted.pe_1.fastq
+  - \tID:C835.HCC1143.2.converted.pe_2.fastq\tLB:C835.HCC1143.2.converted.pe_2.fastq\tPL:C835.HCC1143.2.converted.pe_2.fastq\tSM:C835.HCC1143.2.converted.pe_2.fastq
