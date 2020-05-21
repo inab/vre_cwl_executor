@@ -29,20 +29,27 @@ reference_dict:
   class: File
   location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.dict
 run_bam_processing: False
-run_pe_reads_processing: False
-run_se_reads_processing: True
+run_pe_reads_processing: True
+run_se_reads_processing: False
 run_hs_metrics: False
 run_wgs_metrics: False
 run_agg_metrics: False
 run_gvcf_processing: False
-input_se_reads_list:
+input_pe_reads_list:
   - class: File
     location: /home/user/kfdrc-workflows/data/reads1_R1.fq
   - class: File
     location: /home/user/kfdrc-workflows/data/reads2_R1.fq
   - class: File
     location: /home/user/kfdrc-workflows/data/reads3_R1.fq
-input_se_rgs_list:
-  - \tID:reads1_R1\tLB:reads1_R1\tPL:reads1_R1\tSM:reads1_R1
-  - \tID:reads2_R1\tLB:reads2_R1\tPL:reads2_R1\tSM:reads2_R1
-  - \tID:reads3_R1\tLB:reads3_R1\tPL:reads3_R1\tSM:reads3_R1
+input_pe_mates_list:
+  - class: File
+    location: /home/user/kfdrc-workflows/data/reads1_R2.fq
+  - class: File
+    location: /home/user/kfdrc-workflows/data/reads2_R2.fq
+  - class: File
+    location: /home/user/kfdrc-workflows/data/reads3_R2.fq
+input_pe_rgs_list:
+  - \tID:reads1_R1.fq\tLB:reads1_R1.fq\tPL:reads1_R1.fq\tSM:reads1_R1.fq
+  - \tID:reads2_R1.fq\tLB:reads2_R1.fq\tPL:reads2_R1.fq\tSM:reads2_R1.fq
+  - \tID:reads3_R1.fq\tLB:reads3_R1.fq\tPL:reads3_R1.fq\tSM:reads3_R1.fq
