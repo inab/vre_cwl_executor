@@ -30,8 +30,29 @@ reference_dict:
   location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.dict
 run_bam_processing: False
 run_pe_reads_processing: True
-run_se_reads_processing: False
+run_se_reads_processing: True
 run_hs_metrics: False
 run_wgs_metrics: False
 run_agg_metrics: False
 run_gvcf_processing: False
+input_pe_reads_list:
+  - class: File
+    location: reads1_R1.fq
+  - class: File
+    location: reads2_R1.fq
+  - class: File
+    location: reads3_R1.fq
+input_pe_mates_list:
+  - class: File
+    location: reads1_R2.fq
+  - class: File
+    location: reads2_R2.fq
+  - class: File
+    location: reads3_R2.fq
+input_se_reads_list:
+  - class: File
+    location: reads1_R3.fq
+  - class: File
+    location: reads2_R3.fq
+  - class: File
+    location: reads3_R3.fq
