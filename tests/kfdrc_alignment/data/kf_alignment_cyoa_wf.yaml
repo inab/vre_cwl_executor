@@ -1,36 +1,36 @@
 input_bam_list:
   - class: File
-    location: /home/user/kfdrc-workflows/data/C835.HCC1143.2.converted.realigned.base_recalibrated.bam
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/C835.HCC1143.2.converted.realigned.base_recalibrated.bam
 biospecimen_name: hg38
 indexed_reference_fasta:
   class: File
-  location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.fasta
+  location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta
   secondaryFiles:
     - class: File
-      location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.fasta.fai
+      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.fai
     - class: File
-      location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.fasta.64.amb
+      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.64.amb
     - class: File
-      location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.fasta.64.ann
+      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.64.ann
     - class: File
-      location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.fasta.64.bwt
+      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.64.bwt
     - class: File
-      location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.fasta.64.pac
+      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.64.pac
     - class: File
-      location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.fasta.64.sa
+      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.64.sa
 knownsites:
   - class: File
-    location: /home/user/kfdrc-workflows/data/1000G_omni2.5.hg38.vcf.gz
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/1000G_omni2.5.hg38.vcf.gz
   - class: File
-    location: /home/user/kfdrc-workflows/data/1000G_phase1.snps.high_confidence.hg38.vcf.gz
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/1000G_phase1.snps.high_confidence.hg38.vcf.gz
   - class: File
-    location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.known_indels.vcf.gz
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.known_indels.vcf.gz
   - class: File
-    location: /home/user/kfdrc-workflows/data/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
 output_basename: hg38
 reference_dict:
   class: File
-  location: /home/user/kfdrc-workflows/data/Homo_sapiens_assembly38.dict
+  location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.dict
 run_bam_processing: True
 run_pe_reads_processing: True
 run_se_reads_processing: False
@@ -40,15 +40,10 @@ run_agg_metrics: False
 run_gvcf_processing: False
 input_pe_reads_list:
   - class: File
-    location: /home/user/kfdrc-workflows/data/C835.HCC1143.2.converted.pe_1.fastq
-  - class: File
-    location: /home/user/kfdrc-workflows/data/C835.HCC1143.2.converted.pe_2.fastq
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/C835.HCC1143.2.converted.pe_1.fastq
 input_pe_mates_list:
   - class: File
-    location: /home/user/kfdrc-workflows/data/C835.HCC1143.2.converted.pe_1.fastq
-  - class: File
-    location: /home/user/kfdrc-workflows/data/C835.HCC1143.2.converted.pe_2.fastq
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/C835.HCC1143.2.converted.pe_2.fastq
 input_pe_rgs_list:
-  - \tID:C835.HCC1143.2.converted.pe_1.fastq\tLB:C835.HCC1143.2.converted.pe_1.fastq\tPL:C835.HCC1143.2.converted.pe_1.fastq\tSM:C835.HCC1143.2.converted.pe_1.fastq
-  - \tID:C835.HCC1143.2.converted.pe_2.fastq\tLB:C835.HCC1143.2.converted.pe_2.fastq\tPL:C835.HCC1143.2.converted.pe_2.fastq\tSM:C835.HCC1143.2.converted.pe_2.fastq
+  - '@RG\tID:C835.HCC1143.2.converted.pe\tLB:C835.HCC1143.2.converted.pe\tPL:ILLUMINA\tSM:HCC1143'
 
