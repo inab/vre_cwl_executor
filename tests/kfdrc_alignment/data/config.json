@@ -28,11 +28,11 @@
   "arguments":[
     {
       "name":"execution",
-      "value":"/Users/laurarodrigueznavas/BSC/vre_cwl_executor/tests/basic/run000"
+      "value":"/home/user/vre_cwl_executor/tests/basic/run000"
     },
     {
       "name":"project",
-      "value":"test"
+      "value":"test_alignment_wf_cyoa"
     },
     {
       "name":"biospecimen_name",
