@@ -35,7 +35,7 @@ class WF_RUNNER(Tool):
     YAML_FILENAME = "inputs_cwl.yaml"
     ZIP_FILENAME = "cwl_metadata.zip"
     TMP_DIR = "cwl_metadata/"
-    debug_mode = True
+    debug_mode = True  # If is True, debug mode is active. False, otherwise
 
     def __init__(self, configuration=None):
         """
@@ -90,29 +90,30 @@ class WF_RUNNER(Tool):
             self.provenance_path = self.execution_path + "/" + self.TMP_DIR
             if not os.path.isdir(self.provenance_path):
                 os.makedirs(self.provenance_path)
-            
+
             if not self.debug_mode:
-            
-              # cwltool execution
-              process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.provenance_path)
-  
-              # Sending the cwltool execution stdout to the log file
-              for line in iter(process.stderr.readline, b''):
-                  print(line.rstrip().decode("utf-8").replace("", " "))
-  
-              rc = process.poll()
-              while rc is None:
-                  rc = process.poll()
-                  time.sleep(0.1)
-  
-              if rc is not None and rc != 0:
-                  logger.progress("Something went wrong inside the CWL workflow execution. See logs", status="WARNING")
-  
-              else:
-                  # output files from cwltool execution
-                  output_execution = process.stdout.read().decode("utf-8")
-                  logger.progress("CWL Workflow execution finished successfully", status="FINISHED")
-                  return output_execution
+
+                # cwltool execution
+                process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.provenance_path)
+
+                # Sending the cwltool execution stdout to the log file
+                for line in iter(process.stderr.readline, b''):
+                    print(line.rstrip().decode("utf-8").replace("", " "))
+
+                rc = process.poll()
+                while rc is None:
+                    rc = process.poll()
+                    time.sleep(0.1)
+
+                if rc is not None and rc != 0:
+                    logger.progress("Something went wrong inside the CWL workflow execution. See logs",
+                                    status="WARNING")
+
+                else:
+                    # output files from cwltool execution
+                    output_execution = process.stdout.read().decode("utf-8")
+                    logger.progress("CWL Workflow execution finished successfully", status="FINISHED")
+                    return output_execution
 
         except:
             errstr = "CWL Workflow execution failed. See logs"
@@ -155,21 +156,20 @@ class WF_RUNNER(Tool):
             outputs_execution = self.execute_cwl_workflow(input_metadata, self.configuration)
 
             if not self.debug_mode:
+                outputs_execution = json.loads(outputs_execution)  # formatting the stdout to JSON format
 
-              outputs_execution = json.loads(outputs_execution)  # formatting the stdout to JSON format
-  
-              # Compress provenance data
-              shutil.move(self.YAML_FILENAME, self.provenance_path)  # move YAML to provenance data folder
-              self.cwl.compress_provenance(self.ZIP_FILENAME, self.provenance_path)
-              shutil.rmtree(self.provenance_path)  # remove provenance data folder
-  
-              # Create and validate the output files
-              self.create_output_files(output_files, output_metadata, outputs_execution)
-              logger.debug("Output files and output metadata created")
-            
+                # Compress provenance data
+                shutil.move(self.YAML_FILENAME, self.provenance_path)  # move YAML to provenance data folder
+                self.cwl.compress_provenance(self.ZIP_FILENAME, self.provenance_path)
+                shutil.rmtree(self.provenance_path)  # remove provenance data folder
+
+                # Create and validate the output files
+                self.create_output_files(output_files, output_metadata, outputs_execution)
+                logger.debug("Output files and output metadata created")
+
             return output_files, output_metadata
-              
-              
+
+
 
         except:
             errstr = "VRE CWL RUNNER pipeline failed. See logs"
