@@ -3,8 +3,8 @@
     {
       "name": "input_bam_list",
       "value": "unique_file_id_5e14abe0a37012.29503901",
-      "required": true,
-      "allow_multiple": false
+      "required": false,
+      "allow_multiple": true
     },
     {
       "name": "indexed_reference_fasta",
@@ -13,38 +13,102 @@
       "allow_multiple": false
     },
     {
-      "name": "input_pe_reads_list",
-      "value": "unique_file_id_5e14abe0a37012.29503903",
+      "name": "knownsites",
+      "value": "unique_file_id_5e14abe0a37012.29503903_1",
+      "required": true,
+      "allow_multiple": true
+    },
+    {
+      "name": "knownsites",
+      "value": "unique_file_id_5e14abe0a37012.29503903_2",
+      "required": true,
+      "allow_multiple": true
+    },
+    {
+      "name": "knownsites",
+      "value": "unique_file_id_5e14abe0a37012.29503903_3",
+      "required": true,
+      "allow_multiple": true
+    },
+    {
+      "name": "knownsites",
+      "value": "unique_file_id_5e14abe0a37012.29503903_4",
+      "required": true,
+      "allow_multiple": true
+    },
+    {
+      "name": "reference_dict",
+      "value": "unique_file_id_5e14abe0a37012.29503904",
       "required": true,
       "allow_multiple": false
     },
     {
-      "name": "input_pe_mates_list",
-      "value": "unique_file_id_5e14abe0a37012.29503904",
+      "name": "input_pe_reads_list",
+      "value": "unique_file_id_5e14abe0a37012.29503905",
       "required": true,
-      "allow_multiple": false
+      "allow_multiple": true
+    },
+    {
+      "name": "input_pe_mates_list",
+      "value": "unique_file_id_5e14abe0a37012.29503906",
+      "required": true,
+      "allow_multiple": true
     }
   ],
   "arguments":[
     {
-      "name":"execution",
-      "value":"/home/user/vre_cwl_executor/tests/kfdrc_alignment/run000"
+      "name": "execution",
+      "value": "/home/user/vre_cwl_executor/tests/kfdrc_alignment/run000"
     },
     {
-      "name":"project",
-      "value":"test_alignment_wf_cyoa"
+      "name": "project",
+      "value": "test_alignment_wf_cyoa"
     },
     {
-      "name":"biospecimen_name",
-      "value":"hg38"
+      "name": "biospecimen_name",
+      "value": "hg38"
     },
     {
-      "name":"output_basename",
-      "value":"output"
+      "name": "output_basename",
+      "value": "output"
     },
     {
-      "name":"cwl_wf_url",
-      "value":"https://raw.githubusercontent.com/inab/kf-alignment-workflow/master/workflows/kfdrc_alignment_wf_cyoa.cwl"
+      "name": "run_bam_processing",
+      "value": true
+    },
+    {
+      "name": "run_pe_reads_processing",
+      "value": true
+    },
+    {
+      "name": "run_se_reads_processing",
+      "value": false
+    },
+    {
+      "name": "run_hs_metrics",
+      "value": false
+    },
+    {
+      "name": "run_wgs_metrics",
+      "value": false
+    },
+    {
+      "name": "run_agg_metrics",
+      "value": false
+    },
+    {
+      "name": "run_gvcf_processing",
+      "value": false
+    },
+    {
+      "name": "input_pe_rgs_list",
+      "allow_multiple": true,
+      "value": "@RG\tID:ls\tLB:C835.HCC1143.2.converted.pe\tPL:ILLUMINA\tSM:HCC1143",
+
+    },
+    {
+      "name": "cwl_wf_url",
+      "value": "https://raw.githubusercontent.com/inab/kf-alignment-workflow/master/workflows/kfdrc_alignment_wf_cyoa.cwl"
     }
   ],
   "output_files":[
