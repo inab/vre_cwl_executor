@@ -35,7 +35,7 @@ class WF_RUNNER(Tool):
     YAML_FILENAME = "inputs_cwl.yaml"
     ZIP_FILENAME = "cwl_metadata.zip"
     TMP_DIR = "cwl_metadata/"
-    debug_mode = True  # If is True, debug mode is active. False, otherwise
+    debug_mode = False  # If is True, debug mode is active. False, otherwise
 
     def __init__(self, configuration=None):
         """

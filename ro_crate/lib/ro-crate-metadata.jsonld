@@ -1,0 +1,22 @@
+{
+  "@context": "https://w3id.org/ro/crate/1.0/context",
+  "@graph": [
+    {
+      "@id": "https://orcid.org/0000-0003-4929-1219",
+      "@type": "Person",
+      "contactType": "Crazy person",
+      "name": "Laura Rodriguez Navas"
+    },
+    {
+      "@id": "ro-crate-metadata.jsonld",
+      "@type": "CreativeWork",
+      "about": {
+        "@id": "./"
+      },
+      "hasPart": {
+        "@id": "https://orcid.org/0000-0003-4929-1219"
+      },
+      "identifier": "ro-crate-metadata.jsonld"
+    }
+  ]
+}
