@@ -1,23 +1,10 @@
 input_bam_list:
   - class: File
     location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/C835.HCC1143.2.converted.realigned.base_recalibrated.bam
-biospecimen_name: hg38
-indexed_reference_fasta:
+biospecimen_name: C835
+reference_tar:
   class: File
-  location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta
-  secondaryFiles:
-    - class: File
-      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.fai
-    - class: File
-      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.64.amb
-    - class: File
-      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.64.ann
-    - class: File
-      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.64.bwt
-    - class: File
-      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.64.pac
-    - class: File
-      location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta.64.sa
+  location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.tar
 knownsites:
   - class: File
     location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/1000G_omni2.5.hg38.vcf.gz
@@ -27,10 +14,16 @@ knownsites:
     location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.known_indels.vcf.gz
   - class: File
     location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz
-output_basename: output
-reference_dict:
-  class: File
-  location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.dict
+knownsites_indexes:
+  - class: File
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/1000G_omni2.5.hg38.vcf.gz.tbi
+  - class: File
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/1000G_phase1.snps.high_confidence.hg38.vcf.gz.tbi
+  - class: File
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.known_indels.vcf.gz.tbi
+  - class: File
+    location: /gpfs/cavatica_tools/test_alignment_wf_cyoa/Mills_and_1000G_gold_standard.indels.hg38.vcf.gz.tbi
+output_basename: C835-bamfastq-test
 run_bam_processing: True
 run_pe_reads_processing: True
 run_se_reads_processing: False

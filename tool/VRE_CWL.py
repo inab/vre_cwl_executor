@@ -86,12 +86,12 @@ class WF_RUNNER(Tool):
             self.cwl.create_input_yml(input_metadata, arguments, cwl_wf_input_yml_path)
             logger.info("3) Packed information to YAML: {}".format(cwl_wf_input_yml_path))
 
-            # Create temporal directory to add provenance data. If not exists the directory will be created
-            self.provenance_path = self.execution_path + "/" + self.TMP_DIR
-            if not os.path.isdir(self.provenance_path):
-                os.makedirs(self.provenance_path)
-
             if not self.debug_mode:
+
+                # Create temporal directory to add provenance data. If not exists the directory will be created
+                self.provenance_path = self.execution_path + "/" + self.TMP_DIR
+                if not os.path.isdir(self.provenance_path):
+                    os.makedirs(self.provenance_path)
 
                 # cwltool execution
                 process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.provenance_path)
