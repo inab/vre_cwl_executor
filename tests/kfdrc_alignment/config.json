@@ -4,7 +4,7 @@
       "name": "input_bam_list",
       "value": "unique_file_id_5e14abe0a37012.29503901",
       "required": false,
-      "allow_multiple": false
+      "allow_multiple": true
     },
     {
       "name": "reference_tar",
@@ -55,7 +55,7 @@
       "allow_multiple": true
     },
     {
-      "name": "knownsites",
+      "name": "knownsites_indexes",
       "value": "unique_file_id_5e14abe0a37012.29503904_4",
       "required": true,
       "allow_multiple": true
