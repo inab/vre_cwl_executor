@@ -22,6 +22,7 @@ import subprocess
 import sys
 import zipfile
 
+from collections import defaultdict
 from ruamel import yaml
 from utils import logger
 
@@ -32,39 +33,40 @@ class CWL:
     """
     CWL workflow class
     """
+    file_type = "File"
 
     def __init__(self):
         """
         Init function
         """
-        self.input_cwl = dict()
+        self.input_cwl = defaultdict(list)
 
-    def create_input_yml(self, input_metadata, arguments, filename_path):
+    def create_input_yml(self, input_files, arguments, filename_path):
         """
         Create a YAML file containing the information of inputs from CWL workflow
 
-        :param input_metadata: Matching metadata for each of the files, plus any additional data.
-        :type input_metadata: dict
-        :param arguments: dict containing tool arguments
+        :param input_files: List containing tool input files
+        :type input_files: dict
+        :param arguments: Dict containing tool arguments
         :type arguments: dict
         :param filename_path: Working YAML file path directory
         :type filename_path: str
         """
         try:
-            for key, value in input_metadata.items():  # add metadata inputs
-                data_type = value[0]
-                if data_type == "file":  # mapping
-                    data_type = data_type.replace("f", "F")
+            for key, value in input_files.items():  # for each input file
+                if isinstance(value, str):  # one file
+                    self.input_cwl.update({key: {"class": self.file_type, "location": value}})
 
-                file_path = str(value[1].file_path)
-                self.input_cwl.update({key: {"class": data_type, "location": file_path}})
+                elif isinstance(value, list):  # more than one file
+                    for file_path in value:
+                        self.input_cwl[key].append({"class": self.file_type, "location": file_path})
 
             for key, value in arguments.items():  # add arguments
                 if key not in tool.VRE_CWL.WF_RUNNER.MASKED_KEYS:
-                    self.input_cwl[str(key)] = str(value)
+                    self.input_cwl[str(key)] = value
 
             with open(filename_path, 'w+') as f:  # create YAML file
-                yaml.dump(self.input_cwl, f, allow_unicode=True, default_flow_style=False)
+                yaml.dump(dict(self.input_cwl), f, allow_unicode=True, default_flow_style=False)
 
         except:
             errstr = "The YAML file creation failed. See logs"
