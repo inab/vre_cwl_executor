@@ -74,7 +74,7 @@ class CWL:
             raise Exception(errstr)
 
     @staticmethod
-    def execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, tmp_dir):
+    def execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, provenance_dir, tmp_dir):
         """
         cwltool provenance execution process with the workflow specified by cwl_wf_url and YAML file path,
         created from config.json and input_metadata.json. provenance data is created.
@@ -83,13 +83,23 @@ class CWL:
         :type cwl_wf_input_yml_path: str
         :param cwl_wf_url: URL for the location of the workflow
         :type cwl_wf_url: str
-        :param tmp_dir: directory to save the provenance data
+        :param provenance_dir: directory to save the provenance data
+        :type provenance_dir: str
+        :param tmp_dir: directory to save temporal files of execution
         :type tmp_dir: str
         """
         logger.debug("Starting CWL Workflow execution")
-        process = subprocess.Popen(["cwltool", "--provenance", tmp_dir, cwl_wf_url, cwl_wf_input_yml_path],
-                                   stdout=subprocess.PIPE,
-                                   stderr=subprocess.PIPE)
+
+        cmd = [
+            "cwltool",
+            "--tmp-outdir-prefix", tmp_dir,
+            "--tmpdir-prefix", tmp_dir,
+            "--provenance", provenance_dir,
+            cwl_wf_url,
+            cwl_wf_input_yml_path
+        ]
+
+        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process
 
     @staticmethod

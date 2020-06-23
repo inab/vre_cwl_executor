@@ -34,8 +34,9 @@ class WF_RUNNER(Tool):
     MASKED_KEYS = {'execution', 'project', 'description', 'cwl_wf_url'}  # arguments from config.json
     YAML_FILENAME = "inputs_cwl.yaml"
     ZIP_FILENAME = "cwl_metadata.zip"
-    TMP_DIR = "cwl_metadata/"
-    debug_mode = True  # If is True, debug mode is active. False, otherwise
+    PROVENANCE_DIR = "cwl_metadata/"
+    TMP_DIR = "tmp/"
+    debug_mode = False  # If is True, debug mode is active. False, otherwise
 
     def __init__(self, configuration=None):
         """
@@ -58,6 +59,7 @@ class WF_RUNNER(Tool):
         self.arguments = list()
         self.execution_path = None
         self.provenance_path = None
+        self.tmp_dir = None
         self.outputs = dict()
 
     def execute_cwl_workflow(self, input_files, arguments):  # pylint: disable=no-self-use
@@ -88,13 +90,16 @@ class WF_RUNNER(Tool):
 
             if not self.debug_mode:
 
-                # Create temporal directory to add provenance data. If not exists the directory will be created
-                self.provenance_path = self.execution_path + "/" + self.TMP_DIR
-                if not os.path.isdir(self.provenance_path):
+                # Create temporal directory to add provenance data and temporary execution files
+                # If not exists the directory will be created
+                self.provenance_path = self.execution_path + "/" + self.PROVENANCE_DIR
+                self.tmp_dir = self.execution_path + "/" + self.TMP_DIR
+                if not os.path.isdir(self.provenance_path) and not os.path.isdir(self.tmp_dir):
                     os.makedirs(self.provenance_path)
+                    os.makedirs(self.tmp_dir)
 
                 # cwltool execution
-                process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.provenance_path)
+                process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.provenance_path, self.tmp_dir)
 
                 # Sending the cwltool execution stdout to the log file
                 for line in iter(process.stderr.readline, b''):
@@ -162,6 +167,7 @@ class WF_RUNNER(Tool):
                 shutil.move(self.YAML_FILENAME, self.provenance_path)  # move YAML to provenance data folder
                 self.cwl.compress_provenance(self.ZIP_FILENAME, self.provenance_path)
                 shutil.rmtree(self.provenance_path)  # remove provenance data folder
+                shutil.rmtree(self.tmp_dir)  # remove temporal data folder
 
                 # Create and validate the output files
                 self.create_output_files(output_files, output_metadata, outputs_execution)
