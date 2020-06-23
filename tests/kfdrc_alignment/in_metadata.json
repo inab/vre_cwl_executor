@@ -1,130 +1,374 @@
 [
   {
-    "_id":"unique_file_id_5e14abe0a37012.29503901",
-    "type":"file",
-    "file_path":"/gpfs/cavatica_tools/test_alignment_wf_cyoa/C835.HCC1143.2.converted.realigned.base_recalibrated.bam",
-    "file_type":"BAM",
-    "data_type":"sequence_dna",
-    "compressed":0,
-    "sources":[
-
+    "_id": "unique_file_id_5e14abe0a37012.29503901",
+    "type": "file",
+    "file_path": "",
+    "file_type": "BAM",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
     ],
-    "user_id":"user_id",
-    "creation_time":{
-      "sec":1578413024,
-      "usec":0
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
     },
-    "meta_data":{
-      "size":0,
-      "project":"test_alignment_wf_cyoa",
-      "atime":{
-        "sec":1578413024,
-        "usec":0
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
       },
-      "parentDir":"unique_file_id_5e14abe0a37742.64003100",
-      "lastAccess":{
-        "sec":1578413024,
-        "usec":0
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
       },
-      "assembly":"hg38",
-      "paired":"paired",
-      "sorted":"sorted"
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
     }
   },
   {
-    "_id":"unique_file_id_5e14abe0a37012.29503902",
-    "type":"file",
-    "file_path":"/gpfs/cavatica_tools/test_alignment_wf_cyoa/Homo_sapiens_assembly38.fasta",
-    "file_type":"FASTA",
-    "data_type":"sequence_dna",
-    "compressed":0,
-    "sources":[
-
+    "_id": "unique_file_id_5e14abe0a37012.29503902",
+    "type": "file",
+    "file_path": "",
+    "file_type": "TAR",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
     ],
-    "user_id":"user_id",
-    "creation_time":{
-      "sec":1578413024,
-      "usec":0
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
     },
-    "meta_data":{
-      "size":0,
-      "project":"test_alignment_wf_cyoa",
-      "atime":{
-        "sec":1578413024,
-        "usec":0
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
       },
-      "parentDir":"unique_file_id_5e14abe0a37742.64003100",
-      "lastAccess":{
-        "sec":1578413024,
-        "usec":0
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
       },
-      "assembly":"hg38",
-      "paired":"paired",
-      "sorted":"sorted"
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
     }
   },
   {
-    "_id":"unique_file_id_5e14abe0a37012.29503903",
-    "type":"file",
-    "file_path":"/gpfs/cavatica_tools/test_alignment_wf_cyoa/C835.HCC1143.2.converted.pe_1.fastq",
-    "file_type":"FASTQ",
-    "data_type":"hic_reads",
-    "compressed":0,
-    "sources":[
-
+    "_id": "unique_file_id_5e14abe0a37012.29503903_1",
+    "type": "file",
+    "file_path": "",
+    "file_type": "GZ",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
     ],
-    "user_id":"user_id",
-    "creation_time":{
-      "sec":1578413024,
-      "usec":0
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
     },
-    "meta_data":{
-      "size":0,
-      "project":"test_alignment_wf_cyoa",
-      "atime":{
-        "sec":1578413024,
-        "usec":0
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
       },
-      "parentDir":"unique_file_id_5e14abe0a37742.64003100",
-      "lastAccess":{
-        "sec":1578413024,
-        "usec":0
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
       },
-      "assembly":"hg38",
-      "paired":"paired",
-      "sorted":"sorted"
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
     }
   },
   {
-    "_id":"unique_file_id_5e14abe0a37012.29503904",
-    "type":"file",
-    "file_path":"/gpfs/cavatica_tools/test_alignment_wf_cyoa/C835.HCC1143.2.converted.pe_2.fastq",
-    "file_type":"FASTQ",
-    "data_type":"hic_reads",
-    "compressed":0,
-    "sources":[
-
+    "_id": "unique_file_id_5e14abe0a37012.29503903_2",
+    "type": "file",
+    "file_path": "",
+    "file_type": "GZ",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
     ],
-    "user_id":"user_id",
-    "creation_time":{
-      "sec":1578413024,
-      "usec":0
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
     },
-    "meta_data":{
-      "size":0,
-      "project":"test_alignment_wf_cyoa",
-      "atime":{
-        "sec":1578413024,
-        "usec":0
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
       },
-      "parentDir":"unique_file_id_5e14abe0a37742.64003100",
-      "lastAccess":{
-        "sec":1578413024,
-        "usec":0
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
       },
-      "assembly":"hg38",
-      "paired":"paired",
-      "sorted":"sorted"
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
+    }
+  },
+  {
+    "_id": "unique_file_id_5e14abe0a37012.29503903_3",
+    "type": "file",
+    "file_path": "",
+    "file_type": "GZ",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
+    ],
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
+    },
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
+    }
+  },
+  {
+    "_id": "unique_file_id_5e14abe0a37012.29503903_4",
+    "type": "file",
+    "file_path": "",
+    "file_type": "GZ",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
+    ],
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
+    },
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
+    }
+  },
+  {
+    "_id": "unique_file_id_5e14abe0a37012.29503904_1",
+    "type": "file",
+    "file_path": "",
+    "file_type": "TBI",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
+    ],
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
+    },
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
+    }
+  },
+  {
+    "_id": "unique_file_id_5e14abe0a37012.29503904_2",
+    "type": "file",
+    "file_path": "",
+    "file_type": "TBI",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
+    ],
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
+    },
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
+    }
+  },
+  {
+    "_id": "unique_file_id_5e14abe0a37012.29503904_3",
+    "type": "file",
+    "file_path": "",
+    "file_type": "TBI",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
+    ],
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
+    },
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
+    }
+  },
+  {
+    "_id": "unique_file_id_5e14abe0a37012.29503904_4",
+    "type": "file",
+    "file_path": "",
+    "file_type": "TBI",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
+    ],
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
+    },
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
+    }
+  },
+  {
+    "_id": "unique_file_id_5e14abe0a37012.29503905",
+    "type": "file",
+    "file_path": "",
+    "file_type": "FASTQ",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
+    ],
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
+    },
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
+    }
+  },
+  {
+    "_id": "unique_file_id_5e14abe0a37012.29503906",
+    "type": "file",
+    "file_path": "",
+    "file_type": "FASTQ",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [
+    ],
+    "user_id": "user_id",
+    "creation_time": {
+      "sec": 1578413024,
+      "usec": 0
+    },
+    "meta_data": {
+      "size": 0,
+      "project": "test_alignment_wf_cyoa",
+      "atime": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "sec": 1578413024,
+        "usec": 0
+      },
+      "assembly": "hg38",
+      "paired": "paired",
+      "sorted": "sorted"
     }
   }
 ]
