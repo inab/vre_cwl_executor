@@ -35,7 +35,7 @@ class WF_RUNNER(Tool):
     YAML_FILENAME = "inputs_cwl.yaml"
     ZIP_FILENAME = "cwl_metadata.zip"
     PROVENANCE_DIR = "cwl_metadata/"
-    TMP_DIR = "/tmp/openvre_tmp_"
+    debug_env_mode = True  # If is True, local test is active. False, otherwise
     debug_mode = False  # If is True, debug mode is active. False, otherwise
 
     def __init__(self, configuration=None):
@@ -90,10 +90,14 @@ class WF_RUNNER(Tool):
 
             if not self.debug_mode:
 
+                if not self.debug_env_mode:
+                    self.tmp_dir = "/tmp/openvre/tmp_" + str(os.getpid()) + "/"
+                else:
+                    self.tmp_dir = "/tmp/tmp_" + str(os.getpid()) + "/"
+
                 # Create temporal directory to add provenance data and temporary execution files
                 # If not exists the directory will be created
                 self.provenance_path = self.execution_path + "/" + self.PROVENANCE_DIR
-                self.tmp_dir = self.TMP_DIR + str(os.getpid()) + "/"  # add PID
                 if not os.path.isdir(self.provenance_path) and not os.path.isdir(self.tmp_dir):
                     os.makedirs(self.provenance_path)
                     os.makedirs(self.tmp_dir)
