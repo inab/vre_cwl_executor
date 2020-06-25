@@ -167,7 +167,7 @@ class WF_RUNNER(Tool):
                 shutil.move(self.YAML_FILENAME, self.provenance_path)  # move YAML to provenance data folder
                 self.cwl.compress_provenance(self.ZIP_FILENAME, self.provenance_path)
                 shutil.rmtree(self.provenance_path)  # remove provenance data folder
-                shutil.rmtree(self.TMP_DIR)  # remove temporal data folder
+                shutil.rmtree(self.tmp_dir)  # remove temporal data folder
 
                 # Create and validate the output files
                 self.create_output_files(output_files, output_metadata, outputs_execution)
