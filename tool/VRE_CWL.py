@@ -35,7 +35,7 @@ class WF_RUNNER(Tool):
     YAML_FILENAME = "inputs_cwl.yaml"
     ZIP_FILENAME = "cwl_metadata.zip"
     PROVENANCE_DIR = "cwl_metadata/"
-    TMP_DIR = "/tmp/openvre_tmp/"
+    TMP_DIR = "/tmp/openvre_tmp_"
     debug_mode = False  # If is True, debug mode is active. False, otherwise
 
     def __init__(self, configuration=None):
@@ -59,6 +59,7 @@ class WF_RUNNER(Tool):
         self.arguments = list()
         self.execution_path = None
         self.provenance_path = None
+        self.tmp_dir = None
         self.outputs = dict()
 
     def execute_cwl_workflow(self, input_files, arguments):  # pylint: disable=no-self-use
@@ -92,12 +93,13 @@ class WF_RUNNER(Tool):
                 # Create temporal directory to add provenance data and temporary execution files
                 # If not exists the directory will be created
                 self.provenance_path = self.execution_path + "/" + self.PROVENANCE_DIR
-                if not os.path.isdir(self.provenance_path) and not os.path.isdir(self.TMP_DIR):
+                self.tmp_dir = self.TMP_DIR + os.getpid() + "/"  # add PID
+                if not os.path.isdir(self.provenance_path) and not os.path.isdir(self.tmp_dir):
                     os.makedirs(self.provenance_path)
-                    os.makedirs(self.TMP_DIR)
+                    os.makedirs(self.tmp_dir)
 
                 # cwltool execution
-                process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.provenance_path, self.TMP_DIR)
+                process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.provenance_path, self.tmp_dir)
 
                 # Sending the cwltool execution stdout to the log file
                 for line in iter(process.stderr.readline, b''):
