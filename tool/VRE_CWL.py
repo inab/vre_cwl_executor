@@ -93,7 +93,7 @@ class WF_RUNNER(Tool):
                 # Create temporal directory to add provenance data and temporary execution files
                 # If not exists the directory will be created
                 self.provenance_path = self.execution_path + "/" + self.PROVENANCE_DIR
-                self.tmp_dir = self.TMP_DIR + os.getpid() + "/"  # add PID
+                self.tmp_dir = self.TMP_DIR + str(os.getpid()) + "/"  # add PID
                 if not os.path.isdir(self.provenance_path) and not os.path.isdir(self.tmp_dir):
                     os.makedirs(self.provenance_path)
                     os.makedirs(self.tmp_dir)
