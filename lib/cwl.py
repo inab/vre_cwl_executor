@@ -41,7 +41,7 @@ class CWL:
         """
         self.input_cwl = defaultdict(list)
 
-    def create_input_yml(self, input_files, arguments, filename_path):
+    def create_input_yml(self, input_files, input_metadata, arguments, filename_path):
         """
         Create a YAML file containing the information of inputs from CWL workflow
 
@@ -54,10 +54,10 @@ class CWL:
         """
         try:
             for key, value in input_files.items():  # for each input file
-                if isinstance(value, str):  # one file
+                if isinstance(value, str):  # one input file
                     self.input_cwl.update({key: {"class": self.file_type, "location": value}})
 
-                elif isinstance(value, list):  # more than one file
+                elif isinstance(value, list):  # more than one input file
                     for file_path in value:
                         self.input_cwl[key].append({"class": self.file_type, "location": file_path})
 

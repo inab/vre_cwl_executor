@@ -62,7 +62,7 @@ class WF_RUNNER(Tool):
         self.tmp_dir = None
         self.outputs = dict()
 
-    def execute_cwl_workflow(self, input_files, arguments):  # pylint: disable=no-self-use
+    def execute_cwl_workflow(self, input_files, input_metadata, arguments):  # pylint: disable=no-self-use
         """
         The main function to run the remote CWL workflow
 
@@ -85,7 +85,7 @@ class WF_RUNNER(Tool):
                     self.arguments.append((params, self.configuration[params]))
 
             cwl_wf_input_yml_path = self.execution_path + "/" + self.YAML_FILENAME
-            self.cwl.create_input_yml(input_files, arguments, cwl_wf_input_yml_path)
+            self.cwl.create_input_yml(input_files, input_metadata, arguments, cwl_wf_input_yml_path)
             logger.info("3) Packed information to YAML: {}".format(cwl_wf_input_yml_path))
 
             if not self.debug_mode:
@@ -158,7 +158,7 @@ class WF_RUNNER(Tool):
             logger.debug("Execution path: {}".format(self.execution_path))
 
             # cwltool execution
-            outputs_execution = self.execute_cwl_workflow(input_files, self.configuration)
+            outputs_execution = self.execute_cwl_workflow(input_files, input_metadata, self.configuration)
 
             if not self.debug_mode:
                 outputs_execution = json.loads(outputs_execution)  # formatting the stdout to JSON format
