@@ -62,7 +62,7 @@ class WF_RUNNER(Tool):
         self.tmp_dir = None
         self.outputs = dict()
 
-    def execute_cwl_workflow(self, input_files, input_metadata, arguments):  # pylint: disable=no-self-use
+    def execute_cwl_workflow(self, input_files, arguments):  # pylint: disable=no-self-use
         """
         The main function to run the remote CWL workflow
 
@@ -85,7 +85,7 @@ class WF_RUNNER(Tool):
                     self.arguments.append((params, self.configuration[params]))
 
             cwl_wf_input_yml_path = self.execution_path + "/" + self.YAML_FILENAME
-            self.cwl.create_input_yml(input_files, input_metadata, arguments, cwl_wf_input_yml_path)
+            self.cwl.create_input_yml(input_files, arguments, cwl_wf_input_yml_path)
             logger.info("3) Packed information to YAML: {}".format(cwl_wf_input_yml_path))
 
             if not self.debug_mode:
@@ -158,7 +158,7 @@ class WF_RUNNER(Tool):
             logger.debug("Execution path: {}".format(self.execution_path))
 
             # cwltool execution
-            outputs_execution = self.execute_cwl_workflow(input_files, input_metadata, self.configuration)
+            outputs_execution = self.execute_cwl_workflow(input_files, self.configuration)
 
             if not self.debug_mode:
                 outputs_execution = json.loads(outputs_execution)  # formatting the stdout to JSON format
@@ -174,8 +174,6 @@ class WF_RUNNER(Tool):
                 logger.debug("Output files and output metadata created")
 
             return output_files, output_metadata
-
-
 
         except:
             errstr = "VRE CWL RUNNER pipeline failed. See logs"
@@ -196,14 +194,12 @@ class WF_RUNNER(Tool):
         (output_metadata).
         :rtype: dict, dict
         """
-        # TODO much control
         try:
             for metadata in output_metadata:  # for each output file in output_metadata
                 out_id = metadata["name"]
                 pop_output_path = list()  # list of tuples (path, type of output)
                 if out_id in outputs_execution.keys():  # output id in metadata in output id outputs_exec
                     if not metadata["allow_multiple"]:  # allow multiple false
-                        # pop_output_path.append(os.path.abspath(outputs_exec[key]))
                         file_path = outputs_execution[next(iter(outputs_execution))][0]["path"]
                         file_type = outputs_execution[next(iter(outputs_execution))][0]["class"].lower()
                         pop_output_path.append((file_path, file_type))
@@ -217,8 +213,7 @@ class WF_RUNNER(Tool):
                 else:  # provenance data
                     if out_id == "cwl_metadata":
                         file_path = self.execution_path + "/" + self.ZIP_FILENAME
-                        file_type = "file"  # TODO always a file ?
-                        pop_output_path.append((file_path, file_type))
+                        pop_output_path.append((file_path, "file"))
 
                 output_files[out_id] = pop_output_path  # create output files
                 self.outputs[out_id] = pop_output_path  # save output files

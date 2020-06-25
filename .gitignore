@@ -13,8 +13,8 @@ venv/*
 # openvre
 */run00*
 /VRE_CWL_RUNNER.log
-/tests/basic/config.json
-/tests/basic/in_metadata.json
+*config.json
+*in_metadata.json
 
 # Input files
 *.fa

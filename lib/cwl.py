@@ -41,7 +41,7 @@ class CWL:
         """
         self.input_cwl = defaultdict(list)
 
-    def create_input_yml(self, input_files, input_metadata, arguments, filename_path):
+    def create_input_yml(self, input_files, arguments, filename_path):
         """
         Create a YAML file containing the information of inputs from CWL workflow
 
