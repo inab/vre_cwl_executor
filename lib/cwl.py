@@ -17,7 +17,7 @@
    limitations under the License.
 """
 import os
-import re
+# import re
 import subprocess
 import sys
 import zipfile
@@ -113,20 +113,15 @@ class CWL:
         :type provenance_path: str
         """
         try:
-            # with tarfile.open(filename, mode='w:gz', bufsize=1024 * 1024) as tar:
-            #     print(provenance_path)
-            #     tar.add(provenance_path)
-            #
-            # tar.close()
             with zipfile.ZipFile(filename, "w", zipfile.ZIP_DEFLATED) as zip:
                 abs_src = os.path.abspath(provenance_path)  # absolute path from provenance path
                 for folder_name, sub_folders, files in os.walk(provenance_path):
-                    rule = re.search(r"\b(data/)\b", folder_name)
-                    if rule is None:  # if not contains data folder
-                        for file in files:
-                            abs_name = os.path.abspath(os.path.join(folder_name, file))
-                            arc_name = abs_name[len(abs_src) + 1:]
-                            zip.write(abs_name, arc_name)
+                    # rule = re.search(r"\b(data/)\b", folder_name)
+                    # if rule is None:  # if not contains data folder
+                    for file in files:
+                        abs_name = os.path.abspath(os.path.join(folder_name, file))
+                        arc_name = abs_name[len(abs_src) + 1:]
+                        zip.write(abs_name, arc_name)
             zip.close()
 
             if not os.path.isfile(filename):  # if zip file is not created the execution stops
