@@ -89,7 +89,7 @@ class WF_RUNNER(Tool):
 
             if not self.debug_mode:
 
-            	# Create temporal directory to add temporary execution files
+                # Create temporal directory to add temporary execution files
                 # If not exists the directory will be created
                 self.tmp_dir = "/tmp/openvre/tmp_" + str(os.getpid()) + "/"
                 if not os.path.isdir(self.tmp_dir):
@@ -97,7 +97,7 @@ class WF_RUNNER(Tool):
 
                 self.provenance_path = self.execution_path + "/" + self.PROVENANCE_DIR
                 if not os.path.isdir(self.provenance_path):
-                	os.makedirs(self.provenance_path)
+                    os.makedirs(self.provenance_path)
 
                 # cwltool execution
                 process = CWL.execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, self.provenance_path, self.tmp_dir)
@@ -164,15 +164,22 @@ class WF_RUNNER(Tool):
             if not self.debug_mode:
                 outputs_execution = json.loads(outputs_execution)  # formatting the stdout to JSON format
 
-                # Compress provenance data
-                shutil.move(self.YAML_FILENAME, self.provenance_path)  # move YAML to provenance data folder
-                self.cwl.compress_provenance(self.ZIP_FILENAME, self.provenance_path)
-                shutil.rmtree(self.provenance_path)  # remove provenance data folder
-                shutil.rmtree(self.tmp_dir)  # remove temporal data folder
+                # Validate provenance data
+                is_valid = self.cwl.validate_provenance(self.provenance_path)
+                if is_valid == 0:
 
-                # Create and validate the output files
-                self.create_output_files(output_files, output_metadata, outputs_execution)
-                logger.debug("Output files and output metadata created")
+                    # Compress provenance data
+                    logger.debug("Provenance data cwl_metadata validated")
+                    shutil.move(self.YAML_FILENAME, self.provenance_path)  # move YAML to provenance data folder
+                    self.cwl.compress_provenance(self.ZIP_FILENAME, self.provenance_path)
+
+                    # Remove provenance and temporal data folders
+                    shutil.rmtree(self.provenance_path)
+                    shutil.rmtree(self.tmp_dir)
+
+                    # Create and validate the output files
+                    self.create_output_files(output_files, output_metadata, outputs_execution)
+                    logger.debug("Output files and output metadata created")
 
             return output_files, output_metadata
 

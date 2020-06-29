@@ -25,6 +25,7 @@ import zipfile
 from collections import defaultdict
 from ruamel import yaml
 from utils import logger
+from cwlprov.tool import Tool
 
 import tool.VRE_CWL
 
@@ -103,6 +104,26 @@ class CWL:
         return process
 
     @staticmethod
+    def validate_provenance(provenance_path):
+        """
+        CWLProv tool to validate and inspect CWLProv Research Objects
+        that capture workflow runs executed in CWL implementation
+
+        :param provenance_path: path that contains provenance data
+        :type provenance_path: str
+        """
+        arg_list = ["-d", provenance_path, "validate"]  # cmd arguments
+
+        with Tool(arg_list) as prov_tool:
+            try:
+                return prov_tool.main()  # validate provenance
+
+            except OSError as error:
+                errstr = "Unable to validate provenance data. ERROR: {}".format(error)
+                logger.error(errstr)
+                raise Exception(prov_tool.Status.IO_ERROR)
+
+    @staticmethod
     def compress_provenance(filename, provenance_path):
         """
         Create ZIP file of provenance data folder
@@ -131,5 +152,5 @@ class CWL:
 
         except Exception as error:
             errstr = "Unable to create provenance data {}. ERROR: {}".format(filename, error)
-            logger.error(errstr)
+            logger.fatal(errstr)
             raise Exception(errstr)
