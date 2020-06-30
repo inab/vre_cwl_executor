@@ -50,9 +50,9 @@ class WF_RUNNER(Tool):
         self.configuration.update(configuration)
 
         # Arrays are serialized
-        for k, v in self.configuration.items():
-            if isinstance(v, list):
-                self.configuration[k] = ' '.join(v)
+        # for k, v in self.configuration.items():
+        #     if isinstance(v, list):
+        #         self.configuration[k] = ' '.join(v)
 
         self.cwl = CWL()  # CWL workflow class
         self.arguments = list()
@@ -167,7 +167,6 @@ class WF_RUNNER(Tool):
                 # Validate provenance data
                 is_valid = self.cwl.validate_provenance(self.provenance_path)
                 if is_valid == 0:
-
                     # Compress provenance data
                     logger.debug("Provenance data cwl_metadata validated")
                     shutil.move(self.YAML_FILENAME, self.provenance_path)  # move YAML to provenance data folder
