@@ -64,9 +64,8 @@ class CWL:
 
             for key, value in arguments.items():  # add arguments
                 if key not in tool.VRE_CWL.WF_RUNNER.MASKED_KEYS:
-
                     if isinstance(value, list):  # mapping special char inside argument list
-                        value = filter(None, map(lambda s: s.replace("\t", "\\t"), value))
+                        value = [item.replace("\t", "\\t") for item in value]
 
                     self.input_cwl[str(key)] = value
 
