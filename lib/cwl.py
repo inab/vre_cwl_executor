@@ -17,7 +17,6 @@
    limitations under the License.
 """
 import os
-# import re
 import re
 import subprocess
 import sys
@@ -65,6 +64,10 @@ class CWL:
 
             for key, value in arguments.items():  # add arguments
                 if key not in tool.VRE_CWL.WF_RUNNER.MASKED_KEYS:
+
+                    if isinstance(value, list):  # mapping special char inside argument list
+                        value = filter(None, map(lambda s: s.replace("\t", "\\t"), value))
+
                     self.input_cwl[str(key)] = value
 
             with open(filename_path, 'w+') as f:  # create YAML file
@@ -94,12 +97,15 @@ class CWL:
 
         cmd = [
             "cwltool",
+            "--debug",
             "--tmp-outdir-prefix", tmp_dir,
             "--tmpdir-prefix", tmp_dir,
             "--provenance", provenance_dir,
             cwl_wf_url,
             cwl_wf_input_yml_path
         ]
+
+        print(cmd)
 
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process

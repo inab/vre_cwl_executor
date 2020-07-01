@@ -35,7 +35,8 @@ class WF_RUNNER(Tool):
     YAML_FILENAME = "inputs_cwl.yaml"
     ZIP_FILENAME = "cwl_metadata.zip"
     PROVENANCE_DIR = "cwl_metadata/"
-    debug_mode = False  # If is True, debug mode is active. False, otherwise
+    TMP_DIR = "/tmp/openvre/tmp_"
+    debug_mode = True  # If is True, debug mode is active. False, otherwise
 
     def __init__(self, configuration=None):
         """
@@ -83,6 +84,8 @@ class WF_RUNNER(Tool):
                 if params not in self.MASKED_KEYS:
                     self.arguments.append((params, self.configuration[params]))
 
+            print(json.dumps(arguments, indent=2))
+
             cwl_wf_input_yml_path = self.execution_path + "/" + self.YAML_FILENAME
             self.cwl.create_input_yml(input_files, arguments, cwl_wf_input_yml_path)
             logger.info("3) Packed information to YAML: {}".format(cwl_wf_input_yml_path))
@@ -91,7 +94,7 @@ class WF_RUNNER(Tool):
 
                 # Create temporal directory to add temporary execution files
                 # If not exists the directory will be created
-                self.tmp_dir = "/tmp/openvre/tmp_" + str(os.getpid()) + "/"
+                self.tmp_dir = self.TMP_DIR + str(os.getpid()) + "/"
                 if not os.path.isdir(self.tmp_dir):
                     os.makedirs(self.tmp_dir)
 
@@ -166,6 +169,7 @@ class WF_RUNNER(Tool):
 
                 # Validate provenance data
                 is_valid = self.cwl.validate_provenance(self.provenance_path)
+
                 if is_valid == 0:
                     # Compress provenance data
                     logger.debug("Provenance data cwl_metadata validated")
@@ -175,6 +179,7 @@ class WF_RUNNER(Tool):
                     # Remove provenance and temporal data folders
                     shutil.rmtree(self.provenance_path)
                     shutil.rmtree(self.tmp_dir)
+                    logger.debug("Provenance folder {} and temporal folder {} removed".format(self.provenance_path, self.tmp_dir))
 
                     # Create and validate the output files
                     self.create_output_files(output_files, output_metadata, outputs_execution)
