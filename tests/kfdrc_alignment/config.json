@@ -76,7 +76,7 @@
   "arguments": [
     {
       "name": "execution",
-      "value": "/tmp/openvre/run000"
+      "value": "/home/user/vre_cwl_executor/tests/kfdrc_alignment/run000"
     },
     {
       "name": "project",
