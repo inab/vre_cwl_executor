@@ -2,21 +2,68 @@
   "@context": "https://w3id.org/ro/crate/1.0/context",
   "@graph": [
     {
-      "@id": "https://orcid.org/0000-0003-4929-1219",
-      "@type": "Person",
-      "contactType": "Crazy person",
-      "name": "Laura Rodriguez Navas"
+      "@graph": [
+        {
+          "@id": "./",
+          "@type": "Dataset",
+          "author": {
+            "@id": "https://orcid.org/0000-0003-4929-1219"
+          },
+          "contactPoint": {
+            "@id": "laura.rodriguez@bsc.es"
+          },
+          "datePublished": "2020-06-26T12:37:47.897369",
+          "description": "this is the description of the workfow description",
+          "hasPart": {
+            "@id": "./data/provenance.ttl"
+          },
+          "license": "MIT?",
+          "name": "workflow outputs"
+        },
+        {
+          "@id": "./data/provenance.ttl",
+          "@type": "File"
+        },
+        {
+          "@id": "laura.rodriguez@bsc.es",
+          "@type": "ContactPoint",
+          "contactType": "Crazy person",
+          "email": "laura.rodriguez@bsc.es",
+          "name": "Laura Rodriguez Navas",
+          "url": "https://orcid.org/0000-0003-4929-1219"
+        },
+        {
+          "@id": "ro-crate-metadata.jsonld",
+          "@type": "CreativeWork",
+          "about": {
+            "@id": "./"
+          },
+          "identifier": "ro-crate-metadata.jsonld"
+        },
+        {
+          "@id": "https://orcid.org/0000-0003-4929-1219",
+          "@type": "Person"
+        }
+      ]
     },
     {
-      "@id": "ro-crate-metadata.jsonld",
-      "@type": "CreativeWork",
-      "about": {
-        "@id": "./"
-      },
-      "hasPart": {
-        "@id": "https://orcid.org/0000-0003-4929-1219"
-      },
-      "identifier": "ro-crate-metadata.jsonld"
+      "@graph": [
+        {
+          "@id": "https://w3id.org/ro/crate/1.0/context",
+          "license": {
+            "@id": "https://creativecommons.org/publicdomain/zero/1.0/"
+          },
+          "name": "RO-Crate JSON-LD Context",
+          "schemaVersion": {
+            "@id": "http://schema.org/version/5.0/"
+          },
+          "url": {
+            "@id": "https://w3id.org/ro/crate/1.0"
+          },
+          "version": "1.0.0"
+        }
+      ],
+      "@id": "https://researchobject.github.io/ro-crate/1.0/context.jsonld"
     }
   ]
 }
