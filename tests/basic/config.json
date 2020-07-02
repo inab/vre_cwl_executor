@@ -50,7 +50,7 @@
             "required": false,
             "allow_multiple": false,
             "file": {
-                "file_type": "TAR",
+                "file_type": "MULTIPLE",
                 "data_type": "Provenance Data",
                 "compressed": "ZIP",
                 "meta_data": {

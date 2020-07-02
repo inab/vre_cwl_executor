@@ -70,7 +70,7 @@ class CWL:
                     self.input_cwl[str(key)] = value
 
             with open(filename_path, 'w+') as f:  # create YAML file
-                yaml.dump(dict(self.input_cwl), f, allow_unicode=True, default_flow_style=False)
+                yaml.dump(dict(self.input_cwl), f, allow_unicode=True, default_flow_style=False, block_seq_indent=2)
 
         except:
             errstr = "The YAML file creation failed. See logs"
@@ -103,8 +103,6 @@ class CWL:
             cwl_wf_url,
             cwl_wf_input_yml_path
         ]
-
-        print(cmd)
 
         process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         return process

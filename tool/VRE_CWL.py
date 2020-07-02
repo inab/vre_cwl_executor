@@ -36,7 +36,7 @@ class WF_RUNNER(Tool):
     ZIP_FILENAME = "cwl_metadata.zip"
     PROVENANCE_DIR = "cwl_metadata/"
     TMP_DIR = "/tmp/openvre/tmp_"
-    debug_mode = True  # If is True, debug mode is active. False, otherwise
+    debug_mode = False  # If is True, debug mode is active. False, otherwise
 
     def __init__(self, configuration=None):
         """
@@ -49,12 +49,6 @@ class WF_RUNNER(Tool):
             configuration = {}
 
         self.configuration.update(configuration)
-
-        # Arrays are serialized
-        # for k, v in self.configuration.items():
-        #     if isinstance(v, list):
-        #         self.configuration[k] = ' '.join(v)
-
         self.cwl = CWL()  # CWL workflow class
         self.arguments = list()
         self.execution_path = None
@@ -83,8 +77,6 @@ class WF_RUNNER(Tool):
             for params in self.configuration.keys():  # save arguments
                 if params not in self.MASKED_KEYS:
                     self.arguments.append((params, self.configuration[params]))
-
-            print(json.dumps(arguments, indent=2))
 
             cwl_wf_input_yml_path = self.execution_path + "/" + self.YAML_FILENAME
             self.cwl.create_input_yml(input_files, arguments, cwl_wf_input_yml_path)

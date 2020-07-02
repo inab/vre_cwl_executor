@@ -3,7 +3,7 @@
     {
       "name": "input_bam_list",
       "value": "unique_file_id_5e14abe0a37012.29503901",
-      "required": false,
+      "required": true,
       "allow_multiple": true
     },
     {
@@ -76,7 +76,7 @@
   "arguments": [
     {
       "name": "execution",
-      "value": "/home/user/vre_cwl_executor/tests/kfdrc_alignment/run000"
+      "value": "/tmp/openvre/run000"
     },
     {
       "name": "project",
@@ -120,8 +120,7 @@
     },
     {
       "name": "input_pe_rgs_list",
-      "value": "@RG\tID:ls\tLB:C835.HCC1143.2.converted.pe\tPL:ILLUMINA\tSM:HCC1143",
-      "allow_multiple": true
+      "value": ["@RG\tID:C835.HCC1143.2.converted.pe\tLB:C835.HCC1143.2.converted.pe\tPL:ILLUMINA\tSM:HCC1143"]
     },
     {
       "name": "cwl_wf_url",
@@ -130,37 +129,11 @@
   ],
   "output_files": [
     {
-      "name": "cram",
-      "required": true,
-      "allow_multiple": false,
-      "file": {
-        "file_type": "CRAM",
-        "data_type": "T",
-        "meta_data": {
-          "visible": true,
-          "description": "D"
-        }
-      }
-    },
-    {
-      "name": "bqsr_report",
-      "required": true,
-      "allow_multiple": false,
-      "file": {
-        "file_type": "CSV",
-        "data_type": "T",
-        "meta_data": {
-          "visible": true,
-          "description": "D"
-        }
-      }
-    },
-    {
       "name": "cwl_metadata",
       "required": false,
       "allow_multiple": false,
       "file": {
-        "file_type": "TAR",
+        "file_type": "MULTIPLE",
         "data_type": "Provenance Data",
         "compressed": "ZIP",
         "meta_data": {
