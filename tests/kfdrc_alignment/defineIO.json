@@ -156,6 +156,71 @@
       ],
       "required": false,
       "allow_multiple": false
+    },
+    {
+      "name": "wgs_calling_interval_list",
+      "description": "WGS interval list used to aid scattering Haplotype caller",
+      "help": "WGS interval list used to aid scattering Haplotype caller",
+      "file_type": [
+        "INTERVAL_LIST"
+      ],
+      "data_type": [
+        "genomic_regions"
+      ],
+      "required": false,
+      "allow_multiple": false
+    },
+    {
+      "name": "wgs_coverage_interval_list",
+      "description": "An interval list file [..]",
+      "help": "An interval list file that contains the positions to restrict the wgs metrics assessment",
+      "file_type": [
+        "INTERVAL_LIST"
+      ],
+      "data_type": [
+        "genomic_regions"
+      ],
+      "required": false,
+      "allow_multiple": false
+    },
+    {
+      "name": "wgs_evaluation_interval_list",
+      "description": "Target intervals to restrict gvcf metric analysis [...]",
+      "help": "Target intervals to restrict gvcf metric analysis (for VariantCallingMetrics)",
+      "file_type": [
+        "INTERVAL_LIST"
+      ],
+      "data_type": [
+        "genomic_regions"
+      ],
+      "required": false,
+      "allow_multiple": false
+    },
+    {
+      "name": "wxs_bait_interval_list",
+      "description": "An interval list file [..]",
+      "help": "An interval list file that contains the locations of the WXS targets (for HsMetrics)",
+      "file_type": [
+        "INTERVAL_LIST"
+      ],
+      "data_type": [
+        "genomic_regions"
+      ],
+      "required": false,
+      "allow_multiple": false
+    },
+    {
+      "name": "wxs_target_interval_list",
+      "description": "An interval list file [..]",
+      "help": "An interval list file that contains the locations of the WXS targets (for HsMetrics)",
+      "file_type": [
+        "INTERVAL_LIST"
+      ],
+      "data_type": [
+        "genomic_regions"
+      ],
+      "required": false,
+      "allow_multiple": false
     }
   ],
   "input_files_public_dir": [
