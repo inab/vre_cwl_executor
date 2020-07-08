@@ -1,86 +1,268 @@
 {
-    "_id": "kf-alignment",
-    "input_files": [
-        {
-            "name": "input_bam_list",
-            "description": "BAM inputs",
-            "help": "Some explanation about 'BAM inputs' displayed to user in help tooltips ",
-            "file_type": [
-                "BAM"
-            ],
-            "data_type": [
-                "sequence_dna"
-            ],
-            "required": true,
-            "allow_multiple": true
-        },
-        {
-            "name": "reference_tar",
-            "description": "My Input 2",
-            "help": "Some explanation about 'My Input 2' displayed to user in help tooltips ",
-            "file_type": [
-                "FASTA"
-            ],
-            "data_type": [
-                "sequence_dna"
-            ],
-            "required": true,
-            "allow_multiple": false
+  "_id":"kf-alignment",
+  "input_files":[
+    {
+      "name": "input_bam_list",
+      "description": "List of input BAM files",
+      "help": "List of input BAM files",
+      "file_type": [
+        "BAM"
+      ],
+      "data_type": [
+        "reads_unaligned"
+      ],
+      "required": false,
+      "allow_multiple": true
+    },
+    {
+      "name": "input_pe_reads_list",
+      "description": "List of input R1 paired end fastq reads",
+      "help": "List of input R1 paired end fastq reads",
+      "file_type": [
+        "FASTQ"
+      ],
+      "data_type": [
+        "reads_unaligned"
+      ],
+      "required": false,
+      "allow_multiple": true
+    },
+    {
+      "name": "input_pe_mates_list",
+      "description": "List of input R2 paired end fastq reads",
+      "help": "List of input R2 paired end fastq reads",
+      "file_type": [
+        "FASTQ"
+      ],
+      "data_type": [
+        "reads_unaligned"
+      ],
+      "required": false,
+      "allow_multiple": true
+    },
+    {
+      "name": "input_se_reads_list",
+      "description": "List of input singlie end fastq reads",
+      "help": "List of input singlie end fastq reads",
+      "file_type": [
+        "FASTQ"
+      ],
+      "data_type": [
+        "reads_unaligned"
+      ],
+      "required": false,
+      "allow_multiple": true
+    },
+    {
+      "name": "reference_tar",
+      "description": "reference_tar: Tar file containing a reference fasta and, optionally [...]",
+      "help": "Tar file containing a reference fasta and, optionally, its complete set of associated indexes (samtools, bwa, and picard)",
+      "file_type": [
+        "TAR"
+      ],
+      "data_type": [
+        "ref_genome"
+      ],
+      "required": true,
+      "allow_multiple": false
+    },
+    {
+      "name": "dbsnp_vcf",
+      "description": "dbSNP vcf file",
+      "help": "dbSNP vcf file",
+      "file_type": [
+        "VCF"
+      ],
+      "data_type": [
+        "genome_variants"
+      ],
+      "required": false,
+      "allow_multiple": false
+    },
+    {
+      "name": "dbsnp_idx",
+      "description": "dbSNP vcf index file",
+      "help": "dbSNP vcf index file",
+      "file_type" :[
+        "TABIX"
+      ],
+      "data_type": [
+        "genome_variants"
+      ],
+      "required": false,
+      "allow_multiple": false
+    },
+    {
+      "name": "knownsites",
+      "description": "List of files containing known polymorphic sites used [...]",
+      "help": "List of files containing known polymorphic sites used to exclude regions around known polymorphisms from analysis",
+      "file_type": [
+        "VCF"
+      ],
+      "data_type": [
+        "genome_variants"
+      ],
+      "required": true,
+      "allow_multiple": true
+    },
+    {
+      "name": "knownsites_indexes",
+      "description": "Corresponding indexes for the knownsites [...]",
+      "help": "Corresponding indexes for the knownsites. File position in list must match with its corresponding VCF's position in the knownsites file list. For example, if the first file in the knownsites list is 1000G_omni2.5.hg38.vcf.gz then the first item in this list must be 1000G_omni2.5.hg38.vcf.gz.tbi. Optional, but will save time/cost on indexing.",
+      "file_type": [
+        "TABIX"
+      ],
+      "data_type": [
+        "genome_variants"
+      ],
+      "required": false,
+      "allow_multiple": true
+    },
+    {
+      "name": "contamination_sites_bed",
+      "description": "Bed file for markers used in this analysis [...]",
+      "help": "Bed file for markers used in this analysis, format (chr\tpos-1\tpos\trefAllele\taltAllele)",
+      "file_type": [
+        "BED"
+      ],
+      "data_type": [
+        "sequence_annotation"
+      ],
+      "required": false,
+      "allow_multiple": false
+    },
+    {
+      "name": "contamination_sites_mu",
+      "description": "MU matrix file of genotype matrix",
+      "help": "MU matrix file of genotype matrix",
+      "file_type": [
+        "MU"
+      ],
+      "data_type": [
+        "sequence_annotation"
+      ],
+      "required": false,
+      "allow_multiple": false
+    },
+    {
+      "name": "contamination_sites_ud",
+      "description": "UD matrix file from SVD result of genotype matrix",
+      "help": "UD matrix file from SVD result of genotype matrix",
+      "file_type": [
+        "UD"
+      ],
+      "data_type": [
+        "sequence_annotation"
+      ],
+      "required": false,
+      "allow_multiple": false
+    }
+  ],
+  "input_files_public_dir": [
+
+  ],
+  "input_files_combinations": [
+
+  ],
+  "arguments": [
+    {
+      "name": "input_pe_rgs_list",
+      "description": "List of RG strings to use in PE processing",
+      "help": "List of RG strings to use in PE processing",
+      "type": "string",
+      "default": ""
+    },
+    {
+      "name":"input_se_rgs_list",
+      "description": "List of RG strings to use in SE processing",
+      "help":" List of RG strings to use in SE processing",
+      "type": "string",
+      "default": "null"
+    },
+    {
+      "name": "biospecimen_name",
+      "description": "String name of biospcimen",
+      "help": "String name of biospcimen",
+      "type": "string",
+      "default": "C835"
+    },
+    {
+      "name": "output_basename",
+      "description": "String to use as the base for output filenames",
+      "help": "String to use as the base for output filenames",
+      "type": "string",
+      "default": "C835-bamfastq-test"
+    },
+    {
+      "name": "run_bam_processing",
+      "description": "BAM processing will be run. Requires: input_bam_list",
+      "help": "BAM processing will be run. Requires: input_bam_list",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "run_pe_reads_processing",
+      "description": "PE reads processing will be run [...]",
+      "help": "PE reads processing will be run. Requires: input_pe_reads_list, input_pe_mates_list, input_pe_rgs_list",
+      "type": "boolean",
+      "default": true
+    },
+    {
+      "name": "run_se_reads_processing",
+      "description": "SE reads processing will be run [...]",
+      "help": "SE reads processing will be run. Requires: input_se_reads_list, input_se_rgs_list",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "run_hs_metrics",
+      "description": "HsMetrics will be collected [...]",
+      "help": "HsMetrics will be collected. Only recommended for WXS inputs. Requires: wxs_bait_interval_list, wxs_target_interval_list",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "run_wgs_metrics",
+      "description": "WgsMetrics will be collected [...]",
+      "help": "WgsMetrics will be collected. Only recommended for WGS inputs. Requires: wgs_coverage_interval_list",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "run_agg_metrics",
+      "description": "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics [...]",
+      "help": "AlignmentSummaryMetrics, GcBiasMetrics, InsertSizeMetrics, QualityScoreDistribution, and SequencingArtifactMetrics will be collected. Recommended for both WXS and WGS inputs",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "run_gvcf_processing",
+      "description": "gVCF will be generated [...]",
+      "help": "gVCF will be generated. Requires: dbsnp_vcf, contamination_sites_bed, contamination_sites_mu, contamination_sites_ud, wgs_calling_interval_list, wgs_evaluation_interval_list",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "min_alignment_score",
+      "description": "For BWA MEM [...]",
+      "help": "For BWA MEM, Don't output alignment with score lower than INT. This option only affects output",
+      "type": "integer",
+      "default": 0
+    }
+  ],
+  "output_files":[
+    {
+      "name": "cram",
+      "required": true,
+      "allow_multiple": false,
+      "file": {
+        "file_type": "CRAM",
+        "data_type": "reads_aligned",
+        "meta_data": {
+          "visible": true,
+          "description": "Here goes a short description of what this output file contains"
         }
-    ],
-    "input_files_public_dir": [],
-    "input_files_combinations": [
-        {
-            "description": "Analyse a single FASTA",
-            "input_files": [
-                "my_input_id1"
-            ]
-        },
-        {
-            "description": "Compare 2 FASTA files",
-            "input_files": [
-                "my_input_id1",
-                "my_input_id2"
-            ]
-        }
-    ],
-    "arguments": [
-        {
-            "name": "argument_id1 ",
-            "description": "Argument 1",
-            "help": "Some explanation about 'Argument 1' displayed to user in help tooltips",
-            "type": "integer",
-            "default": "99"
-        }
-    ],
-    "output_files": [
-        {
-            "name": "output_id1",
-            "required": true,
-            "allow_multiple": false,
-            "file": {
-                "file_type": "FASTA",
-                "data_type": "sequence_dna",
-                "meta_data": {
-                    "visible": true,
-                    "description": "Here goes a short description of what this output file contains"
-                }
-            }
-        },
-        {
-            "name": "output_id2",
-            "required": true,
-            "allow_multiple": false,
-            "file": {
-                "file_type": "TAR",
-                "data_type": "tool_statistics",
-                "file_path": "myExecutionStatistics.tar.gz",
-                "compressed": "gzip",
-                "meta_data": {
-                    "visible": false,
-                    "description": "Here goes a short description of what this output file contains"
-                }
-            }
-        }
-    ]
+      }
+    }
+  ]
 }
