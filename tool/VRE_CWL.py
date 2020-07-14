@@ -35,7 +35,7 @@ class WF_RUNNER(Tool):
     YAML_FILENAME = "inputs_cwl.yaml"
     ZIP_FILENAME = "cwl_metadata.zip"
     PROVENANCE_DIR = "cwl_metadata/"
-    TMP_DIR = "/tmp/openvre/tmp_"
+    TMP_DIR = "/tmp/openvre/"   
     debug_mode = False  # If is True, debug mode is active. False, otherwise
 
     def __init__(self, configuration=None):

@@ -70,7 +70,7 @@ class CWL:
                     self.input_cwl[str(key)] = value
 
             with open(filename_path, 'w+') as f:  # create YAML file
-                yaml.dump(dict(self.input_cwl), f, allow_unicode=True, default_flow_style=False, block_seq_indent=2)
+                yaml.dump(dict(self.input_cwl), f, allow_unicode=True, default_flow_style=False)
 
         except:
             errstr = "The YAML file creation failed. See logs"
