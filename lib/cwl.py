@@ -17,12 +17,15 @@
    limitations under the License.
 """
 import os
-import re
+# import re
+# import shutil
 import subprocess
 import sys
 import zipfile
 
 from collections import defaultdict
+
+from rocrate import rocrate_api
 from ruamel import yaml
 from utils import logger
 from cwlprov.tool import Tool
@@ -35,12 +38,13 @@ class CWL:
     CWL workflow class
     """
     file_type = "File"
+    wf_type = "CWL"
 
     def __init__(self):
         """
         Init function
         """
-        self.input_cwl = defaultdict(list)
+        self.inputs_cwl = defaultdict(list)
 
     def create_input_yml(self, input_files, arguments, filename_path):
         """
@@ -56,21 +60,21 @@ class CWL:
         try:
             for key, value in input_files.items():  # for each input file
                 if isinstance(value, str):  # one input file
-                    self.input_cwl.update({key: {"class": self.file_type, "location": value}})
+                    self.inputs_cwl.update({key: {"class": self.file_type, "location": value}})
 
                 elif isinstance(value, list):  # more than one input file
                     for file_path in value:
-                        self.input_cwl[key].append({"class": self.file_type, "location": file_path})
+                        self.inputs_cwl[key].append({"class": self.file_type, "location": file_path})
 
             for key, value in arguments.items():  # add arguments
                 if key not in tool.VRE_CWL.WF_RUNNER.MASKED_KEYS:
                     if isinstance(value, list):  # mapping special char inside argument list
                         value = [item.replace("\t", "\\t") for item in value]
 
-                    self.input_cwl[str(key)] = value
+                    self.inputs_cwl[str(key)] = value
 
             with open(filename_path, 'w+') as f:  # create YAML file
-                yaml.dump(dict(self.input_cwl), f, allow_unicode=True, default_flow_style=False)
+                yaml.dump(dict(self.inputs_cwl), f, allow_unicode=True, default_flow_style=False)
 
         except:
             errstr = "The YAML file creation failed. See logs"
@@ -99,7 +103,7 @@ class CWL:
             "--debug",
             "--tmp-outdir-prefix", tmp_dir,
             "--tmpdir-prefix", tmp_dir,
-            "--provenance", provenance_dir,
+            # "--provenance", provenance_dir,
             cwl_wf_url,
             cwl_wf_input_yml_path
         ]
@@ -108,7 +112,7 @@ class CWL:
         return process
 
     @staticmethod
-    def validate_provenance(provenance_path):
+    def validate_provenance(provenance_path):  # TODO delete method
         """
         CWLProv tool to validate and inspect CWLProv Research Objects
         that capture workflow runs executed in CWL implementation
@@ -128,7 +132,7 @@ class CWL:
                 raise Exception(prov_tool.Status.IO_ERROR)
 
     @staticmethod
-    def compress_provenance(filename, provenance_path):
+    def compress_provenance(filename, provenance_path):  # TODO change method to extract workflow folder
         """
         Create ZIP file of provenance data folder
 
@@ -141,12 +145,12 @@ class CWL:
             with zipfile.ZipFile(filename, "w", zipfile.ZIP_DEFLATED) as zip:
                 abs_src = os.path.abspath(provenance_path)  # absolute path from provenance path
                 for folder_name, sub_folders, files in os.walk(provenance_path):
-                    rule = re.search(r"\b(data/)\b", folder_name)
-                    if rule is None:  # if not contains data folder
-                        for file in files:
-                            abs_name = os.path.abspath(os.path.join(folder_name, file))
-                            arc_name = abs_name[len(abs_src) + 1:]
-                            zip.write(abs_name, arc_name)
+                    # rule = re.search(r"\b(data/)\b", folder_name)
+                    # if rule is None:  # if not contains data folder
+                    for file in files:
+                        abs_name = os.path.abspath(os.path.join(folder_name, file))
+                        arc_name = abs_name[len(abs_src) + 1:]
+                        zip.write(abs_name, arc_name)
             zip.close()
 
             if not os.path.isfile(filename):  # if zip file is not created the execution stops
@@ -156,5 +160,45 @@ class CWL:
 
         except Exception as error:
             errstr = "Unable to create provenance data {}. ERROR: {}".format(filename, error)
+            logger.fatal(errstr)
+            raise Exception(errstr)
+
+    def create_rocrate(self, cwl_wf_url, input_files, rocrate_path):
+        """"
+        Create workflow RO-crate
+
+        :param cwl_wf_url:
+        :param input_files:
+        :param rocrate_path:
+        :type cwl_wf_url: str
+        :type input_files: dict
+        :type rocrate_path: str
+        """
+        try:
+
+            include_files = list()
+
+            # Create list of input files location
+            for in_rec in input_files.keys():
+                input_file = input_files[in_rec]
+                if isinstance(input_file, dict):  # input is a File
+                    include_files.append(str(input_file['location']))  # add to include_files
+
+            logger.debug("Include files:\n{}".format(include_files))
+
+            # Create RO-Crate
+            ro_crate = rocrate_api.make_workflow_rocrate(workflow_path=cwl_wf_url, wf_type=self.wf_type,
+                                                         include_files=include_files)
+
+            # Write RO-Crate JSON-LD format
+            ro_crate.write_crate(rocrate_path)
+
+            # TODO compress to zip and remove rocrate_path
+            # Write to zip file
+            # ro_crate.write_zip(rocrate_path)
+            # shutil.rmtree(rocrate_path)
+
+        except Exception as error:
+            errstr = "Unable to create RO-Crate. ERROR: {}".format(error)
             logger.fatal(errstr)
             raise Exception(errstr)
