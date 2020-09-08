@@ -1,62 +1,63 @@
 [
-    {
-        "_id": "unique_file_id_5e14abe0a37012.29503907",
-        "type": "file",
-        "file_path": "/home/user/vre_cwl_executor/tests/basic/NA12878.bam",
-        "file_type": "BAM",
-        "data_type": "sequence_dna",
-        "compressed": 0,
-	"sources": [],
-        "user_id": "user_id",
-        "creation_time": {
-            "sec": 1578413024,
-            "usec": 0
-        },
-        "meta_data": {
-            "size": 0,
-            "project": "my_project_id",
-            "atime": {
-                "sec": 1578413024,
-                "usec": 0
-            },
-            "parentDir": "unique_file_id_5e14abe0a37742.64003100",
-            "lastAccess": {
-                "sec": 1578413024,
-                "usec": 0
-            },
-            "assembly": "hg38",
-            "paired": "paired",
-            "sorted": "sorted"
-        }
+  {
+    "_id": "unique_file_id_5e14abe0a37012.29503907",
+    "type": "file",
+    "file_path": "/home/user/vre_cwl_executor/tests/basic/NA12878.bam",
+    "file_type": "BAM",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [],
+    "user_id": "user_id",
+    "creation_time": {
+      "$date": {
+        "$numberLong": 1594727890000
+      }
     },
-    {
-        "_id": "unique_file_id_5e14abe0a37012.29503908",
-        "type": "file",
-        "file_path": "/home/user/vre_cwl_executor/tests/basic/hg38.fa",
-        "file_type": "FASTA",
-        "data_type": "sequence_dna",
-        "compressed": 0,
-	"sources": [],
-        "user_id": "user_id",
-        "creation_time": {
-            "sec": 1578413024,
-            "usec": 0
-        },
-        "meta_data": {
-            "size": 0,
-            "project": "my_project_id",
-            "atime": {
-                "sec": 1578413024,
-                "usec": 0
-            },
-            "parentDir": "unique_file_id_5e14abe0a37742.64003100",
-            "lastAccess": {
-                "sec": 1578413024,
-                "usec": 0
-            },
-            "assembly": "hg38",
-            "paired": "paired",
-            "sorted": "sorted"
+    "taxon_id": 0,
+    "meta_data": {
+      "size": 0,
+      "project": "my_project_id",
+      "atime": {
+        "$date": {
+          "$numberLong": 1594727890000
         }
+      },
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "$date": {
+          "$numberLong": 1594727890000
+        }
+      }
     }
+  },
+  {
+    "_id": "unique_file_id_5e14abe0a37012.29503908",
+    "type": "file",
+    "file_path": "/home/user/vre_cwl_executor/tests/basic/hg38.fa",
+    "file_type": "FASTA",
+    "data_type": "sequence_dna",
+    "compressed": 0,
+    "sources": [],
+    "user_id": "user_id",
+    "creation_time": {
+      "$date": {
+        "$numberLong": 1594727890000
+      }
+    },
+    "meta_data": {
+      "size": 0,
+      "project": "my_project_id",
+      "atime": {
+        "$date": {
+          "$numberLong": 1594727890000
+        }
+      },
+      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+      "lastAccess": {
+        "$date": {
+          "$numberLong": 1594727890000
+        }
+      }
+    }
+  }
 ]
