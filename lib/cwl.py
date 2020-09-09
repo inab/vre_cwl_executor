@@ -120,11 +120,11 @@ class CWL:
         :param provenance_path: path that contains provenance data
         :type provenance_path: str
         """
-        arg_list = ["-d", provenance_path, "validate"]  # cmd arguments
+        arg_list = ["-d", provenance_path, "validate"]
 
         with Tool(arg_list) as prov_tool:
             try:
-                return prov_tool.main()  # validate provenance
+                return prov_tool.main()
 
             except OSError as error:
                 errstr = "Unable to validate provenance data. ERROR: {}".format(error)
@@ -132,7 +132,7 @@ class CWL:
                 raise Exception(prov_tool.Status.IO_ERROR)
 
     @staticmethod
-    def compress_provenance(filename, provenance_path):  # TODO change method to extract workflow folder
+    def compress_provenance(filename, provenance_path):
         """
         Create ZIP file of provenance data folder
 
@@ -142,7 +142,7 @@ class CWL:
         :type provenance_path: str
         """
         try:
-            with zipfile.ZipFile(filename, "w", zipfile.ZIP_DEFLATED) as zip:
+            with zipfile.ZipFile(filename, "w", zipfile.ZIP_DEFLATED) as zpf:
                 abs_src = os.path.abspath(provenance_path)  # absolute path from provenance path
                 for folder_name, sub_folders, files in os.walk(provenance_path):
                     # rule = re.search(r"\b(data/)\b", folder_name)
@@ -150,8 +150,8 @@ class CWL:
                     for file in files:
                         abs_name = os.path.abspath(os.path.join(folder_name, file))
                         arc_name = abs_name[len(abs_src) + 1:]
-                        zip.write(abs_name, arc_name)
-            zip.close()
+                        zpf.write(abs_name, arc_name)
+            zpf.close()
 
             if not os.path.isfile(filename):  # if zip file is not created the execution stops
                 sys.exit("{} not created; See logs".format(filename))
@@ -167,9 +167,9 @@ class CWL:
         """"
         Create workflow RO-crate
 
-        :param cwl_wf_url:
-        :param input_files:
-        :param rocrate_path:
+        :param cwl_wf_url: URL for the location of the workflow
+        :param input_files: List containing tool input files
+        :param rocrate_path: path that will contain the RO-Crate
         :type cwl_wf_url: str
         :type input_files: dict
         :type rocrate_path: str
@@ -189,14 +189,8 @@ class CWL:
             # Create RO-Crate
             ro_crate = rocrate_api.make_workflow_rocrate(workflow_path=cwl_wf_url, wf_type=self.wf_type,
                                                          include_files=include_files)
-
             # Write RO-Crate JSON-LD format
             ro_crate.write_crate(rocrate_path)
-
-            # TODO compress to zip and remove rocrate_path
-            # Write to zip file
-            # ro_crate.write_zip(rocrate_path)
-            # shutil.rmtree(rocrate_path)
 
         except Exception as error:
             errstr = "Unable to create RO-Crate. ERROR: {}".format(error)

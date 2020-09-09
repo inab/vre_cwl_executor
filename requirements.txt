@@ -3,9 +3,9 @@ wheel
 pylint
 pytest
 cwltool
-cwlprov~=0.1.1
-git+https://github.com/inab/openvre-tool-api.git
-bdbag~=1.5.6
-requests==2.23.0
+cwlprov
+requests
 rdflib==4.2.2
+# pathlib2
+git+https://github.com/inab/openvre-tool-api.git
 git+https://github.com/inab/ro-crate-py.git

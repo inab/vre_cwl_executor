@@ -23,8 +23,10 @@ import time
 
 from basic_modules.tool import Tool
 from utils import logger
-
 from lib.cwl import CWL
+
+
+# from pathlib2 import Path
 
 
 class WF_RUNNER(Tool):
@@ -36,7 +38,7 @@ class WF_RUNNER(Tool):
     ZIP_FILENAME = "cwl_metadata.zip"
     PROVENANCE_DIR = "cwl_metadata/"
     ROCRATE_DIR = "ro/"
-    TMP_DIR = "/tmp/openvre/"
+    TMP_DIR = "tmp/"
     debug_mode = False  # If is True, debug mode is active. False, otherwise
 
     def __init__(self, configuration=None):
@@ -50,7 +52,7 @@ class WF_RUNNER(Tool):
             configuration = {}
 
         self.configuration.update(configuration)
-        self.cwl = CWL()  # CWL workflow class
+        self.cwl = CWL()  # CWL Workflow class
         self.cwl_wf_url = str()
         self.arguments = list()
         self.execution_path = None
@@ -68,7 +70,7 @@ class WF_RUNNER(Tool):
         :type arguments: dict
         """
         try:
-            self.cwl_wf_url = self.configuration.get('cwl_wf_url')  # TODO add tag
+            self.cwl_wf_url = self.configuration.get('cwl_wf_url')
             if self.cwl_wf_url is None:
                 errstr = "cwl_wf_url parameter must be defined"
                 logger.fatal(errstr)
@@ -85,13 +87,16 @@ class WF_RUNNER(Tool):
             logger.info("3) Packed information to YAML: {}".format(cwl_wf_input_yml_path))
 
             if not self.debug_mode:
-
                 # Create temporal directory to add temporary execution files
                 # If not exists the directory will be created
-                self.tmp_dir = self.TMP_DIR + str(os.getpid()) + "/"
+                self.tmp_dir = self.execution_path + "/" + self.TMP_DIR
+                # + self.TMP_DIR + str(os.getpid()) + "/"
                 if not os.path.isdir(self.tmp_dir):
+                    # os.umask(0)
                     os.makedirs(self.tmp_dir)
 
+                # Create provenance directory to add metadata execution files
+                # If not exists the directory will be created
                 self.provenance_path = self.execution_path + "/" + self.PROVENANCE_DIR
                 if not os.path.isdir(self.provenance_path):
                     os.makedirs(self.provenance_path)
@@ -162,12 +167,11 @@ class WF_RUNNER(Tool):
             if not self.debug_mode:
                 outputs_execution = json.loads(outputs_execution)  # formatting the stdout to JSON format
 
-                # Validate provenance data
+                # Validate provenance data from cwltool execution
                 # is_valid = self.cwl.validate_provenance(self.provenance_path)
                 # if is_valid == 0:
                 # logger.debug("Provenance data cwl_metadata validated")
 
-                # Create and validate RO-Crate   # TODO create and validate research object
                 # Create RO-crate
                 rocrate_path = self.execution_path + "/" + self.ROCRATE_DIR
                 if not os.path.isdir(rocrate_path):
@@ -176,21 +180,23 @@ class WF_RUNNER(Tool):
                 self.cwl.create_rocrate(self.cwl_wf_url, self.cwl.inputs_cwl, rocrate_path)
                 logger.debug("RO-Crate created")
 
-                # Validate RO-crate
+                # Validate RO-crate # TODO validate RO-crate
 
-                # move YAML to provenance data folder
+                # move YAML file and RO-Crate folder to provenance data folder
                 shutil.move(self.YAML_FILENAME, self.provenance_path)
-                # move RO-Crate to provenance data folder
                 shutil.move(rocrate_path, self.provenance_path)
 
-                # Compress provenance data
+                # ZIP provenance data
                 self.cwl.compress_provenance(self.ZIP_FILENAME, self.provenance_path)
 
                 # Remove provenance and temporal data folders
                 shutil.rmtree(self.provenance_path)
                 shutil.rmtree(self.tmp_dir)
-                logger.debug("Provenance folder {} and temporal folder {} removed".format(self.provenance_path,
-                                                                                          self.tmp_dir))
+                # for item in Path(self.tmp_dir).iterdir():
+                #     if item.is_dir():
+                #         os.rmdir(item)
+                logger.debug("Provenance folder {} \n and temporal folder {} removed".format(self.provenance_path,
+                                                                                           self.tmp_dir))
 
                 # Create and validate the output files
                 self.create_output_files(output_files, output_metadata, outputs_execution)
