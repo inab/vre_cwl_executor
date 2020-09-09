@@ -38,7 +38,7 @@ class WF_RUNNER(Tool):
     ZIP_FILENAME = "cwl_metadata.zip"
     PROVENANCE_DIR = "cwl_metadata/"
     ROCRATE_DIR = "ro/"
-    TMP_DIR = "tmp/"
+    TMP_DIR = "/tmp/openvre/"
     debug_mode = False  # If is True, debug mode is active. False, otherwise
 
     def __init__(self, configuration=None):
@@ -89,8 +89,7 @@ class WF_RUNNER(Tool):
             if not self.debug_mode:
                 # Create temporal directory to add temporary execution files
                 # If not exists the directory will be created
-                self.tmp_dir = self.execution_path + "/" + self.TMP_DIR
-                # + self.TMP_DIR + str(os.getpid()) + "/"
+                self.tmp_dir = self.TMP_DIR + str(os.getpid()) + "/"
                 if not os.path.isdir(self.tmp_dir):
                     # os.umask(0)
                     os.makedirs(self.tmp_dir)
