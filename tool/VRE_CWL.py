@@ -91,7 +91,7 @@ class WF_RUNNER(Tool):
                 # If not exists the directory will be created
                 self.tmp_dir = self.TMP_DIR + str(os.getpid()) + "/"
                 if not os.path.isdir(self.tmp_dir):
-                    # os.umask(0)
+                    os.umask(0)
                     os.makedirs(self.tmp_dir)
 
                 # Create provenance directory to add metadata execution files
