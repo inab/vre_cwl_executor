@@ -101,6 +101,7 @@ class CWL:
         cmd = [
             "cwltool",
             "--debug",
+            "--singularity",
             "--tmp-outdir-prefix", tmp_dir,
             "--tmpdir-prefix", tmp_dir,
             # "--provenance", provenance_dir,
@@ -190,7 +191,8 @@ class CWL:
             ro_crate = rocrate_api.make_workflow_rocrate(workflow_path=cwl_wf_url, wf_type=self.wf_type,
                                                          include_files=include_files)
             # Write RO-Crate JSON-LD format
-            ro_crate.write_crate_entities(rocrate_path)
+            #ro_crate.write_crate_entities(rocrate_path)
+            ro_crate.write_crate(rocrate_path)
 
         except Exception as error:
             errstr = "Unable to create RO-Crate. ERROR: {}".format(error)
