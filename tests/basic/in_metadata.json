@@ -2,7 +2,7 @@
   {
     "_id": "unique_file_id_5e14abe0a37012.29503907",
     "type": "file",
-    "file_path": "/home/user/vre_cwl_executor/tests/basic/NA12878.bam",
+    "file_path": "{ADD_YOUR_LOCAL_PATH}/vre_cwl_executor/tests/basic/data/inputs/NA12878.bam",
     "file_type": "BAM",
     "data_type": "sequence_dna",
     "compressed": 0,
@@ -13,10 +13,9 @@
         "$numberLong": 1594727890000
       }
     },
-    "taxon_id": 0,
     "meta_data": {
       "size": 0,
-      "project": "my_project_id",
+      "project": "test",
       "atime": {
         "$date": {
           "$numberLong": 1594727890000
@@ -33,7 +32,7 @@
   {
     "_id": "unique_file_id_5e14abe0a37012.29503908",
     "type": "file",
-    "file_path": "/home/user/vre_cwl_executor/tests/basic/hg38.fa",
+    "file_path": "{ADD_YOUR_LOCAL_PATH}/vre_cwl_executor/tests/basic/data/inputs/hg38.fa",
     "file_type": "FASTA",
     "data_type": "sequence_dna",
     "compressed": 0,
@@ -46,7 +45,7 @@
     },
     "meta_data": {
       "size": 0,
-      "project": "my_project_id",
+      "project": "test",
       "atime": {
         "$date": {
           "$numberLong": 1594727890000
