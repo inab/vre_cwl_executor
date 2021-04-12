@@ -23,6 +23,8 @@ for prog in docker cwltool; do
 done
 
 # shellcheck disable=SC1090
-source "$BASEDIR"/venv/bin/activate
+# Find name of venv in current dir
+venv="$(basename `ls -d "${BASEDIR}"/*venv*`)"
+source "$BASEDIR"/"$venv"/bin/activate
 exec python -u "${BASEDIR}"/"${PROGNAME}".py "$@"
 exit 1
