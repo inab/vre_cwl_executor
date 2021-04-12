@@ -16,11 +16,15 @@
   "arguments": [
     {
       "name": "execution",
-      "value": "/home/user/vre_cwl_executor/tests/basic/run000"
+      "value": "{ADD_YOUR_LOCAL_PATH}/vre_cwl_executor/tests/basic/run000"
     },
     {
       "name": "project",
       "value": "basic"
+    },
+    {
+      "name": "description",
+      "value": "test"
     },
     {
       "name": "biospecimen_name",
@@ -28,7 +32,7 @@
     },
     {
       "name": "cwl_wf_url",
-      "value": "/home/user/vre_cwl_executor/tests/basic/data/workflows/basic_example.cwl"
+      "value": "{ADD_YOUR_PUBLIC_CWL_WORKFLOW_URL}"
     }
   ],
   "output_files": [
@@ -41,7 +45,7 @@
         "data_type": "sequence_dna",
         "meta_data": {
           "visible": true,
-          "description": "Splitted BAM files"
+          "description": "split BAM files"
         }
       }
     },
@@ -55,7 +59,7 @@
         "compressed": "ZIP",
         "meta_data": {
           "visible": true,
-          "description": "Provenance data of CWL execution"
+          "description": "provenance data of CWL execution"
         }
       }
     }
