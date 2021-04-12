@@ -228,8 +228,12 @@ class WF_RUNNER(Tool):
                 pop_output_path = list()  # list of tuples (path, type of output)
                 if out_id in outputs_execution.keys():  # output id in metadata in output id outputs_exec
                     if not metadata["allow_multiple"]:  # allow multiple false
-                        file_path = outputs_execution[next(iter(outputs_execution))][0]["path"]
-                        file_type = outputs_execution[next(iter(outputs_execution))][0]["class"].lower()
+                        print(metadata)
+                        print(outputs_execution)
+                        #file_path = outputs_execution[next(iter(outputs_execution))][0]["path"]
+                        file_path = outputs_execution[out_id]["path"]
+                        #file_type = outputs_execution[next(iter(outputs_execution))][0]["class"].lower()
+                        file_type = outputs_execution[out_id]["class"].lower()
                         pop_output_path.append((file_path, file_type))
 
                     else:  # allow multiple true
