@@ -1,20 +1,18 @@
 #!/bin/bash
 
 ###
-### Testing in a local installation
-### the VRE server CMD
-###
-### * Automatically created by VRE *
+### Testing example in a local installation
 ###
 
 # Local installation - EDIT IF REQUIRED
+
 CWD="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 TEST_DATA_DIR=$CWD
 WORKING_DIR=$TEST_DATA_DIR/run000
-TOOL_EXECUTABLE=$TEST_DATA_DIR/../../VRE_CWL_RUNNER
+TOOL_EXECUTABLE=$TEST_DATA_DIR/../../VRE_RUNNER
 
-# Running cwl_wrapper_test tool
+# Running wrapper tool
 
 if [ -d $WORKING_DIR ]; then
   rm -r $WORKING_DIR/
