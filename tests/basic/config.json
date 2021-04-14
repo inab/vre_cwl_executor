@@ -32,7 +32,7 @@
     },
     {
       "name": "cwl_wf_url",
-      "value": "{ADD_YOUR_PUBLIC_CWL_WORKFLOW_URL}"
+      "value": "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/basic_example.cwl"
     }
   ],
   "output_files": [
