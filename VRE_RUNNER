@@ -7,7 +7,10 @@
 ###
 
 
-DEPENDENCIES=("cwltool","singularity")
+DEPENDENCIES=(
+	"cwltool"\
+	"singularity"\
+)
 PROGNAME="VRE_RUNNER.py"
 
 # Validate dependencies
@@ -24,7 +27,7 @@ case "$BASEDIR" in
   ;;
 esac
 
-for prog in $(echo $DEPENDENCIES | sed "s/,/ /g"); do
+for prog in "${DEPENDENCIES[@]}" ; do
   type -a "$prog" >/dev/null
   if [ $? -ne 0 ]; then
     echo "UNCONFIGURED: No $prog executable found" 1>&2
@@ -35,5 +38,13 @@ done
 # Run VRE_RUNNER
 
 source "$BASEDIR"/venv/bin/activate
+# Create a nodejs running from within the environment
+if [ ! -x "$BASEDIR"/venv/bin/nodejs ] ; then
+    cp -p "$BASEDIR"/nodejs_singularity_wrapper.bash "$BASEDIR"/venv/bin/nodejs
+    chmod +x "$BASEDIR"/venv/bin/nodejs
+fi
+if [ ! -x "$BASEDIR"/venv/bin/node ] ; then
+	ln -s nodejs "$BASEDIR"/venv/bin/node
+fi
 exec python -u "${BASEDIR}"/"${PROGNAME}" "$@"
 exit 1
