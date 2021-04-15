@@ -16,7 +16,7 @@
   "arguments": [
     {
       "name": "execution",
-      "value": "{ADD_YOUR_LOCAL_PATH}/vre_cwl_executor/tests/basic/run000"
+      "value": "tests/basic"
     },
     {
       "name": "project",
