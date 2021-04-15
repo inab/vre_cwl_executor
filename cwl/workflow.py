@@ -1,21 +1,20 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
 
-"""
-.. See the NOTICE file distributed with this work for additional information
-   regarding copyright ownership.
+# Copyright 2020-2021 Barcelona Supercomputing Center (BSC), Spain
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
-   Licensed under the Apache License, Version 2.0 (the "License");
-   you may not use this file except in compliance with the License.
-   You may obtain a copy of the License at
-
-       http://www.apache.org/licenses/LICENSE-2.0
-
-   Unless required by applicable law or agreed to in writing, software
-   distributed under the License is distributed on an "AS IS" BASIS,
-   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-   See the License for the specific language governing permissions and
-   limitations under the License.
-"""
 import os
 # import re
 # import shutil
@@ -30,54 +29,63 @@ from ruamel import yaml
 from utils import logger
 from cwlprov.tool import Tool
 
-import tool.VRE_CWL
 
+class Workflow:
+    """
+    Workflow class
+    """
 
-class CWL:
-    """
-    CWL workflow class
-    """
-    file_type = "File"
-    wf_type = "CWL"
+    WF_TYPE = "CWL"
 
     def __init__(self):
         """
         Init function
         """
-        self.inputs_cwl = defaultdict(list)
+        pass
 
-    def create_input_yml(self, input_files, arguments, filename_path):
+    def createYAMLFile(self, input_files, arguments, filename):
         """
-        Create a YAML file containing the information of inputs from CWL workflow
+        Method to create YAML file that describes the execution inputs of the workflow
+        needed for their execution.
 
-        :param input_files: List containing tool input files
+        :param input_files: Dictionary of input files locations.
         :type input_files: dict
-        :param arguments: Dict containing tool arguments
+        :param arguments: Dictionary of input arguments.
         :type arguments: dict
-        :param filename_path: Working YAML file path directory
-        :type filename_path: str
+        :param filename: YAML filename
+        :type filename: str
         """
         try:
-            for key, value in input_files.items():  # for each input file
-                if isinstance(value, str):  # one input file
-                    self.inputs_cwl.update({key: {"class": self.file_type, "location": value}})
+            wf_exec_inputs = defaultdict(list)
 
-                elif isinstance(value, list):  # more than one input file
-                    for file_path in value:
-                        self.inputs_cwl[key].append({"class": self.file_type, "location": file_path})
+            for k_in, v_in in input_files.items():
+                file_type = "File"
+                file_keys = ["class", "location"]
+                if isinstance(v_in, str):
+                    wf_exec_inputs.update({k_in: {file_keys[0]: file_type, file_keys[1]: v_in}})
+                elif isinstance(v_in, list):
+                    for file_path in v_in:
+                        wf_exec_inputs[k_in].append({file_keys[0]: file_type, file_keys[1]: file_path})
 
-            for key, value in arguments.items():  # add arguments
-                if key not in tool.VRE_CWL.WF_RUNNER.MASKED_KEYS:
-                    if isinstance(value, list):  # mapping special char inside argument list
-                        value = [item.replace("\t", "\\t") for item in value]
+            for k_arg, v_arg in arguments.items():
+                if k_arg != "cwl_wf_url":
+                    # if isinstance(v_arg, list):
+                    #     new_value = [item.replace("\t", "\\t") for item in v_arg]
+                    #     # mapping special char inside argument list
+                    #
+                    print(k_arg, v_arg)
+                    wf_exec_inputs[k_arg] = v_arg
 
-                    self.inputs_cwl[str(key)] = value
+            if len(wf_exec_inputs) != 0:
+                with open(filename, 'w+', encoding="utf-8") as yaml_file:
+                    yaml.dump(dict(wf_exec_inputs), yaml_file, allow_unicode=True, default_flow_style=False)
+            else:
+                errstr = "Dictionary of execution inputs is empty"
+                logger.error(errstr)
+                raise Exception(errstr)
 
-            with open(filename_path, 'w+') as f:  # create YAML file
-                yaml.dump(dict(self.inputs_cwl), f, allow_unicode=True, default_flow_style=False)
-
-        except:
-            errstr = "The YAML file creation failed. See logs"
+        except IOError as error:
+            errstr = "Cannot create YAML file {}, {}. See logs.".format(filename, error)
             logger.error(errstr)
             raise Exception(errstr)
 
