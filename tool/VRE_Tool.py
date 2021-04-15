@@ -88,7 +88,7 @@ class cwlTool(Tool):
         try:
             # Set and validate execution path. If not exists the directory will be created.
             if not os.path.isdir(self.execution_path):
-                os.mkdir(self.execution_path)
+                os.makedirs(self.execution_path, exist_ok=True)
 
             # Set and validate execution parent directory. If not exists the directory will be created.
             execution_parent_dir = os.path.dirname(self.execution_path)
@@ -156,6 +156,9 @@ class cwlTool(Tool):
         :param input_files: Dictionary of input files locations.
         :type input_files: dict
         """
+        output = None
+        error = None
+        rc = None
         try:
             # Check cwl_wf_url argument
             cwl_wf_url = self.arguments.get("cwl_wf_url")   # TODO add tag
@@ -183,7 +186,7 @@ class cwlTool(Tool):
                 cmd = [
                     'cwltool',
                     '--debug',
-                    #'--singularity',
+                    '--singularity',
                     "--tmpdir-prefix", tmp_dir,
                     "--tmp-outdir-prefix", tmp_dir,
                     cwl_wf_url,
@@ -213,6 +216,12 @@ class cwlTool(Tool):
         except:
             errstr = "The cwltool execution failed. See logs."
             logger.error(errstr)
+            if rc is not None:
+                logger.error("RETVAL: {}".format(rc))
+            if output is not None:
+                logger.error("STDOUT: "+output.decode("utf-8", errors="ignore"))
+            if error is not None:
+                logger.error("STDERR: "+error.decode("utf-8", errors="ignore"))
             raise Exception(errstr)
 
     def create_output_files(self, output_files, output_metadata, outputs_execution):
