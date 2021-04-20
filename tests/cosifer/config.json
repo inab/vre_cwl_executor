@@ -1,0 +1,66 @@
+{
+  "input_files": [
+    {
+      "name": "data_matrix",
+      "value": "unique_file_id_5e14abe0a37012.29503907",
+      "required": true,
+      "allow_multiple": false
+    }
+  ],
+  "arguments": [
+    {
+      "name": "execution",
+      "value": "results/"
+    },
+    {
+      "name": "project",
+      "value": "basic"
+    },
+    {
+      "name": "description",
+      "value": "test"
+    },
+    {
+      "name": "cwl_wf_url",
+      "value": "https://raw.githubusercontent.com/inab/ipc_workflows/main/cosifer/cwl/cosifer-workflow.cwl"
+    },
+    {
+      "name": "separator",
+      "value": ","
+    },
+    {
+      "name": "outdir",
+      "value": "interactive/"
+    }
+
+  ],
+  "output_files": [
+    {
+      "name": "resdir",
+      "required": true,
+      "allow_multiple": false,
+      "file": {
+        "file_type": "Directory",
+        "data_type": "",
+        "meta_data": {
+          "visible": true,
+          "description": ""
+        }
+      }
+    },
+    {
+      "name": "cwl_metadata",
+      "required": false,
+      "allow_multiple": false,
+      "file": {
+        "file_type": "MULTIPLE",
+        "data_type": "provenance_data",
+        "compressed": "ZIP",
+        "meta_data": {
+          "visible": true,
+          "description": "provenance data of CWL execution"
+        }
+      }
+    }
+  ]
+}
