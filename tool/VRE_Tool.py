@@ -67,7 +67,7 @@ class cwlTool(Tool):
         )
 
         # Init specific variables
-        self.cwl_wf = Workflow()
+        self.cwl_wf = Workflow(self.parent_dir)
         self.execution_outputs = {}
 
     def run(self, input_files, input_metadata, output_files, output_metadata):

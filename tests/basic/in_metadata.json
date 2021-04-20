@@ -2,7 +2,7 @@
   {
     "_id": "unique_file_id_5e14abe0a37012.29503907",
     "type": "file",
-    "file_path": "data/inputs/NA12878.bam",
+    "file_path": "tests/basic/data/inputs/NA12878.bam",
     "file_type": "BAM",
     "data_type": "sequence_dna",
     "compressed": 0,
@@ -32,7 +32,7 @@
   {
     "_id": "unique_file_id_5e14abe0a37012.29503908",
     "type": "file",
-    "file_path": "data/inputs/hg38.fa",
+    "file_path": "tests/basic/data/inputs/hg38.fa",
     "file_type": "FASTA",
     "data_type": "sequence_dna",
     "compressed": 0,

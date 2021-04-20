@@ -18,7 +18,6 @@
 import os
 # import re
 # import shutil
-import subprocess
 import sys
 import zipfile
 
@@ -34,14 +33,15 @@ class Workflow:
     """
     Workflow class
     """
-
-    WF_TYPE = "CWL"
-
-    def __init__(self):
+    def __init__(self, abs_path):
         """
         Init function
+
+        :param abs_path: Absolute path
+        :type abs_path: str
         """
-        pass
+        self.abs_path = abs_path
+        self.type = "CWL"
 
     def createYAMLFile(self, input_files, arguments, filename):
         """
@@ -61,19 +61,23 @@ class Workflow:
             for k_in, v_in in input_files.items():
                 file_type = "File"
                 file_keys = ["class", "location"]
+
+                if not os.path.isabs(v_in):     # if input file path is not an absolute path
+                    v_in = os.path.join(self.abs_path, v_in)
+
                 if isinstance(v_in, str):
                     wf_exec_inputs.update({k_in: {file_keys[0]: file_type, file_keys[1]: v_in}})
+
                 elif isinstance(v_in, list):
                     for file_path in v_in:
                         wf_exec_inputs[k_in].append({file_keys[0]: file_type, file_keys[1]: file_path})
 
             for k_arg, v_arg in arguments.items():
                 if k_arg != "cwl_wf_url":
-                    # if isinstance(v_arg, list):
+                    # if isinstance(v_arg, list): TODO
                     #     new_value = [item.replace("\t", "\\t") for item in v_arg]
                     #     # mapping special char inside argument list
                     #
-                    print(k_arg, v_arg)
                     wf_exec_inputs[k_arg] = v_arg
 
             if len(wf_exec_inputs) != 0:
@@ -88,36 +92,6 @@ class Workflow:
             errstr = "Cannot create YAML file {}, {}. See logs.".format(filename, error)
             logger.error(errstr)
             raise Exception(errstr)
-
-    @staticmethod
-    def execute_cwltool(cwl_wf_input_yml_path, cwl_wf_url, provenance_dir, tmp_dir):
-        """
-        cwltool provenance execution process with the workflow specified by cwl_wf_url and YAML file path,
-        created from config.json and input_metadata.json. provenance data is created.
-
-        :param cwl_wf_input_yml_path: CWL workflow in YAML format
-        :type cwl_wf_input_yml_path: str
-        :param cwl_wf_url: URL for the location of the workflow
-        :type cwl_wf_url: str
-        :param provenance_dir: directory to save the provenance data
-        :type provenance_dir: str
-        :param tmp_dir: directory to save temporal files of execution
-        :type tmp_dir: str
-        """
-        logger.debug("Starting CWL Workflow execution")
-
-        cmd = [
-            "cwltool",
-            "--debug",
-            "--tmp-outdir-prefix", tmp_dir,
-            "--tmpdir-prefix", tmp_dir,
-            # "--provenance", provenance_dir,
-            cwl_wf_url,
-            cwl_wf_input_yml_path
-        ]
-
-        process = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        return process
 
     @staticmethod
     def validate_provenance(provenance_path):  # TODO delete method
