@@ -16,7 +16,7 @@
   "arguments": [
     {
       "name": "execution",
-      "value": "tests/basic/run000/"
+      "value": "results/"
     },
     {
       "name": "project",
