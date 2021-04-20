@@ -105,6 +105,7 @@ class Workflow:
         :param execution_path: Working directory
         :type execution_path: str
         """
+        # TODO error handling
         try:
             for metadata in output_metadata:
                 out_id = metadata["name"]
@@ -112,8 +113,17 @@ class Workflow:
                 outputs = list()  # list of tuples (path, type of output)
                 if out_id in outputs_execution.keys():
                     if not metadata["allow_multiple"]:  # allow multiple false
-                        file_path = outputs_execution[next(iter(outputs_execution))][0][out_keys[1]]
-                        file_type = outputs_execution[next(iter(outputs_execution))][0][out_keys[0]].lower()
+                        file_path = None
+                        file_type = None
+                        if isinstance(outputs_execution[out_id], list):     # list of files
+                            file_path = outputs_execution[next(iter(outputs_execution))][0][out_keys[1]]
+                            file_type = outputs_execution[next(iter(outputs_execution))][0][out_keys[0]].lower()
+                        elif isinstance(outputs_execution, dict):   # file
+                            file_path = outputs_execution[out_id][out_keys[1]]
+                            file_type = outputs_execution[out_id][out_keys[0]].lower()
+
+                            # TODO Dictionary
+
                         outputs.append((file_path, file_type))
 
                     else:  # allow multiple true
