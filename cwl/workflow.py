@@ -16,23 +16,21 @@
 # limitations under the License.
 
 import os
-# import re
-# import shutil
 import sys
 import zipfile
 
 from collections import defaultdict
-
 from rocrate import rocrate_api
 from ruamel import yaml
 from utils import logger
-from cwlprov.tool import Tool
 
 
 class Workflow:
     """
     Workflow class
     """
+    DEFAULT_KEYS = ['cwl_metadata']  # TODO
+
     def __init__(self, abs_path):
         """
         Init function
@@ -41,7 +39,8 @@ class Workflow:
         :type abs_path: str
         """
         self.abs_path = abs_path
-        self.type = "CWL"
+        self.type = "cwl"
+        self.execution_provenance = "execution_create.zip"
 
     def createYAMLFile(self, input_files, arguments, filename):
         """
@@ -62,7 +61,7 @@ class Workflow:
                 file_type = "File"
                 file_keys = ["class", "location"]
 
-                if not os.path.isabs(v_in):     # if input file path is not an absolute path
+                if not os.path.isabs(v_in):  # if input file path is not an absolute path
                     v_in = os.path.join(self.abs_path, v_in)
 
                 if isinstance(v_in, str):
@@ -93,25 +92,47 @@ class Workflow:
             logger.error(errstr)
             raise Exception(errstr)
 
-    @staticmethod
-    def validate_provenance(provenance_path):  # TODO delete method
+    def createOutputsFiles(self, output_files, output_metadata, outputs_execution, execution_path):
         """
-        CWLProv tool to validate and inspect CWLProv Research Objects
-        that capture workflow runs executed in CWL implementation
+        Create and validate output files generated for workflow execution
 
-        :param provenance_path: path that contains provenance data
-        :type provenance_path: str
+        :param output_files: Dictionary of the output files locations.
+        :type output_files: dict
+        :param output_metadata: # TODO
+        :type output_metadata: list
+        :param outputs_execution: TODO
+        :type outputs_execution: dict
+        :param execution_path: Working directory
+        :type execution_path: str
         """
-        arg_list = ["-d", provenance_path, "validate"]
+        try:
+            for metadata in output_metadata:
+                out_id = metadata["name"]
+                out_keys = ["class", "path"]
+                outputs = list()  # list of tuples (path, type of output)
+                if out_id in outputs_execution.keys():
+                    if not metadata["allow_multiple"]:  # allow multiple false
+                        file_path = outputs_execution[next(iter(outputs_execution))][0][out_keys[1]]
+                        file_type = outputs_execution[next(iter(outputs_execution))][0][out_keys[0]].lower()
+                        outputs.append((file_path, file_type))
 
-        with Tool(arg_list) as prov_tool:
-            try:
-                return prov_tool.main()
+                    else:  # allow multiple true
+                        for key_exec in outputs_execution[out_id]:
+                            file_path = key_exec[out_keys[1]]
+                            file_type = key_exec[out_keys[0]].lower()
+                            outputs.append((file_path, file_type))
 
-            except OSError as error:
-                errstr = "Unable to validate provenance data. ERROR: {}".format(error)
-                logger.error(errstr)
-                raise Exception(prov_tool.Status.IO_ERROR)
+                else:  # execution provenance data
+                    if out_id in self.DEFAULT_KEYS:
+                        file_path = execution_path + "/" + self.execution_provenance
+                        outputs.append((file_path, "file"))
+
+                output_files[out_id] = outputs
+
+        except:
+            errstr = "CWL output files not created. See logs."
+            logger.fatal(errstr)
+            raise Exception(errstr)
 
     @staticmethod
     def compress_provenance(filename, provenance_path):

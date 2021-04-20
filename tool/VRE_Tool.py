@@ -17,7 +17,6 @@
 
 import json
 import os
-import shutil
 import subprocess
 import time
 
@@ -35,9 +34,6 @@ class cwlTool(Tool):
     INPUTS_FILENAME = "inputdeclarations.yaml"
     TMP_DIR = "/tmp/intermediate/"  # TODO change
     PROVENANCE_DIR = "execution_provenance/"
-
-    ZIP_FILENAME = "cwl_metadata.zip"   # TODO check
-    ROCRATE_DIR = "ro/"
 
     def __init__(self, configuration=None):
         """
@@ -78,7 +74,7 @@ class cwlTool(Tool):
         :type input_files: dict
         :param input_metadata: Dictionary of files metadata.
         :type input_metadata: dict
-        :param output_files: Dictionary of the output files locations. expected to be generated.
+        :param output_files: Dictionary of the output files locations. Expected to be generated.
         :type output_files: dict
         :param output_metadata: # TODO
         :type output_metadata: list
@@ -103,46 +99,38 @@ class cwlTool(Tool):
 
             if len(self.execution_outputs) != 0:
                 print(self.execution_outputs)
-            # outputs_execution = self.execute_cwl_workflow(input_files, self.configuration)
-            #
-            # outputs_execution = json.loads(outputs_execution)  # formatting the stdout to JSON format
-            #
-            # # Validate provenance data from cwltool execution
-            # # is_valid = self.cwl.validate_provenance(self.provenance_path)
-            # # if is_valid == 0:
-            # # logger.debug("Provenance data cwl_metadata validated")
-            #
-            # # Create RO-crate
-            # rocrate_path = self.execution_path + "/" + self.ROCRATE_DIR
-            # if not os.path.isdir(rocrate_path):
-            #     os.makedirs(rocrate_path)
-            #
-            # self.cwl.create_rocrate(self.cwl_wf_url, self.cwl.wf_exec_inputs, rocrate_path)
-            # logger.debug("RO-Crate created")
-            #
-            # # Validate RO-crate # TODO validate RO-crate
-            #
-            # # move YAML file and RO-Crate folder to provenance data folder
-            # shutil.move(self.YAML_FILENAME, self.provenance_path)
-            # shutil.move(rocrate_path, self.provenance_path)
-            #
-            # # ZIP provenance data
-            # self.cwl.compress_provenance(self.ZIP_FILENAME, self.provenance_path)
-            #
-            # # Remove provenance and temporal data folders
-            # shutil.rmtree(self.provenance_path)
-            # shutil.rmtree(self.tmp_dir)
-            # # for item in Path(self.tmp_dir).iterdir():
-            # #     if item.is_dir():
-            # #         os.rmdir(item)
-            # logger.debug("Provenance folder {} \n and temporal folder {} removed".format(self.provenance_path,
-            #                                                                            self.tmp_dir))
-            #
-            # # Create and validate the output files from tool execution
-            # self.create_output_files(output_files, output_metadata, outputs_execution)
-            # logger.debug("Output files and output metadata created")
 
+                # # Create RO-crate
+                # rocrate_path = self.execution_path + "/" + self.ROCRATE_DIR
+                # if not os.path.isdir(rocrate_path):
+                #     os.makedirs(rocrate_path)
+                #
+                # self.cwl.create_rocrate(self.cwl_wf_url, self.cwl.wf_exec_inputs, rocrate_path)
+                # logger.debug("RO-Crate created")
+                #
+                # # Validate RO-crate # TODO validate RO-crate
+                #
+                # # move YAML file and RO-Crate folder to provenance data folder
+                # shutil.move(self.YAML_FILENAME, self.provenance_path)
+                # shutil.move(rocrate_path, self.provenance_path)
+                #
+                # # ZIP provenance data
+                # self.cwl.compress_provenance(self.ZIP_FILENAME, self.provenance_path)
+                #
+                # # Remove provenance and temporal data folders
+                # shutil.rmtree(self.provenance_path)
+                # shutil.rmtree(self.tmp_dir)
+                # # for item in Path(self.tmp_dir).iterdir():
+                # #     if item.is_dir():
+                # #         os.rmdir(item)
+                # logger.debug("Provenance folder {} \n and temporal folder {} removed".format(self.provenance_path,
+                #                                                                            self.tmp_dir))
+                #
+                # Modify and validate the output files from tool execution
+                self.cwl_wf.createOutputsFiles(output_files, output_metadata, self.execution_outputs, self.execution_path)
                 return output_files, output_metadata
+
+            # else: TODO error handling
 
         except:
             errstr = "VRE CWL tool execution failed. See logs."
@@ -161,7 +149,7 @@ class cwlTool(Tool):
         rc = None
         try:
             # Check cwl_wf_url argument
-            cwl_wf_url = self.arguments.get("cwl_wf_url")   # TODO add tag
+            cwl_wf_url = self.arguments.get("cwl_wf_url")  # TODO add tag
             if cwl_wf_url is None:
                 errstr = "cwl_wf_url argument must be defined"
                 logger.fatal(errstr)
@@ -185,7 +173,6 @@ class cwlTool(Tool):
 
                 cmd = [
                     'cwltool',
-                    '--debug',
                     '--singularity',
                     "--tmpdir-prefix", tmp_dir,
                     "--tmp-outdir-prefix", tmp_dir,
@@ -219,50 +206,7 @@ class cwlTool(Tool):
             if rc is not None:
                 logger.error("RETVAL: {}".format(rc))
             if output is not None:
-                logger.error("STDOUT: "+output.decode("utf-8", errors="ignore"))
+                logger.error("STDOUT: " + output.decode("utf-8", errors="ignore"))
             if error is not None:
-                logger.error("STDERR: "+error.decode("utf-8", errors="ignore"))
-            raise Exception(errstr)
-
-    def create_output_files(self, output_files, output_metadata, outputs_execution):
-        """
-        Create output files list
-
-        :param output_files: List of the output files that are to be generated.
-        :type output_files: dict
-        :param output_metadata: List of matching metadata for the output files
-        :type output_metadata: list
-        param outputs_execution: List of the output files that are generated by cwltool execution.
-        :type outputs_execution: dict
-        :return: List of files with a single entry (output_files), List of matching metadata for the returned files
-        (output_metadata).
-        :rtype: dict, dict
-        """
-        try:
-            for metadata in output_metadata:  # for each output file in output_metadata
-                out_id = metadata["name"]
-                pop_output_path = list()  # list of tuples (path, type of output)
-                if out_id in outputs_execution.keys():  # output id in metadata in output id outputs_exec
-                    if not metadata["allow_multiple"]:  # allow multiple false
-                        file_path = outputs_execution[next(iter(outputs_execution))][0]["path"]
-                        file_type = outputs_execution[next(iter(outputs_execution))][0]["class"].lower()
-                        pop_output_path.append((file_path, file_type))
-
-                    else:  # allow multiple true
-                        for key_exec in outputs_execution[out_id]:
-                            file_path = key_exec["path"]
-                            file_type = key_exec["class"].lower()
-                            pop_output_path.append((file_path, file_type))
-
-                else:  # provenance data
-                    if out_id == "cwl_metadata":
-                        file_path = self.execution_path + "/" + self.ZIP_FILENAME
-                        pop_output_path.append((file_path, "file"))
-
-                output_files[out_id] = pop_output_path  # create output files
-                self.outputs[out_id] = pop_output_path  # save output files
-
-        except:
-            errstr = "Output files not created. See logs"
-            logger.fatal(errstr)
+                logger.error("STDERR: " + error.decode("utf-8", errors="ignore"))
             raise Exception(errstr)
