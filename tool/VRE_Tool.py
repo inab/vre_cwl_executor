@@ -57,7 +57,10 @@ class cwlTool(Tool):
         # Init variables
         self.current_dir = os.path.abspath(os.path.dirname(__file__))
         self.parent_dir = os.path.abspath(self.current_dir + "/../")
-        self.execution_path = os.path.abspath(self.configuration.get('execution', '.'))
+        self.execution_path = self.configuration.get('execution', '.')
+        if not os.path.isabs(self.execution_path):  # convert to abspath if is relpath
+            self.execution_path = os.path.normpath(os.path.join(self.parent_dir, self.execution_path))
+
         self.arguments = dict(
             [(key, value) for key, value in self.configuration.items() if key not in self.DEFAULT_KEYS]
         )
@@ -168,8 +171,8 @@ class cwlTool(Tool):
 
                 # Create provenance directory to add provenance execution files
                 # If not exists the directory will be created
-                provenance_dir = os.path.join(self.execution_path, self.PROVENANCE_DIR)
-                os.makedirs(provenance_dir, exist_ok=True)
+                # provenance_dir = os.path.join(self.execution_path, self.PROVENANCE_DIR)
+                # os.makedirs(provenance_dir, exist_ok=True)
 
                 cmd = [
                     'cwltool',
