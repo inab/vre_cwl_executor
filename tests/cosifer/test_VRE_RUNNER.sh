@@ -15,10 +15,11 @@ TOOL_EXECUTABLE=$TEST_DATA_DIR/../../VRE_RUNNER
 # Running wrapper tool
 
 if [ -d $WORKING_DIR ]; then
-  rm -r $WORKING_DIR/
-  mkdir -p $WORKING_DIR
+   # shellcheck disable=SC2115
+   rm -r $WORKING_DIR/
+   mkdir -p $WORKING_DIR
 else mkdir -p $WORKING_DIR; fi
-cd $WORKING_DIR
+cd $WORKING_DIR || exit
 
 echo "--- Test execution: $WORKING_DIR"
 echo "--- Start time: $(date)"
