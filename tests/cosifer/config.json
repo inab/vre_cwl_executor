@@ -10,11 +10,11 @@
   "arguments": [
     {
       "name": "execution",
-      "value": "results/"
+      "value": "tests/cosifer/run000"
     },
     {
       "name": "project",
-      "value": "basic"
+      "value": "cosifer"
     },
     {
       "name": "description",
