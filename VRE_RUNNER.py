@@ -60,7 +60,6 @@ class Wrapper:
         :rtype: dict, dict
         """
         try:
-            logger.debug("Run the CWL tool")
             tt_handle = cwlTool(self.configuration)
             tt_files, tt_meta = tt_handle.run(input_files, input_metadata, output_files, output_metadata)
             return tt_files, tt_meta
@@ -90,7 +89,7 @@ def main_wrapper(config_path, in_metadata_path, out_metadata_path):
         app = JSONApp()
 
         result = app.launch(Wrapper, config_path, in_metadata_path, out_metadata_path)
-        logger.info("2. Tool successfully executed; see " + out_metadata_path)
+        logger.progress("Tool successfully executed; see " + out_metadata_path)
         return result
 
     except Exception as error:
