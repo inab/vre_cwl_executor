@@ -197,14 +197,14 @@ class cwlTool(Tool):
                 if rc is not None and rc != 0:
                     logger.progress("Something went wrong inside the cwltool execution. See logs.", status="WARNING")
                 else:
-                    logger.progress("The cwltool execution finished successfully.", status="FINISHED")
+                    logger.progress("cwltool execution finished successfully", status="FINISHED")
 
                 # Save execution outputs from cwltool execution
                 output, error = process.communicate()
                 self.execution_outputs = json.loads(output)
 
         except:
-            errstr = "The cwltool execution failed. See logs."
+            errstr = "cwltool execution failed. See logs."
             logger.error(errstr)
             if rc is not None:
                 logger.error("RETVAL: {}".format(rc))
