@@ -105,9 +105,6 @@ class cwlTool(Tool):
 
                 # Remove Tool execution intermediate files
                 shutil.rmtree(self.TMP_DIR)
-                # # for item in Path(self.tmp_dir).iterdir():
-                # #     if item.is_dir():
-                # #         os.rmdir(item)
 
                 return output_files, output_metadata
 
@@ -142,8 +139,7 @@ class cwlTool(Tool):
 
             # cwltool execution
             if os.path.isfile(cwl_wf_yaml_filename):
-                # Create temporal directory to add intermediate execution files
-                # If not exists the directory will be created
+                # Set and validate intermediate execution files path. If not exists the directory will be created
                 tmp_dir = self.TMP_DIR + str(os.getpid()) + "/"
                 os.makedirs(tmp_dir, exist_ok=True)
 
@@ -176,7 +172,7 @@ class cwlTool(Tool):
                 output, error = process.communicate()
                 self.execution_provenance = json.loads(output)
 
-                # Create and validate RO-crate
+                # Create and validate RO-crate from cwltool execution provenance
                 self.cwl_wf.createResearchObject(cwl_wf_url, input_files, self.execution_path, cwl_wf_yaml_filename)
 
         except:
