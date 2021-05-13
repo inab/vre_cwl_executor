@@ -16,13 +16,15 @@
 # limitations under the License.
 
 import os
+import shutil
 import sys
 import zipfile
 
 from collections import defaultdict
-from rocrate import rocrate_api
+from rocrate import rocrate
 from ruamel import yaml
 from utils import logger
+from urllib import parse
 
 
 class Workflow:
@@ -40,7 +42,7 @@ class Workflow:
         """
         self.abs_path = abs_path
         self.type = "cwl"
-        self.execution_provenance = "execution_create.zip"
+        self.provenance_path = "execution_create"
 
     def createYAMLFile(self, input_files, arguments, filename):
         """
@@ -87,8 +89,8 @@ class Workflow:
                 logger.error(errstr)
                 raise Exception(errstr)
 
-        except IOError as error:
-            errstr = "Cannot create YAML file {}, {}. See logs.".format(filename, error)
+        except:
+            errstr = "Cannot create YAML file {}. See logs.".format(filename)
             logger.error(errstr)
             raise Exception(errstr)
 
@@ -102,7 +104,7 @@ class Workflow:
         :type output_metadata: list
         :param outputs_execution: TODO
         :type outputs_execution: dict
-        :param execution_path: Working directory
+        :param execution_path: Working directory.
         :type execution_path: str
         """
         # TODO error handling
@@ -115,10 +117,10 @@ class Workflow:
                     if not metadata["allow_multiple"]:  # allow multiple false
                         file_path = None
                         file_type = None
-                        if isinstance(outputs_execution[out_id], list):     # list of files
+                        if isinstance(outputs_execution[out_id], list):  # list of files
                             file_path = outputs_execution[next(iter(outputs_execution))][0][out_keys[1]]
                             file_type = outputs_execution[next(iter(outputs_execution))][0][out_keys[0]].lower()
-                        elif isinstance(outputs_execution, dict):   # file
+                        elif isinstance(outputs_execution, dict):  # file
                             file_path = outputs_execution[out_id][out_keys[1]]
                             file_type = outputs_execution[out_id][out_keys[0]].lower()
 
@@ -134,18 +136,72 @@ class Workflow:
 
                 else:  # execution provenance data
                     if out_id in self.DEFAULT_KEYS:
-                        file_path = execution_path + "/" + self.execution_provenance
+                        file_path = execution_path + "/" + self.provenance_path
                         outputs.append((file_path, "file"))
 
                 output_files[out_id] = outputs
 
         except:
-            errstr = "CWL output files not created. See logs."
+            errstr = "Cannot create output files. See logs."
             logger.fatal(errstr)
             raise Exception(errstr)
 
+    def createResearchObject(self, wf_url, input_files, execution_path, wf_yaml):
+        """"
+        Create RO-crate from execution provenance
+
+        :param wf_url: Remote workflow location.
+        :type wf_url: str
+        :param input_files: Dictionary of input files locations.
+        :type input_files: dict
+        :param execution_path: Working directory
+        :type execution_path: str
+        :param wf_yaml: YAML filename
+        :type wf_yaml: str
+        """
+        try:
+
+            wf_crate = rocrate.ROCrate()
+            wf_file = wf_crate.add_workflow(wf_url, fetch_remote=True, main=True)
+
+            # FIXME: What to do when workflow is in git repository different from GitHub???
+            parsed_wf_url = parse.urlparse(wf_url)
+            if parsed_wf_url.netloc == "raw.githubusercontent.com":
+                # TODO convert raw url to normal url
+                # parsed_repo_url = os.path.dirname(wf_url)
+                wf_file.properties()['url'] = wf_url
+                # wf_file.properties()['codeRepository'] = parsed_repo_url
+                # wf_crate.isBasedOn = parsed_repo_url
+            else:
+                logger.error("FIXME: Unsupporterd http(s) git repository {}".format(parsed_wf_url))
+
+            # Add inputs provenance to RO-crate
+            for in_id, in_value in input_files.items():
+                # FIXME: What to do when allow multiple == true ???
+                in_localPath = os.path.join(self.abs_path, in_value)
+                if os.path.isfile(in_localPath):
+                    properties = {
+                        'name': in_id,
+                        'url': in_localPath
+                    }
+                    wf_crate.add_file(source=in_localPath, properties=properties)
+                elif os.path.isdir(in_localPath):
+                    logger.error("FIXME: input directory / dataset handling in RO-Crate")
+                else:
+                    pass  # TODO raise Exception
+
+            wf_crate.writeCrate(os.path.join(execution_path, self.provenance_path))
+
+            # Add inputs declarations YAML file
+            shutil.move(wf_yaml, self.provenance_path)
+
+        except:
+            errstr = "Cannot create RO-Crate. See logs."
+            logger.error(errstr)
+            raise Exception(errstr)
+
     @staticmethod
-    def compress_provenance(filename, provenance_path):
+    def createOutputMetadata(filename, provenance_path):
         """
         Create ZIP file of provenance data folder
 
@@ -155,6 +211,7 @@ class Workflow:
         :type provenance_path: str
         """
         try:
+            # move yaml to execution crate folder
             with zipfile.ZipFile(filename, "w", zipfile.ZIP_DEFLATED) as zpf:
                 abs_src = os.path.abspath(provenance_path)  # absolute path from provenance path
                 for folder_name, sub_folders, files in os.walk(provenance_path):
@@ -173,39 +230,5 @@ class Workflow:
 
         except Exception as error:
             errstr = "Unable to create provenance data {}. ERROR: {}".format(filename, error)
-            logger.fatal(errstr)
-            raise Exception(errstr)
-
-    def create_rocrate(self, cwl_wf_url, input_files, rocrate_path):
-        """"
-        Create workflow RO-crate
-
-        :param cwl_wf_url: URL for the location of the workflow
-        :param input_files: List containing tool input files
-        :param rocrate_path: path that will contain the RO-Crate
-        :type cwl_wf_url: str
-        :type input_files: dict
-        :type rocrate_path: str
-        """
-        try:
-
-            include_files = list()
-
-            # Create list of input files location
-            for in_rec in input_files.keys():
-                input_file = input_files[in_rec]
-                if isinstance(input_file, dict):  # input is a File
-                    include_files.append(str(input_file['location']))  # add to include_files
-
-            logger.debug("Include files:\n{}".format(include_files))
-
-            # Create RO-Crate
-            ro_crate = rocrate_api.make_workflow_rocrate(workflow_path=cwl_wf_url, wf_type=self.wf_type,
-                                                         include_files=include_files)
-            # Write RO-Crate JSON-LD format
-            ro_crate.write_crate_entities(rocrate_path)
-
-        except Exception as error:
-            errstr = "Unable to create RO-Crate. ERROR: {}".format(error)
             logger.fatal(errstr)
             raise Exception(errstr)
