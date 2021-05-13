@@ -15,33 +15,31 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import glob
 import os
 import shutil
-import sys
-import zipfile
-
 from collections import defaultdict
+from urllib import parse
+
 from rocrate import rocrate
 from ruamel import yaml
 from utils import logger
-from urllib import parse
 
 
 class Workflow:
     """
     Workflow class
     """
-    DEFAULT_KEYS = ['cwl_metadata']  # TODO
+    DEFAULT_KEYS = ['cwl_metadata']  # TODO change Mongo variable ??? answer Laia
 
-    def __init__(self, abs_path):
+    def __init__(self):
         """
         Init function
-
-        :param abs_path: Absolute path
-        :type abs_path: str
         """
-        self.abs_path = abs_path
         self.type = "cwl"
+
+        self.current_dir = os.path.abspath(os.path.dirname(__file__))
+        self.parent_dir = os.path.abspath(self.current_dir + "/../")
         self.provenance_path = "execution_create"
 
     def createYAMLFile(self, input_files, arguments, filename):
@@ -64,7 +62,7 @@ class Workflow:
                 file_keys = ["class", "location"]
 
                 if not os.path.isabs(v_in):  # if input file path is not an absolute path
-                    v_in = os.path.join(self.abs_path, v_in)
+                    v_in = os.path.join(self.parent_dir, v_in)
 
                 if isinstance(v_in, str):
                     wf_exec_inputs.update({k_in: {file_keys[0]: file_type, file_keys[1]: v_in}})
@@ -75,7 +73,7 @@ class Workflow:
 
             for k_arg, v_arg in arguments.items():
                 if k_arg != "cwl_wf_url":
-                    # if isinstance(v_arg, list): TODO
+                    # if isinstance(v_arg, list): TODO specific read_goup argument
                     #     new_value = [item.replace("\t", "\\t") for item in v_arg]
                     #     # mapping special char inside argument list
                     #
@@ -107,7 +105,6 @@ class Workflow:
         :param execution_path: Working directory.
         :type execution_path: str
         """
-        # TODO error handling
         try:
             for metadata in output_metadata:
                 out_id = metadata["name"]
@@ -117,14 +114,14 @@ class Workflow:
                     if not metadata["allow_multiple"]:  # allow multiple false
                         file_path = None
                         file_type = None
-                        if isinstance(outputs_execution[out_id], list):  # list of files
+                        if isinstance(outputs_execution[out_id], list):  # list of files    # TODO check case
                             file_path = outputs_execution[next(iter(outputs_execution))][0][out_keys[1]]
                             file_type = outputs_execution[next(iter(outputs_execution))][0][out_keys[0]].lower()
                         elif isinstance(outputs_execution, dict):  # file
                             file_path = outputs_execution[out_id][out_keys[1]]
                             file_type = outputs_execution[out_id][out_keys[0]].lower()
 
-                            # TODO Dictionary
+                            # TODO Dictionary ???
 
                         outputs.append((file_path, file_type))
 
@@ -136,7 +133,7 @@ class Workflow:
 
                 else:  # execution provenance data
                     if out_id in self.DEFAULT_KEYS:
-                        file_path = execution_path + "/" + self.provenance_path
+                        file_path = glob.glob(execution_path + "/*.zip")[0]
                         outputs.append((file_path, "file"))
 
                 output_files[out_id] = outputs
@@ -161,6 +158,7 @@ class Workflow:
         """
         try:
 
+            # Create RO-Crate
             wf_crate = rocrate.ROCrate()
             wf_file = wf_crate.add_workflow(wf_url, fetch_remote=True, main=True)
 
@@ -178,7 +176,7 @@ class Workflow:
             # Add inputs provenance to RO-crate
             for in_id, in_value in input_files.items():
                 # FIXME: What to do when allow multiple == true ???
-                in_localPath = os.path.join(self.abs_path, in_value)
+                in_localPath = os.path.join(self.parent_dir, in_value)
                 if os.path.isfile(in_localPath):
                     properties = {
                         'name': in_id,
@@ -190,45 +188,17 @@ class Workflow:
                 else:
                     pass  # TODO raise Exception
 
-            wf_crate.writeCrate(os.path.join(execution_path, self.provenance_path))
+            wf_crate_path = os.path.join(execution_path, self.provenance_path)
+            wf_crate.writeCrate(wf_crate_path)
 
             # Add inputs declarations YAML file
             shutil.move(wf_yaml, self.provenance_path)
 
+            # Compress RO-crate
+            shutil.make_archive(self.provenance_path, "zip", wf_crate_path)
+            shutil.rmtree(wf_crate_path)
+
         except:
             errstr = "Cannot create RO-Crate. See logs."
             logger.error(errstr)
-            raise Exception(errstr)
-
-    @staticmethod
-    def createOutputMetadata(filename, provenance_path):
-        """
-        Create ZIP file of provenance data folder
-
-        :param filename: filename
-        :type filename: str
-        :param provenance_path: path that contains provenance data
-        :type provenance_path: str
-        """
-        try:
-            # move yaml to execution crate folder
-            with zipfile.ZipFile(filename, "w", zipfile.ZIP_DEFLATED) as zpf:
-                abs_src = os.path.abspath(provenance_path)  # absolute path from provenance path
-                for folder_name, sub_folders, files in os.walk(provenance_path):
-                    # rule = re.search(r"\b(data/)\b", folder_name)
-                    # if rule is None:  # if not contains data folder
-                    for file in files:
-                        abs_name = os.path.abspath(os.path.join(folder_name, file))
-                        arc_name = abs_name[len(abs_src) + 1:]
-                        zpf.write(abs_name, arc_name)
-            zpf.close()
-
-            if not os.path.isfile(filename):  # if zip file is not created the execution stops
-                sys.exit("{} not created; See logs".format(filename))
-
-            logger.debug("Provenance data {} created".format(filename))
-
-        except Exception as error:
-            errstr = "Unable to create provenance data {}. ERROR: {}".format(filename, error)
-            logger.fatal(errstr)
             raise Exception(errstr)
