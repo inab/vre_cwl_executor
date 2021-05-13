@@ -66,7 +66,7 @@ class cwlTool(Tool):
         )
 
         # Init specific variables
-        self.cwl_wf = Workflow(self.parent_dir)
+        self.cwl_wf = Workflow()
         self.execution_provenance = {}
 
     def run(self, input_files, input_metadata, output_files, output_metadata):
@@ -100,8 +100,7 @@ class cwlTool(Tool):
 
             if len(self.execution_provenance) != 0:
                 # Create and validate the output files from Tool execution
-                self.cwl_wf.createOutputsFiles(output_files, output_metadata, self.execution_provenance,
-                                               self.execution_path)
+                self.cwl_wf.createOutputsFiles(output_files, output_metadata, self.execution_provenance, self.execution_path)
 
                 # Remove Tool execution intermediate files
                 shutil.rmtree(self.TMP_DIR)
