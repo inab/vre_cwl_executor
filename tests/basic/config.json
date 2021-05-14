@@ -50,7 +50,7 @@
       }
     },
     {
-      "name": "cwl_metadata",
+      "name": "provenance",
       "required": false,
       "allow_multiple": false,
       "file": {
