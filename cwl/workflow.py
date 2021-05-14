@@ -30,7 +30,6 @@ class Workflow:
     """
     Workflow class
     """
-    DEFAULT_KEYS = ['cwl_metadata']  # TODO change Mongo variable ??? answer Laia
 
     def __init__(self):
         """
@@ -92,7 +91,8 @@ class Workflow:
             logger.error(errstr)
             raise Exception(errstr)
 
-    def createOutputsFiles(self, output_files, output_metadata, outputs_execution, execution_path):
+    @staticmethod
+    def createOutputsFiles(output_files, output_metadata, outputs_execution, execution_path):
         """
         Create and validate output files generated for workflow execution
 
@@ -131,8 +131,8 @@ class Workflow:
                             file_type = key_exec[out_keys[0]].lower()
                             outputs.append((file_path, file_type))
 
-                else:  # execution provenance data
-                    if out_id in self.DEFAULT_KEYS:
+                else:  # execution provenance
+                    if "provenance" in out_id:
                         file_path = glob.glob(execution_path + "/*.zip")[0]
                         outputs.append((file_path, "file"))
 
