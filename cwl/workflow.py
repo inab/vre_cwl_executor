@@ -39,7 +39,7 @@ class Workflow:
 
         self.current_dir = os.path.abspath(os.path.dirname(__file__))
         self.parent_dir = os.path.abspath(self.current_dir + "/../")
-        self.provenance_path = "execution_create"
+        self.provenance_path = "execution_crate"
 
     def createYAMLFile(self, input_files, arguments, filename):
         """
