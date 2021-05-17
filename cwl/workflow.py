@@ -108,6 +108,7 @@ class Workflow:
         try:
             for metadata in output_metadata:
                 out_id = metadata["name"]
+                out_data_type = metadata["file"]["data_type"]
                 out_keys = ["class", "path"]
                 outputs = list()  # list of tuples (path, type of output)
                 if out_id in outputs_execution.keys():
@@ -121,8 +122,6 @@ class Workflow:
                             file_path = outputs_execution[out_id][out_keys[1]]
                             file_type = outputs_execution[out_id][out_keys[0]].lower()
 
-                            # TODO Dictionary ???
-
                         outputs.append((file_path, file_type))
 
                     else:  # allow multiple true
@@ -132,7 +131,7 @@ class Workflow:
                             outputs.append((file_path, file_type))
 
                 else:  # execution provenance
-                    if "provenance" in out_id:
+                    if out_data_type == "provenance_data":
                         file_path = glob.glob(execution_path + "/*.zip")[0]
                         outputs.append((file_path, "file"))
 
