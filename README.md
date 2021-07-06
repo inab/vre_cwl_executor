@@ -1,4 +1,4 @@
-# iPC VRE CWL Executor
+# VRE CWL Tool Executor
 
 ## Requirements
 
