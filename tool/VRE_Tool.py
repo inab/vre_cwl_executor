@@ -100,7 +100,8 @@ class cwlTool(Tool):
 
             if len(self.execution_provenance) != 0:
                 # Create and validate the output files from Tool execution
-                self.cwl_wf.createOutputsFiles(output_files, output_metadata, self.execution_provenance, self.execution_path)
+                self.cwl_wf.createOutputsFiles(output_files, output_metadata, self.execution_provenance,
+                                               self.execution_path)
 
                 # Remove Tool execution intermediate files
                 shutil.rmtree(self.TMP_DIR)
@@ -128,7 +129,7 @@ class cwlTool(Tool):
             # Check cwl_wf_url
             cwl_wf_url = self.arguments.get("cwl_wf_url")  # TODO add tag
             if cwl_wf_url is None:
-                errstr = "cwl_wf_url argument must be defined"
+                errstr = "cwl_wf_url argument must be defined."
                 logger.fatal(errstr)
                 raise Exception(errstr)
 
@@ -173,6 +174,11 @@ class cwlTool(Tool):
 
                 # Create and validate RO-crate from cwltool execution provenance
                 self.cwl_wf.createResearchObject(cwl_wf_url, input_files, self.execution_path, cwl_wf_yaml_filename)
+
+            else:
+                errstr = "YAML file must be created."
+                logger.fatal(errstr)
+                raise Exception(errstr)
 
         except:
             errstr = "cwltool execution failed. See logs."
