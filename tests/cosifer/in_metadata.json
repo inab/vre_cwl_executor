@@ -15,7 +15,7 @@
     },
     "meta_data": {
       "size": 0,
-      "project": "test",
+      "project": "cosifer",
       "atime": {
         "$date": {
           "$numberLong": 1594727890000

@@ -15,7 +15,7 @@
     },
     "meta_data": {
       "size": 0,
-      "project": "test",
+      "project": "basic",
       "atime": {
         "$date": {
           "$numberLong": 1594727890000
@@ -45,7 +45,7 @@
     },
     "meta_data": {
       "size": 0,
-      "project": "test",
+      "project": "basic",
       "atime": {
         "$date": {
           "$numberLong": 1594727890000
