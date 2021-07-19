@@ -75,13 +75,13 @@ class cwlTool(Tool):
 
         :param input_files: Dictionary of input files locations.
         :type input_files: dict
-        :param input_metadata: Dictionary of files metadata.
+        :param input_metadata: Dictionary of input files metadata.
         :type input_metadata: dict
-        :param output_files: Dictionary of the output files locations. Expected to be generated.
+        :param output_files: Dictionary of output files locations expected to be generated.
         :type output_files: dict
-        :param output_metadata: # TODO
+        :param output_metadata: List of output files metadata expected to be generated.
         :type output_metadata: list
-        :return: # TODO
+        :return: Generated output files and their metadata.
         :rtype: dict, dict
         """
         try:
