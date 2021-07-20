@@ -37,9 +37,9 @@ class cwlTool(Tool):
 
     def __init__(self, configuration=None):
         """
-        Init function
+        Init function.
 
-        :param configuration: a dictionary containing parameters that define how the operation should be carried out,
+        :param configuration: A dictionary containing parameters that define how the operation should be carried out,
         which are specific to CWL tool.
         :type configuration: dict
         """
@@ -58,7 +58,7 @@ class cwlTool(Tool):
         self.current_dir = os.path.abspath(os.path.dirname(__file__))
         self.parent_dir = os.path.abspath(self.current_dir + "/../")
         self.execution_path = self.configuration.get('execution', '.')
-        if not os.path.isabs(self.execution_path):  # convert to abspath if is relpath
+        if not os.path.isabs(self.execution_path):
             self.execution_path = os.path.normpath(os.path.join(self.parent_dir, self.execution_path))
 
         self.arguments = dict(
@@ -111,7 +111,7 @@ class cwlTool(Tool):
             # else: TODO error handling
 
         except:
-            errstr = "VRE CWL tool execution failed. See logs."
+            errstr = "CWL tool execution failed. See logs."
             logger.fatal(errstr)
             raise Exception(errstr)
 
@@ -125,6 +125,7 @@ class cwlTool(Tool):
         output = None
         error = None
         rc = None
+
         try:
             # Check cwl_wf_url
             cwl_wf_url = self.arguments.get("cwl_wf_url")  # TODO add tag
@@ -164,7 +165,7 @@ class cwlTool(Tool):
                     time.sleep(0.1)
 
                 if rc is not None and rc != 0:
-                    logger.progress("Something went wrong inside the cwltool execution. See logs.", status="WARNING")
+                    logger.progress("Something went wrong inside the cwltool execution. See logs", status="WARNING")
                 else:
                     logger.progress("cwltool execution finished successfully", status="FINISHED")
 

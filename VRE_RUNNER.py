@@ -35,7 +35,7 @@ class Wrapper:
         """
         Initialise the tool with its configuration.
 
-        :param configuration: a dictionary containing parameters that define how the operation should be carried out,
+        :param configuration: A dictionary containing parameters that define how the operation should be carried out,
         which are specific to CWL tool.
         :type configuration: dict
         """
@@ -65,7 +65,7 @@ class Wrapper:
             return tt_files, tt_meta
 
         except Exception as error:
-            errstr = "Tool CWL wasn't executed successfully. ERROR: {}".format(error)
+            errstr = "CWL tool wasn't executed successfully. ERROR: {}.".format(error)
             logger.error(errstr)
             raise Exception(errstr)
 
@@ -76,11 +76,11 @@ def main_wrapper(config_path, in_metadata_path, out_metadata_path):
 
     This function launches the tool using configuration written in two json files: config.json and in_metadata.json.
 
-    :param config_path: path to a valid VRE JSON file containing information on how the tool should be executed.
+    :param config_path: Path to a valid VRE JSON file containing information on how the tool should be executed.
     :type config_path: str
-    :param in_metadata_path: path to a valid VRE JSON file containing information on tool inputs.
+    :param in_metadata_path: Path to a valid VRE JSON file containing information on tool inputs.
     :type in_metadata_path: str
-    :param out_metadata_path: path to write the JSON file containing information on tool outputs.
+    :param out_metadata_path: Path to write the VRE JSON file containing information on tool outputs.
     :type out_metadata_path: str
     :return: If result is True, execution finished successfully. False, otherwise.
     :rtype: bool
@@ -89,18 +89,18 @@ def main_wrapper(config_path, in_metadata_path, out_metadata_path):
         app = JSONApp()
 
         result = app.launch(Wrapper, config_path, in_metadata_path, out_metadata_path)
-        logger.progress("Tool successfully executed; see " + out_metadata_path)
+        logger.progress("CWL tool successfully executed; see {}".format(out_metadata_path))
         return result
 
     except Exception as error:
-        errstr = "Tool wasn't successfully executed. ERROR: {}".format(error)
+        errstr = "CWL tool wasn't successfully executed. ERROR: {}.".format(error)
         logger.error(errstr)
         raise Exception(errstr)
 
 
 if __name__ == "__main__":
     PARSER = argparse.ArgumentParser(description="VRE CWL Tool")
-    PARSER.add_argument("--config", help="Configuration file", required=True)
+    PARSER.add_argument("--config", help="Location of configuration file", required=True)
     PARSER.add_argument("--in_metadata", help="Location of input metadata file", required=True)
     PARSER.add_argument("--out_metadata", help="Location of output metadata file", required=True)
     PARSER.add_argument("--log_file", help="Location of the log file", required=False)
