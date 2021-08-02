@@ -1,32 +1,32 @@
 [
-  {
-    "_id": "unique_file_id_5e14abe0a37012.29503907",
-    "type": "file",
-    "file_path": "tests/cosifer/data_matrix.csv",
-    "file_type": "CSV",
-    "data_type": "expression_profile",
-    "compressed": 0,
-    "sources": [],
-    "user_id": "user_id",
-    "creation_time": {
-      "$date": {
-        "$numberLong": 1594727890000
-      }
-    },
-    "meta_data": {
-      "size": 0,
-      "project": "cosifer",
-      "atime": {
-        "$date": {
-          "$numberLong": 1594727890000
+    {
+        "_id": "unique_file_id_5e14abe0a37012.29503907",
+        "type": "file",
+        "file_path": "tests/cosifer/data/data_matrix.csv",
+        "file_type": "CSV",
+        "data_type": "expression_profile",
+        "compressed": 0,
+        "sources": [],
+        "user_id": "user_id",
+        "creation_time": {
+            "$date": {
+                "$numberLong": 1594727890000
+            }
+        },
+        "meta_data": {
+            "size": 0,
+            "project": "cosifer",
+            "atime": {
+                "$date": {
+                    "$numberLong": 1594727890000
+                }
+            },
+            "parentDir": "unique_file_id_5e14abe0a37742.64003100",
+            "lastAccess": {
+                "$date": {
+                    "$numberLong": 1594727890000
+                }
+            }
         }
-      },
-      "parentDir": "unique_file_id_5e14abe0a37742.64003100",
-      "lastAccess": {
-        "$date": {
-          "$numberLong": 1594727890000
-        }
-      }
     }
-  }
 ]

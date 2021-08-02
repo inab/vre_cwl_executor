@@ -1,67 +1,67 @@
 {
-  "input_files": [
-    {
-      "name": "input_reads",
-      "value": "unique_file_id_5e14abe0a37012.29503907",
-      "required": true,
-      "allow_multiple": false
-    },
-    {
-      "name": "indexed_reference_fasta",
-      "value": "unique_file_id_5e14abe0a37012.29503908",
-      "required": true,
-      "allow_multiple": false
-    }
-  ],
-  "arguments": [
-    {
-      "name": "execution",
-      "value": "tests/basic/run000"
-    },
-    {
-      "name": "project",
-      "value": "basic"
-    },
-    {
-      "name": "description",
-      "value": "test"
-    },
-    {
-      "name": "biospecimen_name",
-      "value": "hg38"
-    },
-    {
-      "name": "cwl_wf_url",
-      "value": "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/basic_example.cwl"
-    }
-  ],
-  "output_files": [
-    {
-      "name": "bam_files",
-      "required": true,
-      "allow_multiple": true,
-      "file": {
-        "file_type": "BAM",
-        "data_type": "sequence_dna",
-        "meta_data": {
-          "visible": true,
-          "description": "split BAM files"
+    "input_files": [
+        {
+            "name": "input_reads",
+            "value": "unique_file_id_5e14abe0a37012.29503907",
+            "required": true,
+            "allow_multiple": false
+        },
+        {
+            "name": "indexed_reference_fasta",
+            "value": "unique_file_id_5e14abe0a37012.29503908",
+            "required": true,
+            "allow_multiple": false
         }
-      }
-    },
-    {
-      "name": "provenance",
-      "required": false,
-      "allow_multiple": false,
-      "file": {
-        "file_type": "MULTIPLE",
-        "data_type": "provenance_data",
-        "compressed": "ZIP",
-        "meta_data": {
-          "visible": true,
-          "description": "provenance data of CWL execution"
+    ],
+    "arguments": [
+        {
+            "name": "execution",
+            "value": "tests/basic/run000"
+        },
+        {
+            "name": "project",
+            "value": "basic"
+        },
+        {
+            "name": "description",
+            "value": "test"
+        },
+        {
+            "name": "biospecimen_name",
+            "value": "hg38"
+        },
+        {
+            "name": "cwl_wf_url",
+            "value": "https://raw.githubusercontent.com/inab/vre_cwl_executor/master/tests/basic/data/basic_example.cwl"
         }
-      }
-    }
-  ]
+    ],
+    "output_files": [
+        {
+            "name": "bam_files",
+            "required": true,
+            "allow_multiple": true,
+            "file": {
+                "file_type": "BAM",
+                "data_type": "sequence_dna",
+                "meta_data": {
+                    "visible": true,
+                    "description": "Split BAM files"
+                }
+            }
+        },
+        {
+            "name": "rocrate",
+            "required": true,
+            "allow_multiple": false,
+            "file": {
+                "file_type": "MULTIPLE",
+                "data_type": "provenance_data",
+                "compressed": "ZIP",
+                "meta_data": {
+                    "visible": true,
+                    "description": "Workflow RO-Crate"
+                }
+            }
+        }
+    ]
 }

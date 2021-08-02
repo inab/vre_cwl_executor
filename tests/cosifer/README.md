@@ -1,14 +1,9 @@
-# Usage cosifer test
+# Usage COSIFER test
 
-- Download example input file from <https://raw.githubusercontent.com/PhosphorylatedRabbits/cosifer/master/examples/interactive/data_matrix.csv>.
-
-```bash
-cd tests/cosifer/
-wget https://raw.githubusercontent.com/PhosphorylatedRabbits/cosifer/master/examples/interactive/data_matrix.csv
-```
 - Run the test:
 
 ```bash
+cd tests/cosifer/
 ./test_VRE_RUNNER.sh
 ```
 - See the results in `run000` folder.

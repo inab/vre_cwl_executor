@@ -85,10 +85,10 @@ class cwlTool(Tool):
         :rtype: dict, dict
         """
         try:
-            # Set and validate execution path. If not exists the directory will be created.
+            # Set and validate execution path. If not exists the directory will be created
             os.makedirs(self.execution_path, exist_ok=True)
 
-            # Set and validate execution parent directory. If not exists the directory will be created.
+            # Set and validate execution parent directory. If not exists the directory will be created
             execution_parent_dir = os.path.dirname(self.execution_path)
             os.makedirs(execution_parent_dir, exist_ok=True)
 
@@ -99,16 +99,19 @@ class cwlTool(Tool):
             self.toolExecution(input_files)
 
             if len(self.execution_provenance) != 0:
-                # Create and validate the output files from Tool execution
+                # Create and validate the output file/s from tool execution
                 self.cwl_wf.createOutputsFiles(output_files, output_metadata, self.execution_provenance,
                                                self.execution_path)
 
-                # Remove Tool execution intermediate files
+                # Remove tool execution intermediate files
                 shutil.rmtree(self.TMP_DIR)
 
                 return output_files, output_metadata
 
-            # else: TODO error handling
+            else:
+                errstr = "Execution provenance data not created. See logs."
+                logger.fatal(errstr)
+                raise Exception(errstr)
 
         except:
             errstr = "CWL tool execution failed. See logs."
@@ -140,6 +143,7 @@ class cwlTool(Tool):
 
             # cwltool execution
             if os.path.isfile(cwl_wf_yaml_filename):
+
                 # Set and validate intermediate execution files path. If not exists the directory will be created
                 tmp_dir = self.TMP_DIR + str(os.getpid()) + "/"
                 os.makedirs(tmp_dir, exist_ok=True)
