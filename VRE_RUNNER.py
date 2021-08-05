@@ -36,7 +36,7 @@ class Wrapper:
         Initialise the tool with its configuration.
 
         :param configuration: A dictionary containing parameters that define how the operation should be carried out,
-        which are specific to CWL tool.
+            which are specific to CWL tool.
         :type configuration: dict
         """
         if configuration is None:

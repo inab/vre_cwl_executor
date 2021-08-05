@@ -31,7 +31,7 @@ class cwlTool(Tool):
     """
     This class define CWL tool.
     """
-    DEFAULT_KEYS = ['execution', 'project', 'description']  # config.json default keys
+    DEFAULT_KEYS = ['execution', 'project', 'description']
     INPUTS_FILENAME = "inputdeclarations.yaml"
     TMP_DIR = "/tmp/intermediate/"  # TODO hardcoded
 
@@ -40,7 +40,7 @@ class cwlTool(Tool):
         Init function.
 
         :param configuration: A dictionary containing parameters that define how the operation should be carried out,
-        which are specific to CWL tool.
+            which are specific to CWL tool.
         :type configuration: dict
         """
         Tool.__init__(self)
@@ -131,7 +131,7 @@ class cwlTool(Tool):
 
         try:
             # Check cwl_wf_url
-            cwl_wf_url = self.arguments.get("cwl_wf_url")  # TODO add tag
+            cwl_wf_url = self.arguments.get('cwl_wf_url')  # TODO add tag
             if cwl_wf_url is None:
                 errstr = "cwl_wf_url argument must be defined."
                 logger.fatal(errstr)
@@ -151,8 +151,8 @@ class cwlTool(Tool):
                 cmd = [
                     'cwltool',
                     '--singularity',
-                    "--tmpdir-prefix", tmp_dir,
-                    "--tmp-outdir-prefix", tmp_dir,
+                    '--tmpdir-prefix', tmp_dir,
+                    '--tmp-outdir-prefix', tmp_dir,
                     cwl_wf_url,
                     cwl_wf_yaml_filename
                 ]
