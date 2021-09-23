@@ -112,16 +112,22 @@ class Workflow:
                 outputs = list()  # list of tuples (path, type of output)
                 if out_id in outputs_execution.keys():
                     if not metadata['allow_multiple']:  # allow multiple false
-                        file_path = None
-                        file_type = None
-                        if isinstance(outputs_execution[out_id], list):  # list of files    # TODO check case
-                            print(1)
-                            file_path = outputs_execution[next(iter(outputs_execution))][0][out_keys[1]]
-                            file_type = outputs_execution[next(iter(outputs_execution))][0][out_keys[0]].lower()
-                        elif isinstance(outputs_execution, dict):  # file
-                            print(2)
-                            file_path = outputs_execution[out_id][out_keys[1]]
-                            file_type = outputs_execution[out_id][out_keys[0]].lower()
+                        # if isinstance(outputs_execution[out_id], list):  # TODO check case
+                        #     file_path = outputs_execution[next(iter(outputs_execution))][0][out_keys[1]]
+                        #     file_type = outputs_execution[next(iter(outputs_execution))][0][out_keys[0]].lower()
+                        # elif isinstance(outputs_execution, dict):  
+                        file_path = outputs_execution[out_id][out_keys[1]]
+                        file_type = outputs_execution[out_id][out_keys[0]]
+                        if file_type == "File":
+                            file_type = file_type.lower()
+                        elif file_type == "Directory":  # FIXME when VRE accept directories as output files
+                            temp_path = os.path.join(execution_path, file_path)
+                            shutil.make_archive(temp_path, "zip", temp_path)  # Compress directory to zip
+                            shutil.rmtree(temp_path)  
+                            file_path = temp_path + ".zip"  
+                            file_type = "file"
+                        else:
+                            logger.error("FIXME: Unsupported file type {}. Supported file types are File and Directory".format(file_type))
 
                         outputs.append((file_path, file_type))
 
@@ -133,7 +139,7 @@ class Workflow:
 
                 else:  # execution provenance
                     if out_data_type == "provenance_data":  # TODO hardcoded
-                        file_path = glob.glob(execution_path + "/*.zip")[0]
+                        file_path = glob.glob(execution_path + "/*crate.zip")[0]
                         outputs.append((file_path, "file"))
 
                 output_files[out_id] = outputs

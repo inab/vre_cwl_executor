@@ -39,11 +39,12 @@
             "required": true,
             "allow_multiple": false,
             "file": {
-                "file_type": "Directory",
-                "data_type": "",
+                "file_type": "MULTIPLE",
+                "data_type": "measurements",
+                "compressed": "ZIP",
                 "meta_data": {
                     "visible": true,
-                    "description": "Consensus interaction network"
+                    "description": "Molecular measurements"
                 }
             }
         },
