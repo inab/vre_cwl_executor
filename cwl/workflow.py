@@ -198,20 +198,11 @@ class Workflow:
 
             # Add inputs provenance data to RO-crate
             for in_id, in_value in input_files.items():
-                in_localPath = os.path.join(self.parent_dir, in_value)  # TODO change hasPart for input
-
-                if os.path.isfile(in_localPath):
-                    properties = {
-                        'name': in_id,
-                        'url': in_localPath
-                    }
-                    wf_crate.add_file(source=in_localPath, properties=properties)
-
-                elif os.path.isdir(in_localPath):
-                    logger.error("FIXME: input directory / dataset handling in RO-Crate")
-
+                if isinstance(in_value, list):
+                    for elem in in_value:
+                        self.addInputToResearchObject(wf_crate, in_id, elem)
                 else:
-                    pass  # TODO raise Exception
+                    self.addInputToResearchObject(wf_crate, in_id, in_value)
 
             # Add outputs provenance data to RO-crate
             # TODO
@@ -230,3 +221,29 @@ class Workflow:
             errstr = "Cannot create RO-Crate. See logs."
             logger.error(errstr)
             raise Exception(errstr)
+
+    def addInputToResearchObject(self, ro_crate, input_id, input_value):
+        """
+        Add input to a RO-Crate.
+
+        :param ro_crate: Research Object
+        :type ro_crate: ROCrate
+        :param input_id: Input ID
+        :type input_id: str
+        :param input_value: Input value
+        :type input_value: str
+        """
+        in_localPath = os.path.join(self.parent_dir, input_value)
+
+        if os.path.isfile(in_localPath):
+            properties = {
+                'name': input_id,
+                'url': in_localPath
+            }
+            ro_crate.add_file(source=in_localPath, properties=properties)
+
+        elif os.path.isdir(in_localPath):
+            logger.error("FIXME: input directory / dataset handling in RO-Crate")
+
+        else:
+            logger.error("FIXME: input invalid / not found in RO-Crate")
