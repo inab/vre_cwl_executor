@@ -33,7 +33,7 @@ class cwlTool(Tool):
     """
     DEFAULT_KEYS = ['execution', 'project', 'description']
     INPUTS_FILENAME = "inputdeclarations.yaml"
-    TMP_DIR = "/tmp/intermediate/"  # TODO hardcoded
+    TMP_DIR = "./intermediate/"  # TODO hardcoded
 
     def __init__(self, configuration=None):
         """
