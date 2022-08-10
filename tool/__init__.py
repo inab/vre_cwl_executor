@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# Copyright 2020-2021 Barcelona Supercomputing Center (BSC), Spain
+# Copyright 2020-2022 Barcelona Supercomputing Center (BSC), Spain
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,6 @@
 # limitations under the License.
 
 __author__ = 'Laura Rodriguez-Navas <https://orcid.org/0000-0003-4929-1219>'
-__copyright__ = '© 2020-2021 Barcelona Supercomputing Center (BSC), ES'
+__copyright__ = '© 2020-2022 Barcelona Supercomputing Center (BSC), ES'
 __license__ = 'Apache 2.0'
 __version__ = '0.1.0'
