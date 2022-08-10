@@ -1,0 +1,19 @@
+authors:
+  - family-names: Rodríguez-Navas
+    given-names: Laura
+    orcid: "https://orcid.org/0000-0003-4929-1219"
+cff-version: 1.2.0
+date-released: "2020-01-03"
+keywords:
+  - wrapper
+  - tool
+  - vre
+  - cwltool
+  - cwl-workflows
+  - ro-crate
+license: Apache-2.0
+message: "If you use this software, please cite it using these metadata."
+repository-code: "https://github.com/inab/vre_cwl_executor"
+type: software
+title: "VRE CWL Tool Executor"
+version: 0.1.0
