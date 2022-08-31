@@ -16,4 +16,4 @@ message: "If you use this software, please cite it using these metadata."
 repository-code: "https://github.com/inab/vre_cwl_executor"
 type: software
 title: "VRE CWL Tool Executor"
-version: 0.1.0
+version: 0.1.1
